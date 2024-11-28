@@ -1,19 +1,33 @@
 "use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import axios from "../utils/commonAxios";
 import { USERS } from "../utils/constant";
-
+import useAxios from "../utils/commonAxios";
+import withAuth from "../components/Auth/withAuth";
+import { getUserData } from "../store/Auth/authApi";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 const LoginPage = () => {
+  const { userLoggedIn } = useSelector((data) => data?.userAuthData);
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
+  useEffect(() => {
+    if (userLoggedIn) {
+      router.push("/"); // Redirect to home page
+    }
+  }, [userLoggedIn, router]);
+
+  const axios = useAxios();
+  const dispatch = useDispatch();
 
   // Function to check if the input is an email
   const isEmail = (input) => {
@@ -25,14 +39,25 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     try {
       const res = await axios.post(USERS.LOGIN_USER_API, data);
+      console.log("res is<<", res);
+
       if (res?.data?.success) {
-        console.log("login user is <<<", res);
+        localStorage.setItem("userEmail", res?.data?.data?.user?.email);
+        localStorage.setItem("accessToken", res?.data?.data?.accessToken);
+        localStorage.setItem("refreshToken", res?.data?.data?.refreshToken);
+
         toast.success("Login Successful!");
+        reset();
+
+        dispatch(getUserData());
+        router.push("/");
       } else {
         toast.error("Invalid username or password.");
       }
       //   reset();
     } catch (error) {
+      console.log(error);
+
       toast.error("Invalid username or password.");
       return;
     }
@@ -143,4 +168,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default withAuth(LoginPage, false);

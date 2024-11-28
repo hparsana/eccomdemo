@@ -92,6 +92,7 @@ const UserOtpVerify = asyncHandler(async (req, res) => {
   }
 
   user.otp = undefined; // Remove the OTP field
+  user.isEmailVerified = true;
   await user.save(); // Save the changes to the database
 
   return res

@@ -1,5 +1,9 @@
+"use client";
 import Image from "next/image";
+import withAuth from "./components/Auth/withAuth";
 
-export default function Home() {
-  return <div className=""></div>;
-}
+const Home = () => {
+  return <div className="">Home page</div>;
+};
+
+export default withAuth(Home);

@@ -1,46 +1,56 @@
-"use client";
+import { useEffect, useMemo } from "react";
 import axios from "axios";
 import { LOCAL_PATH } from "./constant.jsx";
-import { useEffect, useState } from "react";
 
-axios.defaults.withCredentials = true;
+const useAxios = () => {
+  const axiosInstance = useMemo(() => {
+    const instance = axios.create({
+      baseURL: LOCAL_PATH, // Set your API base URL
+      headers: {
+        "Content-type": "Application/json",
+      },
+      withCredentials: true, // Include credentials for cross-origin requests
+    });
 
-const instance = axios.create({
-  baseURL: LOCAL_PATH, // Set your API base URL
-  // timeout: 5000, // Set a timeout for requests
-  headers: {
-    "Access-Control-Allow-Origin": "*",
-    "Content-type": "Application/json",
-  },
-  withCredentials: true,
-});
+    // Request Interceptor
+    instance.interceptors.request.use(
+      (config) => {
+        const accessTokenFromStorage = localStorage.getItem("accessToken");
+        if (accessTokenFromStorage) {
+          config.headers.Authorization = `Bearer ${accessTokenFromStorage}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
 
-const useAccessToken = () => {
-  const [accessToken, setAccessToken] = useState(null);
+    // Response Interceptor (Optional: For error handling globally)
+    instance.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        // You can handle errors globally here (e.g., redirecting on 401)
+        if (error.response && error.response.status === 401) {
+          // Handle unauthorized errors (e.g., redirect to login)
+          console.error("Unauthorized! Redirecting to login...");
+        }
+        return Promise.reject(error);
+      }
+    );
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const accessTokenFromStorage = localStorage.getItem("accessToken");
-      setAccessToken(accessTokenFromStorage);
-    }
+    return instance;
   }, []);
 
-  return accessToken;
+  useEffect(() => {
+    // Clean up the Axios interceptors if the component using this hook unmounts
+    return () => {
+      axiosInstance.interceptors.request.eject();
+      axiosInstance.interceptors.response.eject();
+    };
+  }, [axiosInstance]);
+
+  return axiosInstance;
 };
 
-instance.interceptors.request.use(
-  (config) => {
-    const accessToken = useAccessToken();
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-export const Abort = axios.CancelToken.source();
-
-export default instance;
+export default useAxios;

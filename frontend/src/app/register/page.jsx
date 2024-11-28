@@ -5,15 +5,28 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { USERS } from "../utils/constant";
-import axios from "../utils/commonAxios";
+import useAxios from "../utils/commonAxios";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import withAuth from "../components/Auth/withAuth";
 
 const RegisterPage = () => {
+  const { userLoggedIn } = useSelector((data) => data?.userAuthData);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (userLoggedIn) {
+      router.push("/"); // Redirect to home page
+    }
+  }, [userLoggedIn, router]);
+
+  const axios = useAxios();
 
   const [step, setStep] = useState(1); // Step 1: Registration, Step 2: OTP
   const [LoadingApi, setLoadingApi] = useState(false); // To store user's email for OTP verification
@@ -44,7 +57,6 @@ const RegisterPage = () => {
           toast.error("Invalid username or password.");
           setLoadingApi(false);
         }
-
         //   reset();
       } catch (error) {
         toast.error("Invalid username or password.");
@@ -68,11 +80,14 @@ const RegisterPage = () => {
           toast.success("Otp Verify Successful!");
           localStorage.removeItem("emailVerify");
           setLoadingApi(false);
+          router.push("/login");
         } else {
           toast.error("Invalid username or password.");
           setLoadingApi(false);
         }
       } catch (error) {
+        console.log(error);
+
         setLoadingApi(false);
         toast.error("Something went wrong. Please try again.");
       }
@@ -352,4 +367,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default withAuth(RegisterPage, false);
