@@ -9,6 +9,18 @@ import { LogoutUserFun } from "@/app/store/Auth/authApi";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+const AdminRoute = [
+  {
+    path: "/admin/dashboard",
+  },
+  {
+    path: "/product",
+  },
+  {
+    path: "/logout",
+  },
+];
+
 const Navbar = () => {
   const pathname = usePathname(); // Get the current path
   const { userLoggedIn, authUser } = useSelector((data) => data?.userAuthData);
@@ -21,6 +33,7 @@ const Navbar = () => {
 
     router.push("/login");
   };
+
   return (
     <div>
       <div className="w-full bg-[#EAE8E2]">
@@ -44,56 +57,87 @@ const Navbar = () => {
           <div>
             {userLoggedIn ? (
               <ul className="flex gap-[60px]">
-                {[
-                  authUser?.role === "ADMIN" ? "/admin/dashboard" : "/",
-                  "/product",
-                  "/logout",
-                ].map((path) =>
-                  path === "/logout" ? (
-                    <li key={path} onClick={handleLogou}>
-                      <Link
-                        href={path}
-                        className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
-                          isActive(path)
-                            ? "bg-[#C7C1C2] text-[#FFF]"
-                            : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
-                        }`}
-                      >
-                        {path === "/"
-                          ? "Home"
-                          : path === "/admin/dashboard"
-                          ? "Dashboard"
-                          : path.charAt(1).toUpperCase() + path.slice(2)}
-                      </Link>
-                    </li>
-                  ) : (
-                    <li key={path}>
-                      <Link
-                        href={path}
-                        className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
-                          isActive(path)
-                            ? "bg-[#C7C1C2] text-[#FFF]"
-                            : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
-                        }`}
-                      >
-                        {path === "/"
-                          ? "Home"
-                          : path === "/admin/dashboard"
-                          ? "Dashboard"
-                          : path.charAt(1).toUpperCase() + path.slice(2)}
-                      </Link>
-                    </li>
-                  )
-                )}
+                {authUser?.role === "ADMIN"
+                  ? AdminRoute.map((item) =>
+                      item.path === "/logout" ? (
+                        <li key={item.path} onClick={handleLogou}>
+                          <Link
+                            href={item.path}
+                            className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
+                              isActive(item.path)
+                                ? "bg-[#C7C1C2] text-[#FFF]"
+                                : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
+                            }`}
+                          >
+                            {item.path === "/"
+                              ? "Home"
+                              : item.path === "/admin/dashboard"
+                              ? "Dashboard"
+                              : item.path.charAt(1).toUpperCase() +
+                                item.path.slice(2)}
+                          </Link>
+                        </li>
+                      ) : (
+                        <li key={item.path}>
+                          <Link
+                            href={item.path}
+                            className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
+                              isActive(item.path)
+                                ? "bg-[#C7C1C2] text-[#FFF]"
+                                : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
+                            }`}
+                          >
+                            {item.path === "/"
+                              ? "Home"
+                              : item.path === "/admin/dashboard"
+                              ? "Dashboard"
+                              : item.path.charAt(1).toUpperCase() +
+                                item.path.slice(2)}
+                          </Link>
+                        </li>
+                      )
+                    )
+                  : ["/", "/product", "/logout"].map((path) =>
+                      path === "/logout" ? (
+                        <li key={path} onClick={handleLogou}>
+                          <Link
+                            href={path}
+                            className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
+                              isActive(path)
+                                ? "bg-[#C7C1C2] text-[#FFF]"
+                                : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
+                            }`}
+                          >
+                            {path === "/"
+                              ? "Home"
+                              : path === "/admin/dashboard"
+                              ? "Dashboard"
+                              : path.charAt(1).toUpperCase() + path.slice(2)}
+                          </Link>
+                        </li>
+                      ) : (
+                        <li key={path}>
+                          <Link
+                            href={path}
+                            className={`font-semibold text-[18px] leading-[27px] cursor-pointer transition duration-300 px-2 py-1 rounded ${
+                              isActive(path)
+                                ? "bg-[#C7C1C2] text-[#FFF]"
+                                : "hover:bg-[#C7C1C2] hover:text-[#FFF]"
+                            }`}
+                          >
+                            {path === "/"
+                              ? "Home"
+                              : path === "/admin/dashboard"
+                              ? "Dashboard"
+                              : path.charAt(1).toUpperCase() + path.slice(2)}
+                          </Link>
+                        </li>
+                      )
+                    )}
               </ul>
             ) : (
               <ul className="flex gap-[60px]">
-                {[
-                  authUser?.role === "ADMIN" ? "/admin/dashboard" : "/",
-                  "/product",
-                  "/register",
-                  "/login",
-                ].map((path) => (
+                {["/", "/product", "/register", "/login"].map((path) => (
                   <li key={path}>
                     <Link
                       href={path}

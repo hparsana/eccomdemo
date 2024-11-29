@@ -7,6 +7,11 @@ const nextConfig = {
         hostname: "images.unsplash.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "cdn.dummyjson.com",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };
