@@ -6,4 +6,4 @@ const Home = () => {
   return <div className="">Home page</div>;
 };
 
-export default withAuth(Home);
+export default withAuth(Home, true);

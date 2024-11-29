@@ -120,8 +120,114 @@ const sendOtpEmail = async (to, otp) => {
   }
 };
 
+const sendForgotPasswordEmail = async (to, otp) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Your App Name" <${process.env.EMAIL_USER}>`, // Sender address
+      to, // Recipient's email address
+      subject: "Reset Your Password - OTP Code", // Subject line
+      text: `Your OTP code for resetting your password is ${otp}.`, // Plain text body
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f9;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 20px auto;
+                background: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+              }
+              .email-header {
+                background: #ff9800;
+                color: #ffffff;
+                padding: 20px;
+                text-align: center;
+              }
+              .email-header h1 {
+                margin: 0;
+                font-size: 24px;
+              }
+              .email-body {
+                padding: 20px;
+                color: #333333;
+              }
+              .email-body p {
+                line-height: 1.6;
+                margin-bottom: 20px;
+              }
+              .otp-code {
+                display: inline-block;
+                font-size: 28px;
+                color: #ff9800;
+                background: #f4f4f9;
+                padding: 10px 20px;
+                margin: 20px 0;
+                border-radius: 8px;
+                border: 1px dashed #ff9800;
+                text-align: center;
+              }
+              .email-footer {
+                text-align: center;
+                background: #eeeeee;
+                padding: 10px 20px;
+                font-size: 12px;
+                color: #777777;
+              }
+              .email-footer a {
+                color: #ff9800;
+                text-decoration: none;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <!-- Header -->
+              <div class="email-header">
+                <h1>Password Reset Request</h1>
+              </div>
+              <!-- Body -->
+              <div class="email-body">
+                <p>Hi there,</p>
+                <p>
+                  We received a request to reset your password. Use the code below to reset it:
+                </p>
+                <div class="otp-code">${otp}</div>
+                <p>
+                  If you didn't request a password reset, please ignore this email or contact support if you have concerns.
+                </p>
+              </div>
+              <!-- Footer -->
+              <div class="email-footer">
+                <p>
+                  Need help? <a href="mailto:sabhadiyajenish83@gmail.com">Contact Support</a>
+                </p>
+                <p>&copy; ${new Date().getFullYear()} ecommDemo. All rights reserved.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log("Password reset email sent: %s", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("Error sending password reset email:", error);
+    throw new Error("Failed to send password reset email.");
+  }
+};
+
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export { sendOtpEmail, randomInt };
+export { sendOtpEmail, randomInt, sendForgotPasswordEmail };

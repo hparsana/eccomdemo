@@ -8,14 +8,14 @@ import { USERS } from "../utils/constant";
 import useAxios from "../utils/commonAxios";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import withAuth from "../components/Auth/withAuth";
 
-const RegisterPage = () => {
+const ForgotPassword = () => {
   const { userLoggedIn } = useSelector((data) => data?.userAuthData);
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm();
   const router = useRouter();
@@ -34,10 +34,17 @@ const RegisterPage = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const userEmail = localStorage.getItem("emailVerify");
-      console.log("name is<<<<", userEmail);
+      const userVerifyCompleted = localStorage.getItem("emailVerifyCompleted");
 
       if (userEmail !== null && userEmail !== undefined && userEmail !== "") {
         setStep(2);
+      }
+      if (
+        userVerifyCompleted !== null &&
+        userVerifyCompleted !== undefined &&
+        userVerifyCompleted !== ""
+      ) {
+        setStep(3);
       }
     }
   }, []);
@@ -46,10 +53,10 @@ const RegisterPage = () => {
     try {
       try {
         setLoadingApi(true);
-        const res = await axios.post(USERS.REGISTER_USER_API, data);
+        const res = await axios.post(USERS.FORGOTPASSWORD.VERIFYEMAIL, data);
 
         if (res?.data?.success) {
-          toast.success("Registration Successful!");
+          toast.success("Otp sent");
           localStorage.setItem("emailVerify", res?.data?.data?.email);
           setStep(2);
           setLoadingApi(false);
@@ -75,14 +82,64 @@ const RegisterPage = () => {
       try {
         setLoadingApi(true);
         const userInfo = { email: userEmail, otp: data.otp };
-        const res = await axios.post(USERS.VERIFY_USER_OTP, userInfo);
+        const res = await axios.post(
+          USERS.FORGOTPASSWORD.VERIFYEMAILOTP,
+          userInfo
+        );
         if (res?.data?.success) {
           toast.success("Otp Verify Successful!");
+          localStorage.setItem("emailVerifyCompleted", userEmail);
+          localStorage.setItem("emailVerifyToken", res?.data?.data?.resetToken);
           localStorage.removeItem("emailVerify");
+          setLoadingApi(false);
+          setStep(3);
+        } else if (res?.data?.statusCode === (403 || 400 || 500)) {
+          localStorage.removeItem("emailVerifyCompleted");
+          localStorage.removeItem("emailVerify");
+          setStep(1);
+        } else {
+          toast.error("Invalid Otp.");
+          setLoadingApi(false);
+        }
+      } catch (error) {
+        console.log(error);
+
+        setLoadingApi(false);
+        toast.error("Invalid Otp.");
+      }
+    }
+  };
+
+  const handleUpdatePassword = async (data) => {
+    const userEmail = localStorage.getItem("emailVerifyCompleted");
+    const userEmailToken = localStorage.getItem("emailVerifyToken");
+
+    if (
+      userEmail !== null &&
+      userEmail !== undefined &&
+      userEmail !== "" &&
+      userEmailToken !== ""
+    ) {
+      try {
+        setLoadingApi(true);
+        const userInfo = {
+          email: userEmail,
+          password: data.password,
+          token: userEmailToken,
+        };
+        const res = await axios.post(
+          USERS.FORGOTPASSWORD.VERIFYPASSWORD,
+          userInfo
+        );
+        if (res?.data?.success) {
+          toast.success("password forgot Successful!");
+          localStorage.removeItem("emailVerifyCompleted");
+          localStorage.removeItem("emailVerifyToken");
+
           setLoadingApi(false);
           router.push("/login");
         } else {
-          toast.error("Invalid username or password.");
+          toast.error("Something went wrong. Please try again.");
           setLoadingApi(false);
         }
       } catch (error) {
@@ -113,68 +170,11 @@ const RegisterPage = () => {
             {step === 1 ? (
               <>
                 <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6">
-                  Sign-up!
+                  Verify Email
                 </h2>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {/* Username or Email */}
-                  <div className="mb-4">
-                    <label
-                      htmlFor="fullname"
-                      className="block text-gray-700 font-semibold mb-2"
-                    >
-                      Fullname
-                    </label>
-                    <input
-                      type="text"
-                      id="fullname"
-                      {...register("fullname", {
-                        required: "Please enter your fullname ",
-                        minLength: {
-                          value: 4,
-                          message:
-                            "fullname must be at least 4 characters long",
-                        },
-                      })}
-                      className={`w-full px-4 py-2 border ${
-                        errors.fullname ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                      placeholder="Enter your fullname "
-                    />
-                    {errors.fullname && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.fullname.message}
-                      </p>
-                    )}
-                  </div>
-                  <div className="mb-4">
-                    <label
-                      htmlFor="username"
-                      className="block text-gray-700 font-semibold mb-2"
-                    >
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      id="username"
-                      {...register("username", {
-                        required: "Please enter your username",
-                        minLength: {
-                          value: 4,
-                          message:
-                            "Username must be at least 4 characters long",
-                        },
-                      })}
-                      className={`w-full px-4 py-2 border ${
-                        errors.username ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                      placeholder="Enter your username"
-                    />
-                    {errors.username && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.username.message}
-                      </p>
-                    )}
-                  </div>
+
                   <div className="mb-4">
                     <label
                       htmlFor="email"
@@ -203,42 +203,6 @@ const RegisterPage = () => {
                       </p>
                     )}
                   </div>
-
-                  {/* Password */}
-                  <div className="mb-4">
-                    <label
-                      htmlFor="password"
-                      className="block text-gray-700 font-semibold mb-2"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      {...register("password", {
-                        required: "Please enter your password",
-                        minLength: {
-                          value: 8,
-                          message:
-                            "Password must be at least 8 characters long",
-                        },
-                        validate: (value) =>
-                          /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(
-                            value
-                          ) ||
-                          "Password must contain at least one uppercase, one lowercase, one number, and one special character",
-                      })}
-                      className={`w-full px-4 py-2 border ${
-                        errors.password ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
-                      placeholder="Enter your password"
-                    />
-                    {errors.password && (
-                      <p className="text-red-500 text-sm mt-1">
-                        {errors.password.message}
-                      </p>
-                    )}
-                  </div>
                   {/* Login Button */}
                   <div className="mb-4">
                     {!LoadingApi ? (
@@ -246,7 +210,7 @@ const RegisterPage = () => {
                         type="submit"
                         className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"
                       >
-                        Register
+                        Send Verification Code
                       </button>
                     ) : (
                       <button
@@ -276,6 +240,134 @@ const RegisterPage = () => {
                     )}
                   </div>
                 </form>
+                <p className="text-sm text-gray-600 text-center mt-4">
+                  Already have an account?{" "}
+                  <Link href="/login" passHref>
+                    <span className="text-blue-500 hover:underline">
+                      Login here
+                    </span>
+                  </Link>
+                </p>
+              </>
+            ) : step === 3 ? (
+              <>
+                <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6">
+                  Update Password
+                </h2>
+                <form onSubmit={handleSubmit(handleUpdatePassword)}>
+                  {/* New Password */}
+                  <div className="mb-4">
+                    <label
+                      htmlFor="password"
+                      className="block text-gray-700 font-semibold mb-2"
+                    >
+                      New Password
+                    </label>
+                    <input
+                      type="password"
+                      id="password"
+                      {...register("password", {
+                        required: "Please enter your password",
+                        minLength: {
+                          value: 8,
+                          message:
+                            "Password must be at least 8 characters long",
+                        },
+                        validate: (value) =>
+                          /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(
+                            value
+                          ) ||
+                          "Password must contain at least one uppercase, one lowercase, one number, and one special character",
+                      })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.password ? "border-red-500" : "border-gray-300"
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      placeholder="Enter your new password"
+                    />
+                    {errors.password && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.password.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Confirm Password */}
+                  <div className="mb-4">
+                    <label
+                      htmlFor="confirmPassword"
+                      className="block text-gray-700 font-semibold mb-2"
+                    >
+                      Confirm Password
+                    </label>
+                    <input
+                      type="password"
+                      id="confirmPassword"
+                      {...register("confirmPassword", {
+                        required: "Please confirm your password",
+                        validate: (value) =>
+                          value === watch("password") ||
+                          "Passwords do not match",
+                      })}
+                      className={`w-full px-4 py-2 border ${
+                        errors.confirmPassword
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      placeholder="Confirm your new password"
+                    />
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="mb-4">
+                    {!LoadingApi ? (
+                      <button
+                        type="submit"
+                        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+                      >
+                        Update Password
+                      </button>
+                    ) : (
+                      <button
+                        disabled
+                        type="button"
+                        className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg transition duration-300"
+                      >
+                        <svg
+                          aria-hidden="true"
+                          role="status"
+                          className="inline w-4 h-4 me-3 text-white animate-spin"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="#E5E7EB"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        Loading...
+                      </button>
+                    )}
+                  </div>
+                </form>
+
+                <p className="text-sm text-gray-600 text-center mt-4">
+                  go back?
+                  <Link href="/login" passHref>
+                    <span className="text-blue-500 hover:underline">
+                      Login here
+                    </span>
+                  </Link>
+                </p>
               </>
             ) : (
               <>
@@ -350,16 +442,16 @@ const RegisterPage = () => {
                     </button>
                   )}
                 </form>
+                <p className="text-sm text-gray-600 text-center mt-4">
+                  need to resend?{" "}
+                  <Link href="/login" passHref>
+                    <span className="text-blue-500 hover:underline">
+                      Resend otp
+                    </span>
+                  </Link>
+                </p>
               </>
             )}
-            <p className="text-sm text-gray-600 text-center mt-4">
-              Already have an account?{" "}
-              <Link href="/login" passHref>
-                <span className="text-blue-500 hover:underline">
-                  Login here
-                </span>
-              </Link>
-            </p>
           </div>
         </div>
       </div>
@@ -367,4 +459,4 @@ const RegisterPage = () => {
   );
 };
 
-export default withAuth(RegisterPage, false);
+export default ForgotPassword;

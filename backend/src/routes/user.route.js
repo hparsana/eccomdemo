@@ -8,6 +8,8 @@ import {
   handleSocialLogin,
   UserGetWebapp,
   UserOtpVerify,
+  VerifyEmailForPassword,
+  UpdatePassword,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
@@ -32,6 +34,12 @@ routes.route("/logout").get(authMiddleWare, LogoutUser);
 routes.route("/getwebsitescript").get(UserGetWebapp);
 
 routes.route("/get-userdata").get(authMiddleWare, getUserData);
+
+//forgot password APIS
+
+routes.route("/forgotpassword/verifyemail").post(VerifyEmailForPassword);
+routes.route("/forgotpassword/verifyemailotp").post(UserOtpVerify);
+routes.route("/forgotpassword/verifypassword").post(UpdatePassword);
 
 // SSO routes
 routes.route("/google").get(

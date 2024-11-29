@@ -22,4 +22,9 @@ export const USERS = {
   GET_USER_INFO: `${LOCAL_PATH}/user/get-userdata`,
   LOGIN_USER_API: `${LOCAL_PATH}/user/login`,
   LOGOUT_USER_API: `${LOCAL_PATH}/user/logout`,
+  FORGOTPASSWORD: {
+    VERIFYEMAIL: `${LOCAL_PATH}/user/forgotpassword/verifyemail`,
+    VERIFYEMAILOTP: `${LOCAL_PATH}/user/forgotpassword/verifyemailotp`,
+    VERIFYPASSWORD: `${LOCAL_PATH}/user/forgotpassword/verifypassword`,
+  },
 };

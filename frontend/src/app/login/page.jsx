@@ -143,7 +143,15 @@ const LoginPage = () => {
                 )}
               </div>
               {/* Login Button */}
-              <div className="mb-4">
+              <p className="text-sm text-gray-600 text-right ">
+                Forgot your password?{" "}
+                <Link href="/forgotpassword" passHref>
+                  <span className="text-blue-500 hover:underline">
+                    Reset it here
+                  </span>
+                </Link>
+              </p>
+              <div className="mb-4 mt-2">
                 <button
                   type="submit"
                   className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"

@@ -6,7 +6,13 @@ import { fileUploadCloud } from "../utils/cloudinary.js";
 import { UserLoginType, cookieOptions } from "../utils/constant.js";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import { sendOtpEmail, randomInt } from "../utils/mailer.js";
+import bcrypt from "bcrypt";
+
+import {
+  sendOtpEmail,
+  randomInt,
+  sendForgotPasswordEmail,
+} from "../utils/mailer.js";
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -80,7 +86,7 @@ const UserOtpVerify = asyncHandler(async (req, res) => {
   }
 
   // Find the user with the provided email
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("-password -refreshToken");
 
   if (!user) {
     throw new ApiError(404, "User not found with the provided email.");
@@ -91,13 +97,16 @@ const UserOtpVerify = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid or expired OTP.");
   }
 
+  const resetToken = user.generateResetToken();
+
   user.otp = undefined; // Remove the OTP field
   user.isEmailVerified = true;
+  user.resetToken = resetToken;
   await user.save(); // Save the changes to the database
 
   return res
     .status(200)
-    .json(new ApiResponse(200, null, "Email verified successfully."));
+    .json(new ApiResponse(200, user, "Email verified successfully."));
 });
 
 const LoginUser = asyncHandler(async (req, res) => {
@@ -248,6 +257,58 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+const VerifyEmailForPassword = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    throw new ApiError(400, "email is Required.");
+  }
+
+  const userCheck = await User.findOne({ email }).select(
+    "-password -refreshToken"
+  );
+
+  if (!userCheck) {
+    throw new ApiError(409, "Please enter Valid Email");
+  }
+  const otp = randomInt(100000, 999999);
+  await sendForgotPasswordEmail(userCheck?.email, otp);
+
+  userCheck.otp = Number(otp);
+  await userCheck.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, userCheck, "verify email and send otp"));
+});
+
+const UpdatePassword = asyncHandler(async (req, res) => {
+  const { email, password, token } = req.body;
+
+  if (!email || !password || !token) {
+    throw new ApiError(400, "Email, password, and token are required.");
+  }
+  const userCheck = await User.findOne({ email }).select(
+    "-password -refreshToken"
+  );
+
+  if (!userCheck) {
+    throw new ApiError(409, "Please enter Valid Email");
+  }
+
+  const isValidToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  if (!isValidToken) {
+    throw new ApiError(403, "Invalid or expired token.");
+  }
+  userCheck.password = password;
+  userCheck.resetToken = undefined;
+  await userCheck.save();
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, userCheck, "password Updated successfully"));
+});
+
 const getUserData = asyncHandler(async (req, res) => {
   return res
     .status(200)
@@ -285,4 +346,6 @@ export {
   handleSocialLogin,
   UserGetWebapp,
   UserOtpVerify,
+  VerifyEmailForPassword,
+  UpdatePassword,
 };

@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 const Navbar = () => {
   const pathname = usePathname(); // Get the current path
-  const { userLoggedIn } = useSelector((data) => data?.userAuthData);
+  const { userLoggedIn, authUser } = useSelector((data) => data?.userAuthData);
   const router = useRouter();
   const dispatch = useDispatch();
   const isActive = (path) => pathname === path;
@@ -44,7 +44,11 @@ const Navbar = () => {
           <div>
             {userLoggedIn ? (
               <ul className="flex gap-[60px]">
-                {["/", "/product", "/logout"].map((path) =>
+                {[
+                  authUser?.role === "ADMIN" ? "/admin/dashboard" : "/",
+                  "/product",
+                  "/logout",
+                ].map((path) =>
                   path === "/logout" ? (
                     <li key={path} onClick={handleLogou}>
                       <Link
@@ -57,6 +61,8 @@ const Navbar = () => {
                       >
                         {path === "/"
                           ? "Home"
+                          : path === "/admin/dashboard"
+                          ? "Dashboard"
                           : path.charAt(1).toUpperCase() + path.slice(2)}
                       </Link>
                     </li>
@@ -72,6 +78,8 @@ const Navbar = () => {
                       >
                         {path === "/"
                           ? "Home"
+                          : path === "/admin/dashboard"
+                          ? "Dashboard"
                           : path.charAt(1).toUpperCase() + path.slice(2)}
                       </Link>
                     </li>
@@ -80,7 +88,12 @@ const Navbar = () => {
               </ul>
             ) : (
               <ul className="flex gap-[60px]">
-                {["/", "/product", "/register", "/login"].map((path) => (
+                {[
+                  authUser?.role === "ADMIN" ? "/admin/dashboard" : "/",
+                  "/product",
+                  "/register",
+                  "/login",
+                ].map((path) => (
                   <li key={path}>
                     <Link
                       href={path}
