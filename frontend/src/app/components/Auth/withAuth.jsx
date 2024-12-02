@@ -1,39 +1,54 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { redirect } from "next/navigation";
 import { getUserData } from "@/app/store/Auth/authApi";
 
-const withAuth = (WrappedComponent, authentication = true) => {
+const roleRedirectMap = {
+  USER: "/",
+  ADMIN: "/admin/dashboard",
+};
+
+const withAuth = (
+  WrappedComponent,
+  authentication = true,
+  allowedRoles = []
+) => {
   const WithAuthComponent = (props) => {
     const [loading, setLoading] = useState(true);
     const dispatch = useDispatch();
     const { userLoggedIn, authUser } = useSelector(
-      (data) => data?.userAuthData
+      (state) => state?.userAuthData
     );
 
-    // useEffect(() => {
-    //   dispatch(getUserData());
-    // }, [dispatch]);
+    useEffect(() => {
+      // Ensure user data is fetched
+      dispatch(getUserData());
+    }, [dispatch]);
 
     useEffect(() => {
       const checkAuth = () => {
+        if (typeof window === "undefined") return; // Avoid SSR issues
+
         if (authentication && !userLoggedIn) {
           redirect("/login");
         } else if (!authentication && userLoggedIn) {
-          if (authUser?.role === "USER") {
-            redirect("/");
-          } else if (authUser?.role === "ADMIN") {
-            redirect("/admin/dashboard");
-          } else {
-            redirect("/");
-          }
+          const redirectPath = roleRedirectMap[authUser?.role] || "/";
+          redirect(redirectPath);
+        } else if (
+          allowedRoles.length > 0 &&
+          !allowedRoles.includes(authUser?.role)
+        ) {
+          // User's role is not allowed for this page
+          redirect("/unauthorized"); // Redirect to an unauthorized page or home
         } else {
           setLoading(false);
         }
       };
 
       checkAuth();
-    }, [authentication, userLoggedIn]);
+    }, [authentication, userLoggedIn, authUser?.role]);
 
     if (loading) {
       return (
@@ -58,14 +73,12 @@ const withAuth = (WrappedComponent, authentication = true) => {
             <span className="sr-only">Loading...</span>
           </div>
         </div>
-      ); // Or any loading indicator you prefer
+      );
     }
 
-    // Render the wrapped component
     return <WrappedComponent {...props} />;
   };
 
-  // Add a display name for better debugging
   WithAuthComponent.displayName = `WithAuth(${
     WrappedComponent.displayName || WrappedComponent.name || "Component"
   })`;

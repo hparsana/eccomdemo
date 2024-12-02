@@ -47,6 +47,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 import userRoutes from "./routes/user.route.js";
+import productRoutes from "./routes/product.route.js";
 
 app.get("/", (req, res) => {
   res.json(
@@ -54,6 +55,8 @@ app.get("/", (req, res) => {
   );
 });
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/product", productRoutes);
+
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {
     return res.status(err.statusCode).json(err);

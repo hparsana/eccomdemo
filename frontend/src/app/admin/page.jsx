@@ -5,16 +5,18 @@ import { useSelector } from "react-redux";
 import withAuth from "../components/Auth/withAuth";
 
 const Admin = () => {
-  const { userLoggedIn } = useSelector((data) => data?.userAuthData);
+  // const { userLoggedIn, authUser } = useSelector((data) => data?.userAuthData);
 
-  const router = useRouter();
-  useEffect(() => {
-    if (userLoggedIn) {
-      router.push("/admin/dashboard"); // Redirect to home Admin
-    }
-  }, [userLoggedIn, router]);
+  // const router = useRouter();
+  // useEffect(() => {
+  //   if (userLoggedIn && authUser.role === "ADMIN") {
+  //     router.push("/admin/dashboard"); // Redirect to home Admin
+  //   } else {
+  //     router.push("/"); // Redirect to home Admin
+  //   }
+  // }, [userLoggedIn, router]);
 
   return <div>ADMIN</div>;
 };
 
-export default withAuth(Admin, true);
+export default withAuth(Admin, true, ["ADMIN"]);

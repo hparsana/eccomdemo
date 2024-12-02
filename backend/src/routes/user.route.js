@@ -29,11 +29,13 @@ routes.route("/verify-otp").post(UserOtpVerify);
 routes.route("/refresh-token").post(refreshAccessToken);
 
 //Secure Routes to use Auth Middleware
-routes.route("/logout").get(authMiddleWare, LogoutUser);
+routes.route("/logout").get(authMiddleWare(["USER", "ADMIN"]), LogoutUser);
 
 routes.route("/getwebsitescript").get(UserGetWebapp);
 
-routes.route("/get-userdata").get(authMiddleWare, getUserData);
+routes
+  .route("/get-userdata")
+  .get(authMiddleWare(["USER", "ADMIN"]), getUserData);
 
 //forgot password APIS
 
