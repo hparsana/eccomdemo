@@ -24,7 +24,7 @@ const Unauthorized = () => {
       <div className="bg-white shadow-md rounded-lg p-8 text-center">
         <h1 className="text-4xl font-bold text-red-600 mb-4">Unauthorized</h1>
         <p className="text-gray-600 text-lg mb-6">
-          You don't have permission to access this page.
+          You don&apos;t have permission to access this page.
         </p>
         <button
           onClick={handleRedirect}

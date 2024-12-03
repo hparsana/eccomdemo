@@ -61,18 +61,18 @@ const ForgotPassword = () => {
           setStep(2);
           setLoadingApi(false);
         } else {
-          toast.error("Something went wrong. Please try again");
+          toast.error(res?.data?.message || "Please enter Valid Email");
           setLoadingApi(false);
         }
         //   reset();
       } catch (error) {
-        toast.error("Something went wrong. Please try again");
+        toast.error(res?.data?.message || "Please enter Valid Email");
         setLoadingApi(false);
         return;
       }
     } catch (error) {
       //   console.error("Error during registration:", error);
-      toast.error("Something went wrong. Please try again.");
+      toast.error(res?.data?.message || "Please enter Valid Email.");
     }
   };
 

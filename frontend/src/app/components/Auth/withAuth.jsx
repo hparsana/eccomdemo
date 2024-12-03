@@ -48,7 +48,7 @@ const withAuth = (
       };
 
       checkAuth();
-    }, [authentication, userLoggedIn, authUser?.role]);
+    }, [userLoggedIn, authUser?.role]);
 
     if (loading) {
       return (
