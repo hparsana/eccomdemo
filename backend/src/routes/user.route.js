@@ -10,10 +10,15 @@ import {
   UserOtpVerify,
   VerifyEmailForPassword,
   UpdatePassword,
+  getAllUsers,
+  updateUser,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
-import { signUpSchemaValidation } from "../utils/schemaValidation.js";
+import {
+  signUpSchemaValidation,
+  updateUserSchemaValidation,
+} from "../utils/schemaValidation.js";
 import { authMiddleWare } from "../middlewares/auth.middleware.js";
 import passport from "passport";
 import "../passport/index.js";
@@ -31,7 +36,15 @@ routes.route("/refresh-token").post(refreshAccessToken);
 //Secure Routes to use Auth Middleware
 routes.route("/logout").get(authMiddleWare(["USER", "ADMIN"]), LogoutUser);
 
-routes.route("/getwebsitescript").get(UserGetWebapp);
+routes.route("/getallusers").get(authMiddleWare(["ADMIN"]), getAllUsers);
+
+routes
+  .route("/updateoneuser/:id")
+  .put(
+    validate(updateUserSchemaValidation),
+    authMiddleWare(["ADMIN"]),
+    updateUser
+  );
 
 routes
   .route("/get-userdata")

@@ -7,7 +7,7 @@ import { UserLoginType, cookieOptions } from "../utils/constant.js";
 import jwt from "jsonwebtoken";
 import axios from "axios";
 import bcrypt from "bcrypt";
-
+import mongoose from "mongoose";
 import {
   sendOtpEmail,
   randomInt,
@@ -337,6 +337,92 @@ const handleSocialLogin = asyncHandler(async (req, res) => {
     );
 });
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 10, search = "" } = req.query;
+
+  const pageNumber = parseInt(page, 10);
+  const limitNumber = parseInt(limit, 10);
+
+  // Build query for searching users
+  const query = {};
+  if (search.trim()) {
+    query.$or = [
+      { fullname: { $regex: search, $options: "i" } },
+      { username: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const [users, totalUsers] = await Promise.all([
+    User.find(query)
+      .select("-password -refreshToken -loginType -isEmailVerified -updatedAt")
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber),
+    User.countDocuments(query),
+  ]);
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        users,
+        totalUsers,
+        totalPages: Math.ceil(totalUsers / limitNumber),
+        currentPage: pageNumber,
+      },
+      "Users fetched successfully."
+    )
+  );
+});
+const updateUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { fullname, username, email, role } = req.body;
+
+  // Validate MongoDB ID format
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid User ID format.");
+  }
+
+  // Find user by ID
+  const user = await User.findById(id);
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  // Check for duplicate email or username
+  if (username || email) {
+    const duplicateUser = await User.findOne({
+      $or: [{ username }, { email }],
+      _id: { $ne: id }, // Exclude the current user
+    });
+
+    if (duplicateUser) {
+      const duplicateField =
+        duplicateUser.username === username ? "username" : "email";
+      throw new ApiError(
+        400,
+        `A user with this ${duplicateField} already exists.`
+      );
+    }
+  }
+
+  // Update fields only if provided
+  if (fullname) user.fullname = fullname;
+  if (username) user.username = username.toLowerCase();
+  if (email) user.email = email.toLowerCase();
+  if (role) user.role = role;
+
+  // Save changes to the database
+  await user.save();
+
+  // Return updated user details
+  const updatedUser = await User.findById(id).select("-password -refreshToken");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, updatedUser, "User updated successfully."));
+});
+
 export {
   Register,
   LoginUser,
@@ -348,4 +434,6 @@ export {
   UserOtpVerify,
   VerifyEmailForPassword,
   UpdatePassword,
+  getAllUsers,
+  updateUser,
 };

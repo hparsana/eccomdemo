@@ -10,6 +10,7 @@ import {
   getProducts,
   deleteProductById,
   updateProductById,
+  deleteDiscount,
 } from "../controllers/product.controller.js";
 import { authMiddleWare } from "../middlewares/auth.middleware.js";
 
@@ -38,5 +39,9 @@ routes
     validate(updateProductSchemaValidation),
     updateProductById
   );
+
+routes
+  .route("/discount/:discountId")
+  .delete(authMiddleWare(["ADMIN"]), deleteDiscount);
 
 export default routes;

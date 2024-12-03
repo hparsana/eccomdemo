@@ -168,3 +168,59 @@ export const updateProductSchemaValidation = z.object({
     .partial()
     .optional(),
 });
+
+export const addReviewSchemaValidation = z.object({
+  rating: z
+    .number({ required_error: "Rating is required" })
+    .min(0, { message: "Rating cannot be less than 0" })
+    .max(5, { message: "Rating cannot be more than 5" }),
+
+  comment: z
+    .string({ required_error: "Comment is required" })
+    .trim()
+    .min(5, { message: "Comment must be at least 5 characters" })
+    .max(500, { message: "Comment must not exceed 500 characters" }),
+});
+
+export const updateReviewSchemaValidation = z.object({
+  rating: z
+    .number()
+    .min(0, { message: "Rating cannot be less than 0" })
+    .max(5, { message: "Rating cannot be more than 5" })
+    .optional(),
+
+  comment: z
+    .string()
+    .trim()
+    .min(5, { message: "Comment must be at least 5 characters" })
+    .max(500, { message: "Comment must not exceed 500 characters" })
+    .optional(),
+});
+
+export const updateUserSchemaValidation = z.object({
+  fullname: z
+    .string()
+    .trim()
+    .min(3, { message: "Fullname must be at least 3 characters" })
+    .max(50, { message: "Fullname must not exceed 50 characters" })
+    .optional(),
+
+  username: z
+    .string()
+    .trim()
+    .min(3, { message: "Username must be at least 3 characters" })
+    .max(50, { message: "Username must not exceed 50 characters" })
+    .optional(),
+
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Invalid email format" })
+    .optional(),
+
+  role: z
+    .enum(["ADMIN", "USER"], {
+      invalid_type_error: "Role must be ADMIN or USER",
+    })
+    .optional(),
+});

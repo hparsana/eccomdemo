@@ -72,9 +72,9 @@ const Navbar = () => {
                             {item.path === "/"
                               ? "Home"
                               : item.path === "/admin/dashboard"
-                              ? "Dashboard"
-                              : item.path.charAt(1).toUpperCase() +
-                                item.path.slice(2)}
+                                ? "Dashboard"
+                                : item.path.charAt(1).toUpperCase() +
+                                  item.path.slice(2)}
                           </Link>
                         </li>
                       ) : (
@@ -90,9 +90,9 @@ const Navbar = () => {
                             {item.path === "/"
                               ? "Home"
                               : item.path === "/admin/dashboard"
-                              ? "Dashboard"
-                              : item.path.charAt(1).toUpperCase() +
-                                item.path.slice(2)}
+                                ? "Dashboard"
+                                : item.path.charAt(1).toUpperCase() +
+                                  item.path.slice(2)}
                           </Link>
                         </li>
                       )
@@ -111,8 +111,8 @@ const Navbar = () => {
                             {path === "/"
                               ? "Home"
                               : path === "/admin/dashboard"
-                              ? "Dashboard"
-                              : path.charAt(1).toUpperCase() + path.slice(2)}
+                                ? "Dashboard"
+                                : path.charAt(1).toUpperCase() + path.slice(2)}
                           </Link>
                         </li>
                       ) : (
@@ -128,8 +128,8 @@ const Navbar = () => {
                             {path === "/"
                               ? "Home"
                               : path === "/admin/dashboard"
-                              ? "Dashboard"
-                              : path.charAt(1).toUpperCase() + path.slice(2)}
+                                ? "Dashboard"
+                                : path.charAt(1).toUpperCase() + path.slice(2)}
                           </Link>
                         </li>
                       )

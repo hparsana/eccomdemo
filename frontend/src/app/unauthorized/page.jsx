@@ -20,7 +20,7 @@ const Unauthorized = () => {
     }
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-[88vh] bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-[100vh] bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-8 text-center">
         <h1 className="text-4xl font-bold text-red-600 mb-4">Unauthorized</h1>
         <p className="text-gray-600 text-lg mb-6">

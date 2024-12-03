@@ -316,10 +316,30 @@ const updateProductById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { product }, "Product updated successfully"));
 });
 
+const deleteDiscount = asyncHandler(async (req, res) => {
+  const { discountId } = req.params;
+
+  // Validate discount ID
+  if (!mongoose.Types.ObjectId.isValid(discountId)) {
+    throw new ApiError(400, "Invalid Discount ID format.");
+  }
+
+  // Find and delete the discount
+  const discount = await Discount.findByIdAndDelete(discountId);
+  if (!discount) {
+    throw new ApiError(404, "Discount not found.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Discount deleted successfully."));
+});
+
 export {
   AddProduct,
   getProducts,
   getProductById,
   deleteProductById,
   updateProductById,
+  deleteDiscount,
 };
