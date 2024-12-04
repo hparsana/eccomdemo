@@ -6,7 +6,7 @@ import { getUserData } from "../store/Auth/authApi";
 import { useEffect } from "react";
 
 const Layout = ({ children }) => {
-  const { userLoggedIn, authUser } = useSelector(
+  const { userLoggedIn, authUser, loading } = useSelector(
     (state) => state?.userAuthData
   );
   const dispatch = useDispatch();

@@ -86,9 +86,7 @@ const DashBoard = () => {
       }
       //   reset();
     } catch (error) {
-      console.log(error);
-
-      toast.error("something is wrong");
+      toast.error(error.response.data.message || "something is wrong");
       return;
     }
   };
@@ -202,4 +200,4 @@ const DashBoard = () => {
   );
 };
 
-export default withAuth(DashBoard, true, ["ADMIN"]);
+export default DashBoard;

@@ -13,16 +13,19 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { LogoutUserFun } from "@/app/store/Auth/authApi";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
+import withAuth from "@/app/components/Auth/withAuth";
 
 const DashboardLayout = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(true); // Sidebar toggle state
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
+
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaHome /> },
     { name: "Products", path: "/admin/dashboard/products", icon: <FaBox /> },
-    { name: "Reports", path: "/admin/dashboard/reports", icon: <FaChartBar /> },
+    { name: "Reports", path: "/admin/dashboard", icon: <FaChartBar /> },
   ];
 
   const handleLogout = () => {
@@ -43,7 +46,7 @@ const DashboardLayout = ({ children }) => {
         {/* Toggle Button */}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`p-4   focus:outline-none flex items-center ${
+          className={`p-4 focus:outline-none flex items-center ${
             isCollapsed ? "justify-center" : "justify-end"
           }`}
         >
@@ -57,16 +60,17 @@ const DashboardLayout = ({ children }) => {
         {/* Menu Items */}
         <nav className="flex flex-col flex-grow mt-5">
           {menuItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.path}
+              passHref
               className={`flex items-center p-4 mt-4 hover:bg-gray-700 transition ${
                 isCollapsed ? "justify-center" : "justify-start"
-              } ${pathname === item.path ? "bg-gray-600" : ""}`} // Highlight active link
+              } ${pathname === item.path ? "bg-gray-600" : ""}`}
             >
               <span className="text-xl">{item.icon}</span>
               {!isCollapsed && <span className="ml-4">{item.name}</span>}
-            </a>
+            </Link>
           ))}
         </nav>
 
@@ -83,9 +87,9 @@ const DashboardLayout = ({ children }) => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-grow bg-gray-100 ">{children}</div>
+      <div className="flex-grow bg-gray-100">{children}</div>
     </div>
   );
 };
 
-export default DashboardLayout;
+export default withAuth(DashboardLayout, true, ["ADMIN"]);
