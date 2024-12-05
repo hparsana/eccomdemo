@@ -25,7 +25,7 @@ const DashboardLayout = ({ children }) => {
   const menuItems = [
     { name: "Dashboard", path: "/admin/dashboard", icon: <FaHome /> },
     { name: "Products", path: "/admin/dashboard/products", icon: <FaBox /> },
-    { name: "Reports", path: "/admin/dashboard", icon: <FaChartBar /> },
+    { name: "Users", path: "/admin/dashboard/users", icon: <FaChartBar /> },
   ];
 
   const handleLogout = () => {

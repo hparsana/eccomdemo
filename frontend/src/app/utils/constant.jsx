@@ -22,6 +22,8 @@ export const USERS = {
   GET_USER_INFO: `${LOCAL_PATH}/user/get-userdata`,
   LOGIN_USER_API: `${LOCAL_PATH}/user/login`,
   LOGOUT_USER_API: `${LOCAL_PATH}/user/logout`,
+  GET_ALL_USERS: `${LOCAL_PATH}/user/getallusers`,
+  UPDATE_USER_INFO_BYADMIN: `${LOCAL_PATH}/user/updateoneuser`,
   FORGOTPASSWORD: {
     VERIFYEMAIL: `${LOCAL_PATH}/user/forgotpassword/verifyemail`,
     VERIFYEMAILOTP: `${LOCAL_PATH}/user/forgotpassword/verifyemailotp`,
