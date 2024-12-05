@@ -11,6 +11,7 @@ import {
   deleteProductById,
   updateProductById,
   deleteDiscount,
+  getAllDiscounts,
 } from "../controllers/product.controller.js";
 import { authMiddleWare } from "../middlewares/auth.middleware.js";
 
@@ -43,5 +44,7 @@ routes
 routes
   .route("/discount/:discountId")
   .delete(authMiddleWare(["ADMIN"]), deleteDiscount);
+
+routes.route("/getalldiscount").get(authMiddleWare(["ADMIN"]), getAllDiscounts);
 
 export default routes;

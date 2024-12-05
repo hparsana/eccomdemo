@@ -335,6 +335,60 @@ const deleteDiscount = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, null, "Discount deleted successfully."));
 });
 
+const getAllDiscounts = asyncHandler(async (req, res) => {
+  const {
+    page = 1,
+    limit = 10,
+    sort = "-createdAt",
+    search = "",
+    isActive,
+  } = req.query;
+
+  const pageNumber = parseInt(page, 10);
+  const limitNumber = parseInt(limit, 10);
+
+  // Build query object
+  const query = {};
+
+  if (search) {
+    query.$or = [
+      { name: { $regex: search, $options: "i" } }, // Assuming discounts have a `name` field
+      { description: { $regex: search, $options: "i" } }, // Assuming discounts have a `description` field
+    ];
+  }
+
+  if (isActive !== undefined) {
+    query.isActive = isActive === "true"; // Convert string to boolean
+  }
+
+  // Fetch data and count in parallel
+  const [discounts, totalDiscounts] = await Promise.all([
+    Discount.find(query)
+      .sort(sort)
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .populate({
+        path: "product", // Populate the `product` field
+        select: "name price category brand", // Select specific fields from the product
+      })
+      .lean(), // Use lean() for better performance when only reading data
+    Discount.countDocuments(query),
+  ]);
+
+  // Pagination metadata
+  const totalPages = Math.ceil(totalDiscounts / limitNumber);
+
+  // Send response
+  return res.status(200).json(
+    new ApiResponse(200, {
+      discounts,
+      totalDiscounts,
+      totalPages,
+      currentPage: pageNumber,
+    })
+  );
+});
+
 export {
   AddProduct,
   getProducts,
@@ -342,4 +396,5 @@ export {
   deleteProductById,
   updateProductById,
   deleteDiscount,
+  getAllDiscounts,
 };
