@@ -1,27 +1,42 @@
 "use client";
+import {
+  addProduct,
+  getAllProducts,
+  updateProduct,
+} from "@/app/store/Product/productApi";
 import React, { useEffect } from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { FaPlus, FaTrash } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
 const AddProductModal = ({ open, product, onClose, onSubmit }) => {
+  console.log("product data is<<<", product);
+
   const { control, handleSubmit, reset, watch, setError } = useForm({
-    defaultValues: product || {
-      name: "",
-      description: "",
-      price: "",
-      category: "",
-      brand: "",
-      stock: "",
-      images: [{ url: "", alt: "" }],
+    defaultValues: {
+      name: product?.name || "", // Ensure empty string if product.name is null or undefined
+      description: product?.description || "",
+      price: product?.price || "", // Use an empty string for numbers if undefined
+      category: product?.category || "",
+      brand: product?.brand || "",
+      stock: product?.stock || "",
+      images: product?.images?.length ? product.images : [{ url: "", alt: "" }], // Ensure at least one empty image field
       discount: {
-        percentage: "",
-        amount: "",
-        startDate: "",
-        endDate: "",
+        percentage: product?.discount?.percentage || "",
+        amount: product?.discount?.amount || "",
+        startDate: product?.discount?.startDate
+          ? new Date(product.discount?.startDate).toISOString().split("T")[0]
+          : "",
+        endDate: product?.discount?.endDate
+          ? new Date(product.discount?.endDate).toISOString().split("T")[0]
+          : "",
       },
     },
   });
 
+  const { currentPage } = useSelector((state) => state.productData);
+
+  const dispatch = useDispatch();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "images",
@@ -35,11 +50,11 @@ const AddProductModal = ({ open, product, onClose, onSubmit }) => {
         ...product,
         discount: {
           ...product.discount,
-          startDate: product.discount.startDate
-            ? new Date(product.discount.startDate).toISOString().split("T")[0]
+          startDate: product?.discount?.startDate
+            ? new Date(product?.discount?.startDate).toISOString().split("T")[0]
             : "",
-          endDate: product.discount.endDate
-            ? new Date(product.discount.endDate).toISOString().split("T")[0]
+          endDate: product?.discount?.endDate
+            ? new Date(product?.discount?.endDate).toISOString().split("T")[0]
             : "",
         },
       };
@@ -58,9 +73,47 @@ const AddProductModal = ({ open, product, onClose, onSubmit }) => {
     return true;
   };
 
-  const handleFormSubmit = (data) => {
-    if (validateImages()) {
-      onSubmit(data);
+  const handleFormSubmit = async (data) => {
+    if (!validateImages()) return;
+
+    const formattedData = {
+      ...data,
+      price: parseFloat(data.price), // Convert price to a number
+      stock: parseFloat(data.stock), // Convert stock to a number
+      discount: {
+        ...data.discount,
+        percentage: parseFloat(data.discount.percentage), // Convert percentage to a number
+        amount: parseFloat(data.discount.amount), // Convert amount to a number
+      },
+    };
+
+    try {
+      if (product) {
+        // Update existing product
+        await dispatch(
+          updateProduct({
+            id: product._id,
+            productData: formattedData,
+          })
+        ).unwrap();
+        dispatch(
+          getAllProducts({
+            page: currentPage,
+          })
+        );
+      } else {
+        // Add new product
+        await dispatch(addProduct(formattedData)).unwrap();
+      }
+
+      dispatch(
+        getAllProducts({
+          page: currentPage,
+        })
+      );
+      onClose();
+    } catch (error) {
+      alert(`Failed to ${product ? "update" : "add"} product: ${error}`);
     }
   };
 

@@ -30,3 +30,10 @@ export const USERS = {
     VERIFYPASSWORD: `${LOCAL_PATH}/user/forgotpassword/verifypassword`,
   },
 };
+
+export const PRODUCTS = {
+  GET_ALL_PRODUCTS: `${LOCAL_PATH}/product/getproducts`,
+  ADD_PRODUCT: `${LOCAL_PATH}/product/addproduct`,
+  UPDATE_PRODUCT: `${LOCAL_PATH}/product/updateoneproduct`,
+  DELETE_PRODUCT: `${LOCAL_PATH}/product/deleteoneproduct`,
+};
