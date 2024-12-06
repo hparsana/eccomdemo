@@ -1,201 +1,216 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Pagination } from "@mui/material";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
-  FaEdit,
-  FaTrashAlt,
-  FaSort,
-  FaSortUp,
-  FaSortDown,
+  FaUsers,
+  FaBoxOpen,
+  FaShoppingCart,
+  FaDollarSign,
+  FaChartPie,
+  FaBell,
 } from "react-icons/fa";
-import withAuth from "@/app/components/Auth/withAuth";
-import EditUserModal from "@/app/components/dialoge/EditUserModal";
-import { getAllUsers } from "@/app/store/User/userApi";
-import useAxios from "@/app/utils/commonAxios";
-import { toast } from "react-toastify";
-import { USERS } from "@/app/utils/constant";
+import { Line } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const DashBoard = () => {
-  const dispatch = useDispatch();
-  const { userList, totalUsers, totalPages, currentPage, loading } =
-    useSelector((state) => state.userData);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const [sortColumn, setSortColumn] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc");
-  const [open, setOpen] = useState(false); // Modal open/close state
-  const [selectedUser, setSelectedUser] = useState(null); // Selected user for editing
-  const [avatarColors, setAvatarColors] = useState([]); // Avatar background colors
-  const axios = useAxios();
-  const recordsPerPage = 5; // Records per page
+  const stats = [
+    {
+      title: "Total Users",
+      value: "1,234",
+      icon: <FaUsers />,
+      bgColor: "bg-blue-500",
+    },
+    {
+      title: "Products",
+      value: "543",
+      icon: <FaBoxOpen />,
+      bgColor: "bg-green-500",
+    },
+    {
+      title: "Orders",
+      value: "1,027",
+      icon: <FaShoppingCart />,
+      bgColor: "bg-yellow-500",
+    },
+    {
+      title: "Revenue",
+      value: "$12,345",
+      icon: <FaDollarSign />,
+      bgColor: "bg-purple-500",
+    },
+  ];
 
-  useEffect(() => {
-    dispatch(getAllUsers({ page: 1, limit: recordsPerPage })); // Fetch initial user data
-  }, [dispatch]);
+  const notifications = [
+    { id: 1, message: "New user registered", timestamp: "5 mins ago" },
+    { id: 2, message: "Order #1234 placed", timestamp: "10 mins ago" },
+    { id: 3, message: "Product stock low", timestamp: "1 hour ago" },
+    { id: 4, message: "Revenue goal achieved", timestamp: "2 hours ago" },
+  ];
 
-  useEffect(() => {
-    // Generate random colors for each user
-    const getRandomColor = () => {
-      const colors = [
-        "bg-red-500",
-        "bg-blue-500",
-        "bg-green-500",
-        "bg-yellow-500",
-        "bg-purple-500",
-        "bg-pink-500",
-        "bg-indigo-500",
-      ];
-      return colors[Math.floor(Math.random() * colors.length)];
-    };
-
-    setAvatarColors(userList.map(() => getRandomColor()));
-  }, [userList]); // Re-run when `userList` changes
-
-  const handleEdit = (user) => {
-    setSelectedUser(user);
-    setOpen(true);
+  const lineChartData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    datasets: [
+      {
+        label: "Sales",
+        data: [30, 50, 70, 90, 120, 150, 200],
+        borderColor: "#4A90E2",
+        backgroundColor: "rgba(74, 144, 226, 0.5)",
+        tension: 0.3,
+      },
+    ],
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedUser(null);
-  };
-
-  const handleDelete = (userId) => {
-    alert(`Delete user with ID: ${userId}`);
-    // Implement delete functionality
-  };
-
-  const handleSubmit = async (data) => {
-    try {
-      const res = await axios.put(
-        `${USERS.UPDATE_USER_INFO_BYADMIN}/${data._id}`,
-        data
-      );
-      console.log("res is<<", res);
-
-      if (res?.data?.success) {
-        toast.success("User Update Successfully!");
-
-        dispatch(getAllUsers({ page: 1, limit: recordsPerPage })); // Fetch initial user data
-
-        setOpen(false);
-      } else {
-        toast.error(res?.data?.message || "something is wrong");
-      }
-      //   reset();
-    } catch (error) {
-      toast.error(error.response.data.message || "something is wrong");
-      return;
-    }
-  };
-
-  const sortUsers = (column) => {
-    const newSortOrder =
-      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
-    setSortColumn(column);
-    setSortOrder(newSortOrder);
-
-    // Implement sorting logic if needed
-  };
-
-  const getSortIcon = (column) => {
-    if (sortColumn !== column) return <FaSort />;
-    return sortOrder === "asc" ? <FaSortUp /> : <FaSortDown />;
-  };
-
-  const handlePageChange = (event, page) => {
-    dispatch(getAllUsers({ page, limit: recordsPerPage })); // Fetch data for the selected page
+  const barChartData = {
+    labels: ["Electronics", "Clothes", "Home", "Books", "Toys"],
+    datasets: [
+      {
+        label: "Products Sold",
+        data: [500, 700, 300, 200, 400],
+        backgroundColor: [
+          "#4A90E2",
+          "#50E3C2",
+          "#F5A623",
+          "#BD10E0",
+          "#F8E71C",
+        ],
+      },
+    ],
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
-        Dashboard
-      </h1>
-      <div className="p-6">
-        <h2 className="text-xl font-semibold mb-4">User List</h2>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-              <thead className="bg-gray-200">
-                <tr>
-                  <th className="p-4 text-left text-gray-600">Avatar</th>
-                  <th
-                    className="p-4 text-left text-gray-600 flex items-center cursor-pointer"
-                    onClick={() => sortUsers("fullname")}
-                  >
-                    Full Name {getSortIcon("fullname")}
-                  </th>
-                  <th className="p-4 text-left text-gray-600">Email</th>
-                  <th
-                    className="p-4 text-left text-gray-600 flex items-center cursor-pointer"
-                    onClick={() => sortUsers("role")}
-                  >
-                    Role {getSortIcon("role")}
-                  </th>
-                  <th className="p-4 text-center text-gray-600">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {userList.map((user, index) => (
-                  <tr key={user._id} className="border-t hover:bg-gray-50">
-                    <td className="p-4">
-                      <div
-                        className={`w-10 h-10 rounded-full text-white flex items-center justify-center font-bold text-lg ${
-                          avatarColors[index] || "bg-gray-500"
-                        }`}
-                      >
-                        {user.fullname.charAt(0)}
-                      </div>
-                    </td>
-                    <td className="p-4">{user.fullname}</td>
-                    <td className="p-4">{user.email}</td>
-                    <td className="p-4">{user.role}</td>
-                    <td className="p-4 text-center flex justify-center space-x-4">
-                      <button
-                        onClick={() => handleEdit(user)}
-                        className="text-yellow-500 hover:text-yellow-600"
-                      >
-                        <FaEdit size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        <FaTrashAlt size={20} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+    <div className="p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-6 relative">
+        <motion.h1
+          className="text-2xl font-bold text-gray-700"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          Admin Dashboard
+        </motion.h1>
+        <div className="relative">
+          <motion.button
+            className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition-all"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileHover={{ scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
+          >
+            <FaBell className="mr-2" />
+            Notifications
+          </motion.button>
 
-        {/* Pagination */}
-        <div className="flex justify-end items-center mt-4">
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={handlePageChange}
-            variant="outlined"
-            shape="rounded"
-            color="primary"
-          />
+          {/* Notification Dropdown */}
+          {isDropdownOpen && (
+            <motion.div
+              className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg overflow-hidden z-50"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="px-4 py-2 border-b bg-gray-50">
+                <h4 className="text-sm font-semibold text-gray-700">
+                  Notifications
+                </h4>
+              </div>
+              {notifications.length > 0 ? (
+                <ul className="divide-y divide-gray-200">
+                  {notifications.map((notification) => (
+                    <li
+                      key={notification.id}
+                      className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <p>{notification.message}</p>
+                      <span className="text-xs text-gray-500">
+                        {notification.timestamp}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="p-4 text-sm text-gray-500 text-center">
+                  No new notifications
+                </div>
+              )}
+            </motion.div>
+          )}
         </div>
       </div>
 
-      {/* Edit User Modal */}
-      <EditUserModal
-        open={open}
-        user={selectedUser}
-        onClose={handleClose}
-        onSubmit={handleSubmit}
-      />
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {stats.map((stat, index) => (
+          <motion.div
+            key={index}
+            className={`p-4 rounded-lg shadow-lg text-white flex items-center ${stat.bgColor} transition-transform hover:scale-105`}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.2 }}
+          >
+            <div className="text-4xl mr-4">{stat.icon}</div>
+            <div>
+              <h3 className="text-lg font-semibold">{stat.title}</h3>
+              <p className="text-2xl font-bold">{stat.value}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {/* Line Chart */}
+        <motion.div
+          className="bg-white p-6 rounded-lg shadow-md"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h3 className="text-lg font-semibold mb-4">Sales Over Time</h3>
+          <Line data={lineChartData} />
+        </motion.div>
+
+        {/* Bar Chart */}
+        <motion.div
+          className="bg-white p-6 rounded-lg shadow-md"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <h3 className="text-lg font-semibold mb-4">Products Sold</h3>
+          <Bar data={barChartData} />
+        </motion.div>
+      </div>
     </div>
   );
 };

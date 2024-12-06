@@ -9,6 +9,7 @@ import {
   FaSort,
   FaSortUp,
   FaSortDown,
+  FaSearch,
 } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
 import EditUserModal from "@/app/components/dialoge/EditUserModal";
@@ -26,7 +27,9 @@ const UserList = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [open, setOpen] = useState(false); // Modal open/close state
   const [selectedUser, setSelectedUser] = useState(null); // Selected user for editing
-  const [avatarColors, setAvatarColors] = useState([]); // Avatar background colors
+  const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering
+  const [filteredUsers, setFilteredUsers] = useState([]); // Filtered user list
+
   const axios = useAxios();
   const recordsPerPage = 5; // Records per page
 
@@ -35,22 +38,14 @@ const UserList = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    // Generate random colors for each user
-    const getRandomColor = () => {
-      const colors = [
-        "bg-red-500",
-        "bg-blue-500",
-        "bg-green-500",
-        "bg-yellow-500",
-        "bg-purple-500",
-        "bg-pink-500",
-        "bg-indigo-500",
-      ];
-      return colors[Math.floor(Math.random() * colors.length)];
-    };
-
-    setAvatarColors(userList.map(() => getRandomColor()));
-  }, [userList]); // Re-run when `userList` changes
+    // Filter users based on the search term
+    const filtered = userList.filter(
+      (user) =>
+        user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  }, [userList, searchTerm]);
 
   const handleEdit = (user) => {
     setSelectedUser(user);
@@ -67,28 +62,8 @@ const UserList = () => {
     // Implement delete functionality
   };
 
-  const handleSubmit = async (data) => {
-    try {
-      const res = await axios.put(
-        `${USERS.UPDATE_USER_INFO_BYADMIN}/${data._id}`,
-        data
-      );
-      console.log("res is<<", res);
-
-      if (res?.data?.success) {
-        toast.success("User Update Successfully!");
-
-        dispatch(getAllUsers({ page: 1, limit: recordsPerPage })); // Fetch initial user data
-
-        setOpen(false);
-      } else {
-        toast.error(res?.data?.message || "something is wrong");
-      }
-      //   reset();
-    } catch (error) {
-      toast.error(error.response.data.message || "something is wrong");
-      return;
-    }
+  const handlePageChange = (event, page) => {
+    dispatch(getAllUsers({ page, limit: recordsPerPage })); // Fetch data for the selected page
   };
 
   const sortUsers = (column) => {
@@ -97,7 +72,15 @@ const UserList = () => {
     setSortColumn(column);
     setSortOrder(newSortOrder);
 
-    // Implement sorting logic if needed
+    const sorted = [...filteredUsers].sort((a, b) => {
+      if (newSortOrder === "asc") {
+        return a[column] > b[column] ? 1 : -1;
+      } else {
+        return a[column] < b[column] ? 1 : -1;
+      }
+    });
+
+    setFilteredUsers(sorted);
   };
 
   const getSortIcon = (column) => {
@@ -105,17 +88,25 @@ const UserList = () => {
     return sortOrder === "asc" ? <FaSortUp /> : <FaSortDown />;
   };
 
-  const handlePageChange = (event, page) => {
-    dispatch(getAllUsers({ page, limit: recordsPerPage })); // Fetch data for the selected page
-  };
-
   return (
     <div>
       <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
-        UserList
+        User List
       </h1>
       <div className="p-6">
-        <h2 className="text-xl font-semibold mb-4">User List</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">User List</h2>
+          <div className="relative w-80">
+            <input
+              type="text"
+              placeholder="Search users..."
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
         {loading ? (
           <p>Loading...</p>
         ) : (
@@ -123,16 +114,10 @@ const UserList = () => {
             <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="p-4 text-left text-gray-600">Avatar</th>
-                  <th
-                    className="p-4 text-left text-gray-600 flex items-center cursor-pointer"
-                    onClick={() => sortUsers("fullname")}
-                  >
-                    Full Name {getSortIcon("fullname")}
-                  </th>
+                  <th className="p-4 text-left text-gray-600">Full Name</th>
                   <th className="p-4 text-left text-gray-600">Email</th>
                   <th
-                    className="p-4 text-left text-gray-600 flex items-center cursor-pointer"
+                    className="p-4 text-left text-gray-600 cursor-pointer flex items-center"
                     onClick={() => sortUsers("role")}
                   >
                     Role {getSortIcon("role")}
@@ -141,17 +126,8 @@ const UserList = () => {
                 </tr>
               </thead>
               <tbody>
-                {userList.map((user, index) => (
+                {filteredUsers.map((user) => (
                   <tr key={user._id} className="border-t hover:bg-gray-50">
-                    <td className="p-4">
-                      <div
-                        className={`w-10 h-10 rounded-full text-white flex items-center justify-center font-bold text-lg ${
-                          avatarColors[index] || "bg-gray-500"
-                        }`}
-                      >
-                        {user.fullname.charAt(0)}
-                      </div>
-                    </td>
                     <td className="p-4">{user.fullname}</td>
                     <td className="p-4">{user.email}</td>
                     <td className="p-4">{user.role}</td>
@@ -194,7 +170,7 @@ const UserList = () => {
         open={open}
         user={selectedUser}
         onClose={handleClose}
-        onSubmit={handleSubmit}
+        onSubmit={() => {}}
       />
     </div>
   );
