@@ -16,7 +16,6 @@ import EditUserModal from "@/app/components/dialoge/EditUserModal";
 import { getAllUsers } from "@/app/store/User/userApi";
 import useAxios from "@/app/utils/commonAxios";
 import { toast } from "react-toastify";
-import { USERS } from "@/app/utils/constant";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -25,20 +24,18 @@ const UserList = () => {
 
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [open, setOpen] = useState(false); // Modal open/close state
-  const [selectedUser, setSelectedUser] = useState(null); // Selected user for editing
-  const [searchTerm, setSearchTerm] = useState(""); // Search term for filtering
-  const [filteredUsers, setFilteredUsers] = useState([]); // Filtered user list
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
-  const axios = useAxios();
-  const recordsPerPage = 5; // Records per page
+  const recordsPerPage = 5;
 
   useEffect(() => {
-    dispatch(getAllUsers({ page: 1, limit: recordsPerPage })); // Fetch initial user data
+    dispatch(getAllUsers({ page: 1, limit: recordsPerPage }));
   }, [dispatch]);
 
   useEffect(() => {
-    // Filter users based on the search term
     const filtered = userList.filter(
       (user) =>
         user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -59,11 +56,10 @@ const UserList = () => {
 
   const handleDelete = (userId) => {
     alert(`Delete user with ID: ${userId}`);
-    // Implement delete functionality
   };
 
   const handlePageChange = (event, page) => {
-    dispatch(getAllUsers({ page, limit: recordsPerPage })); // Fetch data for the selected page
+    dispatch(getAllUsers({ page, limit: recordsPerPage }));
   };
 
   const sortUsers = (column) => {
@@ -151,8 +147,6 @@ const UserList = () => {
             </table>
           </div>
         )}
-
-        {/* Pagination */}
         <div className="flex justify-end items-center mt-4">
           <Pagination
             count={totalPages}
@@ -164,8 +158,6 @@ const UserList = () => {
           />
         </div>
       </div>
-
-      {/* Edit User Modal */}
       <EditUserModal
         open={open}
         user={selectedUser}

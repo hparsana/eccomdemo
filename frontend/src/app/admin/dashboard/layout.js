@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { LogoutUserFun } from "@/app/store/Auth/authApi";
+import withAuth from "@/app/components/Auth/withAuth";
 
 const DashboardLayout = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(true); // Sidebar toggle state
@@ -41,24 +42,27 @@ const DashboardLayout = ({ children }) => {
       <div
         className={`${
           isCollapsed ? "w-20" : "w-64"
-        } bg-gray-800 text-white transition-all duration-300 hidden md:flex flex-col`}
+        } bg-gray-800 text-white transition-all duration-300 hidden md:flex flex-col fixed h-full`}
       >
         {/* Toggle Button */}
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className={`p-4 focus:outline-none mt-3 flex items-center ${
-            isCollapsed ? "justify-center" : "justify-end"
-          }`}
-        >
-          {isCollapsed ? (
-            <FaBars className="h-5 w-5" />
-          ) : (
-            <FaTimes className="h-5 w-5" />
-          )}
-        </button>
+        <div className="flex items-center justify-between">
+          {!isCollapsed && <span className="ml-4 font-medium mt-2">ADMIN</span>}
 
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className={`p-4 focus:outline-none mt-3 flex items-center ${
+              isCollapsed ? "justify-center" : "justify-end"
+            }`}
+          >
+            {isCollapsed ? (
+              <FaBars className="h-5 w-5 ml-4" />
+            ) : (
+              <FaTimes className="h-5 w-5" />
+            )}
+          </button>
+        </div>
         {/* Menu Items */}
-        <nav className="flex flex-col gap-3 flex-grow mt-5">
+        <nav className="flex flex-col gap-3 flex-grow mt-5 overflow-hidden">
           {menuItems.map((item, index) => (
             <Link
               key={index}
@@ -88,7 +92,7 @@ const DashboardLayout = ({ children }) => {
 
       {/* Mobile Menu */}
       <div
-        className={`absolute top-0 left-0 h-full bg-white shadow-lg transition-transform duration-300 z-50 md:hidden ${
+        className={` fixed top-0 left-0 h-full bg-white shadow-lg transition-transform duration-300 z-50 md:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         } w-64`}
       >
@@ -135,7 +139,11 @@ const DashboardLayout = ({ children }) => {
       </button>
 
       {/* Main Content */}
-      <div className="flex-grow">
+      <div
+        className={`flex-grow transition-all duration-300 ${
+          isCollapsed ? "md:ml-20" : "md:ml-64"
+        }`}
+      >
         {/* Navbar */}
         <div className="flex items-center justify-between bg-white p-4 shadow-md">
           <h2 className="text-xl font-semibold md:ml-0 ml-10">
@@ -159,4 +167,4 @@ const DashboardLayout = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default withAuth(DashboardLayout, true, ["ADMIN"]);
