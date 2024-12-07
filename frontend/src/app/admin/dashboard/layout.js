@@ -13,13 +13,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LogoutUserFun } from "@/app/store/Auth/authApi";
 import withAuth from "@/app/components/Auth/withAuth";
+import UserProfileModal from "@/app/components/dialoge/UserProfileModal";
 
 const DashboardLayout = ({ children }) => {
+  const { authUser } = useSelector((state) => state?.userAuthData);
   const [isCollapsed, setIsCollapsed] = useState(true); // Sidebar toggle state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile menu toggle state
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -156,13 +159,24 @@ const DashboardLayout = ({ children }) => {
               placeholder="Search..."
               className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 hidden sm:block"
             />
-            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-              <span className="text-lg font-bold text-gray-600">A</span>
+            <div
+              className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center cursor-pointer"
+              onClick={() => setIsProfileModalOpen(true)}
+            >
+              <span className="text-lg font-bold text-gray-600">
+                {" "}
+                {authUser.fullname.charAt(0).toUpperCase() || U}
+              </span>
             </div>
           </div>
         </div>
         {children}
       </div>
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={authUser}
+      />
     </div>
   );
 };
