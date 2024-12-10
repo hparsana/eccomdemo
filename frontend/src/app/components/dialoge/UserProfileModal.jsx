@@ -15,7 +15,7 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
       aria-labelledby="user-profile-modal"
       className="flex items-center justify-center md:m-0 m-5 border-none"
     >
-      <div className="bg-white w-full max-w-md rounded-lg shadow-lg relative overflow-hidden">
+      <div className="bg-white w-full max-w-md rounded-lg shadow-lg relative overflow-hidden ">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-500 to-blue-700 h-24 flex items-center justify-center relative">
           <button

@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { LogoutUserFun } from "@/app/store/Auth/authApi";
 import withAuth from "@/app/components/Auth/withAuth";
 import UserProfileModal from "@/app/components/dialoge/UserProfileModal";
+import Image from "next/image";
 
 const DashboardLayout = ({ children }) => {
   const { authUser } = useSelector((state) => state?.userAuthData);
@@ -40,7 +41,7 @@ const DashboardLayout = ({ children }) => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex  bg-gray-100">
       {/* Sidebar for Desktop */}
       <div
         className={`${
@@ -165,7 +166,18 @@ const DashboardLayout = ({ children }) => {
             >
               <span className="text-lg font-bold text-gray-600">
                 {" "}
-                {authUser.fullname.charAt(0).toUpperCase() || U}
+                {/* {authUser.fullname.charAt(0).toUpperCase() || U} */}
+                {authUser?.avatar ? (
+                  <Image
+                    src={authUser?.avatar}
+                    width={200}
+                    height={200}
+                    alt="user_profile"
+                    className=" object-cover rounded-full"
+                  />
+                ) : (
+                  authUser.fullname.charAt(0).toUpperCase() || U
+                )}
               </span>
             </div>
           </div>

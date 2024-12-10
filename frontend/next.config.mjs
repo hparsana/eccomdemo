@@ -12,6 +12,11 @@ const nextConfig = {
         hostname: "cdn.dummyjson.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };

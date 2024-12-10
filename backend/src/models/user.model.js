@@ -37,6 +37,9 @@ const UserSchema = new mongoose.Schema(
     otp: {
       type: Number,
     },
+    avatar: {
+      type: String,
+    },
     loginType: {
       type: String,
       enum: AvailableSocialLogins,
