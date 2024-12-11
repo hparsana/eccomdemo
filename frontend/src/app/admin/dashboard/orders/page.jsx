@@ -229,19 +229,19 @@ const OrdersDashboard = () => {
                                   {/* Left Section */}
                                   <div className="flex flex-col">
                                     <p className="text-lg font-bold text-gray-800">
-                                      {item.product.name}
+                                      {item.product?.name}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                       <span className="font-medium text-gray-700">
                                         Category:
                                       </span>{" "}
-                                      {item.product.category}
+                                      {item.product?.category}
                                     </p>
                                     <p className="text-sm text-gray-500">
                                       <span className="font-medium text-gray-700">
                                         Brand:
                                       </span>{" "}
-                                      {item.product.brand}
+                                      {item.product?.brand}
                                     </p>
                                   </div>
 
@@ -249,9 +249,9 @@ const OrdersDashboard = () => {
                                   <div className="flex flex-col items-center">
                                     <p className="text-sm text-gray-600">
                                       <span className="font-semibold">
-                                        {item.quantity}
+                                        {item?.quantity}
                                       </span>{" "}
-                                      x ${item.product.price.toFixed(2)}
+                                      x ${item.product?.price.toFixed(2)}
                                     </p>
                                     <p className="text-xs text-gray-400">
                                       Price per item
@@ -263,7 +263,7 @@ const OrdersDashboard = () => {
                                     <p className="text-xl font-bold text-green-600">
                                       $
                                       {Number(
-                                        item.quantity * item.product.price
+                                        item.quantity * item.product?.price
                                       ).toFixed(2)}
                                     </p>
                                     <p className="text-sm text-gray-500">
