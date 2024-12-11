@@ -55,33 +55,6 @@ const OrderSlice = createSlice({
       .addCase(addOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to add order.";
-      })
-      .addCase(UpdateOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(UpdateOrder.fulfilled, (state, action) => {
-        state.loading = false;
-      })
-      .addCase(UpdateOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to add order.";
-      })
-      // Delete Order
-      .addCase(deleteOrder.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(deleteOrder.fulfilled, (state, action) => {
-        const deletedOrderId = action.payload;
-        state.orderList = state.orderList.filter(
-          (order) => order.id !== deletedOrderId
-        );
-        state.loading = false;
-      })
-      .addCase(deleteOrder.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Failed to delete order.";
       });
   },
 });

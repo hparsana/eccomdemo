@@ -22,7 +22,7 @@ import Image from "next/image";
 
 const DashboardLayout = ({ children }) => {
   const { authUser } = useSelector((state) => state?.userAuthData);
-  const [isCollapsed, setIsCollapsed] = useState(true); // Sidebar toggle state
+  const [isCollapsed, setIsCollapsed] = useState(false); // Sidebar toggle state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Mobile menu toggle state
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const pathname = usePathname();

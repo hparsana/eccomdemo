@@ -107,9 +107,7 @@ const OrdersDashboard = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-4xl font-bold mb-6 text-gray-800">
-        Orders Dashboard
-      </h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-800">Orders List</h1>
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-6">
@@ -180,7 +178,7 @@ const OrdersDashboard = () => {
                         {order.orderStatus}
                       </span>
                     </td>
-                    <td className="p-4">${order.totalAmount}</td>
+                    <td className="p-4">₹{order.totalAmount}</td>
                     <td className="p-4 text-center flex space-x-4 justify-center">
                       <button
                         onClick={(e) => {
@@ -251,7 +249,7 @@ const OrdersDashboard = () => {
                                       <span className="font-semibold">
                                         {item?.quantity}
                                       </span>{" "}
-                                      x ${item.product?.price.toFixed(2)}
+                                      x ₹{item.product?.price.toFixed(2)}
                                     </p>
                                     <p className="text-xs text-gray-400">
                                       Price per item
@@ -261,7 +259,7 @@ const OrdersDashboard = () => {
                                   {/* Right Section */}
                                   <div className="text-right">
                                     <p className="text-xl font-bold text-green-600">
-                                      $
+                                      ₹
                                       {Number(
                                         item.quantity * item.product?.price
                                       ).toFixed(2)}

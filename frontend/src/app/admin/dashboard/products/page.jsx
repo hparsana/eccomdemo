@@ -227,7 +227,7 @@ const ProductsListPage = () => {
                       <td className="p-4">{product.name}</td>
                       <td className="p-4">{product.category}</td>
                       <td className="p-4">{product.brand}</td>
-                      <td className="p-4">${product.price}</td>
+                      <td className="p-4">₹{product.price}</td>
                       <td className="p-4">
                         {product.discount?.isActive
                           ? `${product.discount.percentage}% off`
