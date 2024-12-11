@@ -178,7 +178,7 @@ const DashboardLayout = ({ children }) => {
                     className=" object-cover rounded-full"
                   />
                 ) : (
-                  authUser?.fullname?.charAt(0).toUpperCase() || U
+                  authUser?.fullname?.charAt(0).toUpperCase() || "U"
                 )}
               </span>
             </div>
