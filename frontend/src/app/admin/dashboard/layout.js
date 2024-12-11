@@ -9,6 +9,7 @@ import {
   FaBars,
   FaTimes,
 } from "react-icons/fa";
+import { AiOutlineProduct } from "react-icons/ai";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -32,6 +33,7 @@ const DashboardLayout = ({ children }) => {
     { name: "Dashboard", path: "/admin/dashboard", icon: FaHome },
     { name: "Products", path: "/admin/dashboard/products", icon: FaBox },
     { name: "Users", path: "/admin/dashboard/users", icon: FaChartBar },
+    { name: "Orders", path: "/admin/dashboard/orders", icon: AiOutlineProduct },
   ];
 
   const handleLogout = () => {

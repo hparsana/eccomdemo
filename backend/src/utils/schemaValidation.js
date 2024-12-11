@@ -224,3 +224,136 @@ export const updateUserSchemaValidation = z.object({
     })
     .optional(),
 });
+
+export const createOrderSchemaValidation = z.object({
+  items: z
+    .array(
+      z.object({
+        product: z
+          .string({ required_error: "Product ID is required" })
+          .trim()
+          .min(1, { message: "Product ID cannot be empty" }),
+        quantity: z
+          .number({ required_error: "Quantity is required" })
+          .int({ message: "Quantity must be an integer" })
+          .min(1, { message: "Quantity must be at least 1" }),
+      })
+    )
+    .nonempty({ message: "Order must contain at least one item" }),
+
+  shippingDetails: z.object({
+    address: z
+      .string({ required_error: "Shipping address is required" })
+      .trim()
+      .min(5, { message: "Shipping address must be at least 5 characters" }),
+    city: z
+      .string({ required_error: "City is required" })
+      .trim()
+      .min(2, { message: "City must be at least 2 characters" }),
+    state: z
+      .string({ required_error: "State is required" })
+      .trim()
+      .min(2, { message: "State must be at least 2 characters" }),
+    postalCode: z
+      .string({ required_error: "Postal code is required" })
+      .trim()
+      .regex(/^\d{4,6}$/, { message: "Postal code must be 4 to 6 digits" }),
+    country: z
+      .string({ required_error: "Country is required" })
+      .trim()
+      .min(2, { message: "Country must be at least 2 characters" }),
+  }),
+
+  paymentDetails: z.object({
+    method: z.enum(["Credit Card", "PayPal", "Cash on Delivery"], {
+      required_error: "Payment method is required",
+    }),
+    status: z.enum(["Pending", "Paid", "Failed", "Refunded"]).optional(),
+    transactionId: z.string().optional(),
+  }),
+
+  discount: z
+    .object({
+      percentage: z
+        .number()
+        .min(0, { message: "Discount percentage cannot be less than 0" })
+        .max(100, { message: "Discount percentage cannot exceed 100" })
+        .optional(),
+      amount: z
+        .number()
+        .min(0, { message: "Discount amount cannot be less than 0" })
+        .optional(),
+    })
+    .optional(),
+});
+
+export const updateOrderSchemaValidation = z.object({
+  orderStatus: z
+    .enum(["Pending", "Processing", "Shipped", "Delivered", "Cancelled"], {
+      required_error: "Order status is required",
+    })
+    .optional(),
+
+  paymentStatus: z
+    .enum(["Pending", "Paid", "Failed", "Refunded"], {
+      required_error: "Payment status is required",
+    })
+    .optional(),
+
+  trackingDetails: z
+    .object({
+      carrier: z
+        .string()
+        .trim()
+        .min(2, { message: "Carrier must be at least 2 characters" })
+        .optional(),
+      trackingNumber: z
+        .string()
+        .trim()
+        .min(5, { message: "Tracking number must be at least 5 characters" })
+        .optional(),
+      estimatedDelivery: z
+        .string()
+        .refine((val) => !isNaN(Date.parse(val)), {
+          message: "Estimated delivery must be a valid date",
+        })
+        .optional(),
+    })
+    .optional(),
+});
+
+export const cancelOrderSchemaValidation = z.object({
+  reason: z
+    .string()
+    .trim()
+    .min(5, { message: "Cancellation reason must be at least 5 characters" })
+    .optional(),
+});
+
+export const updateAddressSchemaValidation = z.object({
+  address: z
+    .string({ required_error: "Address is required" })
+    .trim()
+    .min(5, { message: "Address must be at least 5 characters" })
+    .optional(),
+  city: z
+    .string({ required_error: "City is required" })
+    .trim()
+    .min(2, { message: "City must be at least 2 characters" })
+    .optional(),
+  state: z
+    .string({ required_error: "State is required" })
+    .trim()
+    .min(2, { message: "State must be at least 2 characters" })
+    .optional(),
+  postalCode: z
+    .string({ required_error: "Postal code is required" })
+    .trim()
+    .regex(/^\d{4,6}$/, { message: "Postal code must be 4 to 6 digits" })
+    .optional(),
+  country: z
+    .string({ required_error: "Country is required" })
+    .trim()
+    .min(2, { message: "Country must be at least 2 characters" })
+    .optional(),
+});

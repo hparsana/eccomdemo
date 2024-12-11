@@ -37,3 +37,10 @@ export const PRODUCTS = {
   UPDATE_PRODUCT: `${LOCAL_PATH}/product/updateoneproduct`,
   DELETE_PRODUCT: `${LOCAL_PATH}/product/deleteoneproduct`,
 };
+
+export const ORDERS = {
+  GET_ALL_ORDERS: `${LOCAL_PATH}/order/getorders`, // Replace with your API endpoint
+  ADD_ORDER: `${LOCAL_PATH}/order/createorder`,
+  DELETE_ORDER: `${LOCAL_PATH}/order/deleteorder`,
+  UPDATE_ORDER_STATUS: `${LOCAL_PATH}/order/updateorderstatus`,
+};

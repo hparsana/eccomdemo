@@ -17,6 +17,11 @@ const nextConfig = {
         hostname: "i.pinimg.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "img.freepik.com",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };
