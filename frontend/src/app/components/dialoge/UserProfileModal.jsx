@@ -26,7 +26,7 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
           </button>
           <div className="w-20 h-20 bg-white text-blue-500 rounded-full flex items-center justify-center shadow-md border-4 border-blue-500 absolute -bottom-10">
             <span className="text-3xl font-bold">
-              {user.fullname.charAt(0).toUpperCase()}
+              {user?.fullname?.charAt(0).toUpperCase()}
             </span>
             <button
               className="absolute bottom-[-5px] right-[-5px] bg-blue-500 text-white p-2 rounded-full border-2 border-white shadow-lg hover:bg-blue-600"
@@ -39,12 +39,12 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
 
         {/* Content */}
         <div className="pt-12 px-6 pb-6">
-          <h2 className="text-2xl font-bold text-center">{user.fullname}</h2>
+          <h2 className="text-2xl font-bold text-center">{user?.fullname}</h2>
           <p className="text-center text-gray-600">{user.email}</p>
           <p className="text-center text-sm text-gray-500 mt-1">
             Member since:{" "}
             <span className="font-medium text-gray-700">
-              {new Date(user.createdAt).toLocaleDateString()}
+              {new Date(user?.createdAt).toLocaleDateString()}
             </span>
           </p>
 
@@ -54,14 +54,14 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
               <FaEnvelope className="text-blue-500 text-lg" />
               <div>
                 <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium text-gray-800">{user.email}</p>
+                <p className="font-medium text-gray-800">{user?.email}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-100">
               <FaUserTag className="text-blue-500 text-lg" />
               <div>
                 <p className="text-sm text-gray-500">Role</p>
-                <p className="font-medium text-gray-800">{user.role}</p>
+                <p className="font-medium text-gray-800">{user?.role}</p>
               </div>
             </div>
             <div className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-gray-100">
@@ -69,7 +69,7 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
               <div>
                 <p className="text-sm text-gray-500">Account Created</p>
                 <p className="font-medium text-gray-800">
-                  {new Date(user.createdAt).toLocaleDateString()}
+                  {new Date(user?.createdAt).toLocaleDateString()}
                 </p>
               </div>
             </div>
