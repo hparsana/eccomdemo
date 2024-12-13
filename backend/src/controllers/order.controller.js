@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
+import { sendOrderStatusEmail } from "../utils/mailer.js";
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
@@ -115,7 +116,7 @@ const getOrders = asyncHandler(async (req, res) => {
   // Fetch orders and count
   const [orders, totalOrders] = await Promise.all([
     Order.find(query)
-      .populate("user", "name email")
+      .populate("user", "fullname email")
       .populate("items.product", "name price category brand images")
       .sort(sort)
       .skip((pageNumber - 1) * limitNumber)
@@ -143,7 +144,7 @@ const getOrderById = asyncHandler(async (req, res) => {
   }
 
   const order = await Order.findById(id)
-    .populate("user", "name email")
+    .populate("user", "fullname email")
     .populate("items.product", "name price category brand")
     .lean();
 
@@ -165,7 +166,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid Order ID format.");
   }
 
-  const order = await Order.findById(id);
+  const order = await Order.findById(id).populate("user", "fullname email");
   if (!order) {
     throw new ApiError(404, "Order not found.");
   }
@@ -175,6 +176,15 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   if (paymentStatus) order.paymentDetails.status = paymentStatus;
 
   await order.save();
+
+  // Send email based on the updated order status
+  if (orderStatus) {
+    await sendOrderStatusEmail(
+      order.user.email,
+      order.user.fullname,
+      orderStatus
+    );
+  }
 
   return res
     .status(200)

@@ -1,12 +1,13 @@
 "use client";
 
 import { getAllOrders, UpdateOrder } from "@/app/store/Order/orderApi";
-import React from "react";
+import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
 const EditOrderModal = ({ open, order, onClose }) => {
   const { currentPage } = useSelector((state) => state.orderData);
+  const [loaderUpdate, setLoaderUpdate] = useState(false);
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       orderStatus: order.orderStatus,
@@ -22,6 +23,7 @@ const EditOrderModal = ({ open, order, onClose }) => {
 
   const handleUpdate = async (data) => {
     try {
+      setLoaderUpdate(true);
       await dispatch(
         UpdateOrder({
           id: order?._id, // Pass the order ID
@@ -36,8 +38,11 @@ const EditOrderModal = ({ open, order, onClose }) => {
         })
       );
 
+      setLoaderUpdate(false);
       onClose();
     } catch (error) {
+      setLoaderUpdate(false);
+
       console.error("Failed to update order:", error);
     }
   };
@@ -81,6 +86,7 @@ const EditOrderModal = ({ open, order, onClose }) => {
             <button
               type="submit"
               className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+              disabled={loaderUpdate}
             >
               Save
             </button>

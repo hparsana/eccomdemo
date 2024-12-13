@@ -230,4 +230,143 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export { sendOtpEmail, randomInt, sendForgotPasswordEmail };
+const emailTemplates = {
+  Pending: (user) => `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <div style="background: #ff9800; color: #fff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Order Status: Pending</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hello <strong>${user}</strong>,</p>
+        <p style="font-size: 14px; line-height: 1.6;">
+          Your order is currently in the <strong>Pending</strong> stage. We are verifying your payment and preparing the necessary details for processing your order.
+        </p>
+        <p style="margin: 20px 0;">
+          Please sit tight, and we’ll notify you once your order progresses to the next stage!
+        </p>
+        <a href="#" style="display: inline-block; background: #ff9800; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; margin-top: 10px;">View Your Order</a>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Ecomm Demo. All rights reserved.</p>
+      </div>
+    </div>
+  `,
+  Processing: (user) => `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <div style="background: #2196f3; color: #fff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Order Status: Processing</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hello <strong>${user}</strong>,</p>
+        <p style="font-size: 14px; line-height: 1.6;">
+          Great news! Your order is now <strong>Processing</strong>. We are carefully packaging your items to ensure they arrive in perfect condition.
+        </p>
+        <p style="margin: 20px 0;">
+          You can track the progress of your order by visiting your account.
+        </p>
+        <a href="#" style="display: inline-block; background: #2196f3; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; margin-top: 10px;">Track Your Order</a>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Ecomm Demo. All rights reserved.</p>
+      </div>
+    </div>
+  `,
+  Shipped: (user) => `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <div style="background: #4caf50; color: #fff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Order Status: Shipped</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hello <strong>${user}</strong>,</p>
+        <p style="font-size: 14px; line-height: 1.6;">
+          Exciting news! Your order has been <strong>Shipped</strong> and is on its way to you. You can track your shipment to see its estimated delivery time.
+        </p>
+        <p style="margin: 20px 0;">
+          Thank you for choosing us. We hope you enjoy your purchase!
+        </p>
+        <a href="#" style="display: inline-block; background: #4caf50; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; margin-top: 10px;">Track Your Shipment</a>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Ecomm Demo. All rights reserved.</p>
+      </div>
+    </div>
+  `,
+  Delivered: (user) => `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <div style="background: #673ab7; color: #fff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Order Status: Delivered</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hello <strong>${user}</strong>,</p>
+        <p style="font-size: 14px; line-height: 1.6;">
+          Your order has been <strong>Delivered</strong>. We hope you are satisfied with your purchase. If you have any feedback or questions, please let us know.
+        </p>
+        <p style="margin: 20px 0;">
+          Thank you for shopping with us. We look forward to serving you again!
+        </p>
+        <a href="#" style="display: inline-block; background: #673ab7; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; margin-top: 10px;">Provide Feedback</a>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Ecomm Demo. All rights reserved.</p>
+      </div>
+    </div>
+  `,
+  Cancelled: (user) => `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); overflow: hidden;">
+      <div style="background: #f44336; color: #fff; padding: 20px; text-align: center;">
+        <h1 style="margin: 0; font-size: 28px;">Order Status: Cancelled</h1>
+      </div>
+      <div style="padding: 20px; color: #333;">
+        <p style="font-size: 16px;">Hello <strong>${user}</strong>,</p>
+        <p style="font-size: 14px; line-height: 1.6;">
+          We regret to inform you that your order has been <strong>Cancelled</strong>. If you have any questions, feel free to reach out to our support team.
+        </p>
+        <p style="margin: 20px 0;">
+          We apologize for any inconvenience caused.
+        </p>
+        <a href="#" style="display: inline-block; background: #f44336; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; font-size: 14px; margin-top: 10px;">Contact Support</a>
+      </div>
+      <div style="background: #f9f9f9; padding: 10px; text-align: center; font-size: 12px; color: #777;">
+        <p>&copy; ${new Date().getFullYear()} Ecomm Demo. All rights reserved.</p>
+      </div>
+    </div>
+  `,
+};
+
+const sendOrderStatusEmail = async (email, userName, status) => {
+  const template = emailTemplates[status];
+
+  if (!template) {
+    console.error(`No email template found for status: ${status}`);
+    return false;
+  }
+
+  try {
+    await transporter.sendMail({
+      from: `"Ecomm Demo" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Order Status Update: ${status}`,
+      text: template(userName), // Plain text email
+      html: `
+        <html>
+          <body>
+            <p>${template(userName)}</p>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`Email sent for status: ${status}`);
+    return true;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    throw new ApiError(500, "Failed to send status email.");
+  }
+};
+
+export {
+  sendOtpEmail,
+  randomInt,
+  sendForgotPasswordEmail,
+  sendOrderStatusEmail,
+};
