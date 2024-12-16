@@ -22,10 +22,10 @@ const withAuth = (
       (state) => state?.userAuthData
     );
 
-    useEffect(() => {
-      // Ensure user data is fetched
-      dispatch(getUserData());
-    }, [dispatch]);
+    // useEffect(() => {
+    //   // Ensure user data is fetched
+    //   dispatch(getUserData());
+    // }, [dispatch]);
 
     useEffect(() => {
       const checkAuth = () => {

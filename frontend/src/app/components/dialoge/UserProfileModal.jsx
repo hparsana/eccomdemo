@@ -40,7 +40,7 @@ const UserProfileModal = ({ isOpen, onClose, user }) => {
         {/* Content */}
         <div className="pt-12 px-6 pb-6">
           <h2 className="text-2xl font-bold text-center">{user?.fullname}</h2>
-          <p className="text-center text-gray-600">{user.email}</p>
+          <p className="text-center text-gray-600">{user?.email}</p>
           <p className="text-center text-sm text-gray-500 mt-1">
             Member since:{" "}
             <span className="font-medium text-gray-700">
