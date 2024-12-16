@@ -283,7 +283,6 @@ function ProductCard({ product }) {
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: 0.1 }}
-      onClick={handleCardClick}
     >
       <div className="relative">
         <div className="relative">
@@ -291,6 +290,7 @@ function ProductCard({ product }) {
             src={product.images[0]?.url}
             alt={product.images[0]?.alt}
             className="w-full h-52 object-cover"
+            onClick={handleCardClick}
           />
           <div className="absolute top-2 right-2">
             <FaHeart
@@ -300,7 +300,7 @@ function ProductCard({ product }) {
           </div>
         </div>
 
-        <div className="p-4">
+        <div className="p-4" onClick={handleCardClick}>
           <h2 className="text-lg font-semibold text-gray-800 truncate">
             {product.name}
           </h2>

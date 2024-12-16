@@ -97,7 +97,7 @@ const Navbar = () => {
                         </li>
                       )
                     )
-                  : ["/", "/product", "/logout"].map((path) =>
+                  : ["/", "/productdata", "/logout"].map((path) =>
                       path === "/logout" ? (
                         <li key={path} onClick={handleLogou}>
                           <Link

@@ -17,7 +17,7 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      {/* {authUser?.role !== "ADMIN" ? <Navbar /> : null} */}
+      {authUser?.role !== "ADMIN" ? <Navbar /> : null}
       <main>{children}</main>
     </>
   );
