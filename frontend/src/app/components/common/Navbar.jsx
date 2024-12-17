@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { LogoutUserFun } from "@/app/store/Auth/authApi";
 import { toast } from "react-toastify";
@@ -19,11 +19,14 @@ import { IoLogOut } from "react-icons/io5";
 const Navbar = () => {
   const pathname = usePathname();
   const { userLoggedIn, authUser } = useSelector((state) => state.userAuthData);
+  const { savedProducts } = useSelector((state) => state.savedProductData);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [savedCount, setSavedCount] = useState(0); // State for saved items count
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -159,11 +162,15 @@ const Navbar = () => {
           </div>
           <div className="h-8 w-[2px] bg-[#C7C1C2] opacity-50"></div>
           <div className="flex items-center justify-center relative">
-            <FaHeart className="cursor-pointer w-[25px] h-[25px] text-[#806c64]" />
-            {/* Cart Badge */}
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-              1 {/* Dynamic count */}
-            </div>
+            <Link href="/productdata/saveditem">
+              <FaHeart className="cursor-pointer w-[25px] h-[25px] text-[#806c64]" />
+              {/* Cart Badge */}
+              {savedProducts?.length > 0 && (
+                <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {savedProducts?.length}
+                </div>
+              )}
+            </Link>
           </div>
           {userLoggedIn && (
             <>

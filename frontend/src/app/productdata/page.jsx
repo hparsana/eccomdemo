@@ -7,7 +7,11 @@ import { FaFilter, FaTimes } from "react-icons/fa";
 import { motion, useInView } from "framer-motion";
 import { Slider } from "@mui/material";
 import { redirect } from "next/navigation";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addProduct,
+  removeProduct,
+} from "../store/SaveProduct/savedProduct.slice";
 export default function ProductData() {
   const [priceRange, setPriceRange] = useState([200, 250000]);
   const [selectedStock, setSelectedStock] = useState(false);
@@ -230,7 +234,7 @@ export default function ProductData() {
         </aside>
 
         {/* Product Listing */}
-        <div className="grid grid-cols-1  sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-6 md:px-0 px-3 mb-5 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:px-0 px-3 mb-5 flex-1">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
@@ -246,36 +250,35 @@ export default function ProductData() {
   );
 }
 
-function ProductCard({ product }) {
-  const [like, setLike] = useState(false);
+export function ProductCard({ product, onRemove }) {
+  const [like, setLike] = useState(false); // Local like state
+  const dispatch = useDispatch();
+  const savedProducts = useSelector(
+    (state) => state.savedProductData.savedProducts
+  ); // Access Redux state
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+
+  // Initialize "like" status from Redux state
   useEffect(() => {
-    const likedProducts =
-      JSON.parse(localStorage.getItem("likedProducts")) || [];
-    const isLiked = likedProducts.some((item) => item._id === product._id);
+    const isLiked = savedProducts.some((item) => item._id === product._id);
     setLike(isLiked);
-  }, [product._id]);
+  }, [savedProducts, product._id]);
 
+  // Handle Like/Unlike
   const handleLike = () => {
-    const likedProducts =
-      JSON.parse(localStorage.getItem("likedProducts")) || [];
-
     if (like) {
-      const updatedLikes = likedProducts.filter(
-        (item) => item._id !== product._id
-      );
-      localStorage.setItem("likedProducts", JSON.stringify(updatedLikes));
-      setLike(false);
+      dispatch(removeProduct(product._id)); // Remove from Redux
     } else {
-      const updatedLikes = [...likedProducts, product];
-      localStorage.setItem("likedProducts", JSON.stringify(updatedLikes));
-      setLike(true);
+      dispatch(addProduct(product)); // Add to Redux
     }
+    setLike(!like); // Toggle local state
   };
+
   const handleCardClick = () => {
     redirect(`/productdata/${product?._id}`);
   };
+
   return (
     <motion.div
       ref={ref}
