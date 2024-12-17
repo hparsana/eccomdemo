@@ -75,7 +75,7 @@ export default function ProductData() {
 
         {/* Sidebar */}
         <aside
-          className={`fixed md:relative bg-white shadow-sm rounded-lg p-4 z-50 top-0 left-0 h-full md:min-h-[100vh] md:w-1/6 sm:w-[40%] w-[250px]  transform ${
+          className={`fixed md:relative bg-white shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-full md:min-h-[100vh] lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px]  transform ${
             showSidebar ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 transition-transform duration-300 ease-in-out`}
         >
@@ -230,7 +230,7 @@ export default function ProductData() {
         </aside>
 
         {/* Product Listing */}
-        <div className="grid grid-cols-1  sm:grid-cols-2  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:px-0 px-3 mb-5 flex-1">
+        <div className="grid grid-cols-1  sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-6 md:px-0 px-3 mb-5 flex-1">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
