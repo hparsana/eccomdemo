@@ -1,66 +1,77 @@
 "use client";
-import { useState, useRef } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
-const ProductImageWithZoom = ({ product }) => {
-  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
-  const [isHovered, setIsHovered] = useState(false);
-  const imageContainerRef = useRef(null);
+const ImageZoom = ({ mainImage }) => {
+  const [zoomVisible, setZoomVisible] = useState(false);
+  const [zoomStyle, setZoomStyle] = useState({});
+  const [highlightStyle, setHighlightStyle] = useState({});
 
   const handleMouseMove = (e) => {
-    const { left, top, width, height } =
-      imageContainerRef.current.getBoundingClientRect();
-    const x = ((e.clientX - left) / width) * 100;
-    const y = ((e.clientY - top) / height) * 100;
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left; // X-coordinate relative to the image
+    const y = e.clientY - rect.top; // Y-coordinate relative to the image
 
-    setHoverPosition({ x, y });
-    setIsHovered(true);
-  };
+    // Calculate zoomed image position
+    const zoomX = (x / rect.width) * 100; // Percentage position in X
+    const zoomY = (y / rect.height) * 100; // Percentage position in Y
 
-  const handleMouseLeave = () => {
-    setIsHovered(false);
+    // Update styles for the zoomed area
+    setZoomStyle({
+      backgroundImage: `url(${mainImage})`,
+      backgroundPosition: `${zoomX}% ${zoomY}%`,
+      backgroundSize: "250%",
+    });
+
+    // Update styles for the highlighted area
+    setHighlightStyle({
+      top: y - 70 > 0 ? y - 70 : 0,
+      left: x - 70 > 0 ? x - 70 : 0,
+      width: 150,
+      height: 150,
+    });
   };
 
   return (
-    <div className="relative flex">
-      {/* Main Image */}
+    <div className="relative">
       <div
-        ref={imageContainerRef}
+        className="relative cursor-crosshair lg:block hidden"
         onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        className="relative w-full h-[500px] overflow-hidden cursor-crosshair"
+        onMouseEnter={() => setZoomVisible(true)}
+        onMouseLeave={() => {
+          setZoomVisible(false);
+          setHighlightStyle({});
+        }}
       >
         <Image
-          src={product.images[0]?.url}
+          src={mainImage}
           alt="Product Image"
           width={700}
           height={700}
-          className="rounded-lg w-full h-full object-cover"
+          className="rounded-lg w-full h-[500px] object-cover"
         />
+        {/* Highlighted Area */}
+        {zoomVisible && (
+          <div
+            className="absolute bg-green-200 opacity-50 pointer-events-none"
+            style={{
+              position: "absolute",
+              borderRadius: "50%",
+              ...highlightStyle,
+            }}
+          ></div>
+        )}
       </div>
 
-      {/* Hover Zoom Popup */}
-      {isHovered && (
+      {/* Zoom Popup */}
+      {zoomVisible && (
         <div
-          className="absolute top-0 right-[-400px] w-[400px] h-[500px] border border-gray-300 shadow-lg rounded-lg overflow-hidden bg-white"
-          style={{ pointerEvents: "none" }} // Prevent interfering with mouse events
-        >
-          <Image
-            src={product.images[0]?.url}
-            alt="Zoomed Image"
-            width={1200}
-            height={1200}
-            className="absolute w-[200%] h-[200%]"
-            style={{
-              top: `-${hoverPosition.y}%`,
-              left: `-${hoverPosition.x}%`,
-              transition: "top 0.1s, left 0.1s",
-            }}
-          />
-        </div>
+          className="absolute border ml-2 w-full h-full top-0 left-[105%] border-gray-300 rounded-lg bg-white overflow-hidden lg:block hidden"
+          style={zoomStyle}
+        ></div>
       )}
     </div>
   );
 };
 
-export default ProductImageWithZoom;
+export default ImageZoom;

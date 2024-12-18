@@ -115,8 +115,7 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-6 relative">
           {/* Search Bar with Left-side Expansion */}
           <div className="flex items-center relative">
-            {/* Expanding Input */}
-            <div
+            {/* <div
               className={`absolute left-[-215px] top-1/2 -translate-y-1/2 flex items-center bg-white rounded-full shadow-md overflow-hidden transition-all duration-500 ${
                 isSearchOpen ? "w-64 opacity-100" : "w-0 opacity-0"
               }`}
@@ -126,12 +125,11 @@ const Navbar = () => {
                 placeholder="Search..."
                 className={`w-full px-4 py-2 text-gray-700 outline-none md:pr-12`}
               />
-            </div>
+            </div> */}
 
-            {/* Search Icon */}
             <button
               onClick={toggleSearch}
-              className={`relative z-10 focus:outline-none flex items-center justify-center transition-all duration-300  ${isSearchOpen && "mr-5"} `}
+              className={`relative z-10 focus:outline-none flex items-center justify-center transition-all duration-300  `}
             >
               <Image
                 src="/images/search_icon.png"
