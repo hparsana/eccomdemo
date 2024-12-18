@@ -49,6 +49,10 @@ export const addProductSchemaValidation = z.object({
     .number({ required_error: "Product price is required" })
     .positive({ message: "Product price must be a positive value" }),
 
+  originalPrice: z
+    .number({ required_error: "Product originalPrice is required" })
+    .positive({ message: "Product originalPrice must be a positive value" }),
+
   category: z
     .string({ required_error: "Product category is required" })
     .trim()
@@ -68,6 +72,22 @@ export const addProductSchemaValidation = z.object({
     .int({ message: "Stock must be an integer" })
     .nonnegative({ message: "Stock cannot be negative" }),
 
+  weight: z
+    .number()
+    .nonnegative({ message: "Weight cannot be negative" })
+    .optional(),
+
+  dimensions: z
+    .object({
+      length: z.number().optional(),
+      width: z.number().optional(),
+      height: z.number().optional(),
+    })
+    .optional(),
+
+  size: z.array(z.string()).optional(),
+  color: z.array(z.string()).optional(),
+
   images: z
     .array(
       z.object({
@@ -78,6 +98,35 @@ export const addProductSchemaValidation = z.object({
       })
     )
     .min(1, { message: "At least one image is required" }),
+
+  warranty: z.string().optional(),
+  batteryLife: z.string().optional(),
+  features: z.array(z.string()).optional(),
+  resolution: z.string().optional(),
+  processor: z.string().optional(),
+  ram: z.string().optional(),
+  storage: z.string().optional(),
+
+  rating: z.number().min(0).max(5).optional(),
+
+  isFeatured: z.boolean().optional(),
+
+  tags: z.array(z.string()).optional(),
+
+  availability: z.enum(["In Stock", "Out of Stock", "Preorder"]).optional(),
+
+  vendor: z.string().optional(),
+
+  shippingDetails: z
+    .object({
+      isFreeShipping: z.boolean().optional(),
+      shippingCost: z
+        .number()
+        .nonnegative({ message: "Shipping cost cannot be negative" })
+        .optional(),
+      shippingRegions: z.array(z.string()).optional(),
+    })
+    .optional(),
 
   discount: z
     .object({
@@ -90,10 +139,9 @@ export const addProductSchemaValidation = z.object({
         .number()
         .min(0, { message: "Discount amount must be at least 0" })
         .optional(),
-      startDate: dateOnlySchema.optional(),
-      endDate: dateOnlySchema.optional(),
+      startDate: z.string().optional(),
+      endDate: z.string().optional(),
     })
-    .partial()
     .optional(),
 });
 

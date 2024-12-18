@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -16,6 +15,10 @@ const productSchema = new mongoose.Schema(
       required: [true, "Product price is required"],
       min: [0, "Price must be a positive value"],
     },
+    originalPrice: {
+      type: Number,
+      required: false,
+    },
     category: {
       type: String,
       required: [true, "Product category is required"],
@@ -29,12 +32,58 @@ const productSchema = new mongoose.Schema(
       required: [true, "Stock is required"],
       min: [0, "Stock cannot be negative"],
     },
+
+    weight: {
+      type: Number,
+      default: 0, // Weight in kilograms
+    },
+    dimensions: {
+      length: { type: Number, default: 0 },
+      width: { type: Number, default: 0 },
+      height: { type: Number, default: 0 },
+    },
+    size: {
+      type: [String],
+      default: [],
+    },
+    color: {
+      type: [String],
+      default: [],
+    },
     images: [
       {
         url: { type: String, required: true },
         alt: { type: String, default: "Product Image" },
       },
     ],
+    warranty: {
+      type: String,
+      default: "No warranty",
+    },
+    batteryLife: {
+      type: String,
+      default: "N/A",
+    },
+    features: {
+      type: [String],
+      default: [],
+    },
+    resolution: {
+      type: String,
+      default: "N/A",
+    },
+    processor: {
+      type: String,
+      default: "N/A",
+    },
+    ram: {
+      type: String,
+      default: "N/A",
+    },
+    storage: {
+      type: String,
+      default: "N/A",
+    },
     rating: {
       type: Number,
       default: 0,
@@ -59,6 +108,24 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    tags: {
+      type: [String],
+      default: [],
+    },
+    availability: {
+      type: String,
+      enum: ["In Stock", "Out of Stock", "Preorder"],
+      default: "In Stock",
+    },
+    vendor: {
+      type: String,
+      default: "Default Vendor",
+    },
+    shippingDetails: {
+      isFreeShipping: { type: Boolean, default: false },
+      shippingCost: { type: Number, default: 0 },
+      shippingRegions: { type: [String], default: [] },
+    },
     createdAt: {
       type: Date,
       default: Date.now,
@@ -72,6 +139,7 @@ const productSchema = new mongoose.Schema(
     timestamps: true, // Automatically adds createdAt and updatedAt fields
   }
 );
+
 productSchema.index({ name: "text", description: "text", brand: "text" });
 
 export const Product = mongoose.model("Product", productSchema);

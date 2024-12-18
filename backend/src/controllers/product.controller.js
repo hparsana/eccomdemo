@@ -6,19 +6,46 @@ import { Discount } from "../models/discount.model.js";
 import mongoose from "mongoose";
 
 const AddProduct = asyncHandler(async (req, res) => {
+  console.log("come in <<<<<<<<<", req.body);
+
   const {
     name,
     description,
     price,
+    originalPrice,
     category,
     brand,
     stock,
+    weight,
+    dimensions,
+    size = [],
+    color = [],
     images = [],
+    warranty,
+    batteryLife,
+    features = [],
+    resolution,
+    processor,
+    ram,
+    storage,
+    rating,
+    isFeatured = false,
+    tags = [],
+    availability,
+    vendor,
+    shippingDetails = {},
     discount = {}, // Optional discount details
   } = req.body;
 
   // Validate required fields
-  if (!name || !description || !price || !category || !brand || !stock) {
+  if (
+    !name ||
+    !description ||
+    !price ||
+    !category ||
+    !brand ||
+    stock === undefined
+  ) {
     throw new ApiError(400, "All required fields must be provided.");
   }
 
@@ -42,10 +69,28 @@ const AddProduct = asyncHandler(async (req, res) => {
     name,
     description,
     price,
+    originalPrice,
     category,
     brand,
     stock,
+    weight,
+    dimensions,
+    size,
+    color,
     images,
+    warranty,
+    batteryLife,
+    features,
+    resolution,
+    processor,
+    ram,
+    storage,
+    rating,
+    isFeatured,
+    tags,
+    availability,
+    vendor,
+    shippingDetails,
   });
 
   await product.save();
@@ -231,8 +276,34 @@ const deleteProductById = asyncHandler(async (req, res) => {
 
 const updateProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, category, brand, stock, images, discount } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    originalPrice,
+    category,
+    brand,
+    stock,
+    weight,
+    dimensions,
+    size = [],
+    color = [],
+    images,
+    warranty,
+    batteryLife,
+    features = [],
+    resolution,
+    processor,
+    ram,
+    storage,
+    rating,
+    isFeatured,
+    tags = [],
+    availability,
+    vendor,
+    shippingDetails = {},
+    discount,
+  } = req.body;
 
   // Validate the ID format
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -249,13 +320,29 @@ const updateProductById = asyncHandler(async (req, res) => {
   if (name) product.name = name;
   if (description) product.description = description;
   if (price !== undefined) product.price = price;
+  if (originalPrice !== undefined) product.originalPrice = originalPrice;
   if (category) product.category = category;
   if (brand) product.brand = brand;
   if (stock !== undefined) product.stock = stock;
-
-  if (images && Array.isArray(images)) {
-    product.images = images;
-  }
+  if (weight !== undefined) product.weight = weight;
+  if (dimensions) product.dimensions = dimensions;
+  if (size.length > 0) product.size = size;
+  if (color.length > 0) product.color = color;
+  if (images && Array.isArray(images)) product.images = images;
+  if (warranty) product.warranty = warranty;
+  if (batteryLife) product.batteryLife = batteryLife;
+  if (features.length > 0) product.features = features;
+  if (resolution) product.resolution = resolution;
+  if (processor) product.processor = processor;
+  if (ram) product.ram = ram;
+  if (storage) product.storage = storage;
+  if (rating !== undefined) product.rating = rating;
+  if (isFeatured !== undefined) product.isFeatured = isFeatured;
+  if (tags.length > 0) product.tags = tags;
+  if (availability) product.availability = availability;
+  if (vendor) product.vendor = vendor;
+  if (Object.keys(shippingDetails).length > 0)
+    product.shippingDetails = shippingDetails;
 
   // Save the updated product
   await product.save();

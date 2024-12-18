@@ -104,6 +104,7 @@ export const updateProduct = createAsyncThunk(
           withCredentials: true,
         }
       );
+      console.log(response);
 
       if (response.data.success) {
         return response.data.data; // Ensure API returns the updated product
@@ -111,6 +112,8 @@ export const updateProduct = createAsyncThunk(
 
       return rejectWithValue("Failed to update product.");
     } catch (error) {
+      console.log(error);
+
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
