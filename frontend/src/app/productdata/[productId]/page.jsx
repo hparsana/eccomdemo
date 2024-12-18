@@ -7,9 +7,12 @@ import ImageZoom from "./productZoom";
 import { FaStar, FaTruck } from "react-icons/fa";
 import { ProductCard } from "../page";
 import { Pagination } from "@mui/material";
+import ReviewModal from "@/app/components/dialoge/ReviewModal";
+import { useSelector } from "react-redux";
 const ProductDetail = () => {
   const { productId } = useParams();
   const { products } = productData.data;
+  const { userLoggedIn } = useSelector((data) => data?.userAuthData);
 
   const product = products.find((item) => item._id === productId);
   const [mainImage, setMainImage] = useState(product?.images[0].url);
@@ -18,7 +21,6 @@ const ProductDetail = () => {
   const reviewsPerPage = 3;
 
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
-  const isUserLoggedIn = true; // Mock authentication status
   const paginatedReviews = product.reviews.slice(
     (currentPage - 1) * reviewsPerPage,
     currentPage * reviewsPerPage
@@ -239,7 +241,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Write a Review */}
-            {isUserLoggedIn && (
+            {userLoggedIn && (
               <div className="mt-8">
                 <button
                   onClick={() => setReviewModalOpen(true)}
@@ -252,10 +254,10 @@ const ProductDetail = () => {
           </div>
 
           {/* Review Modal */}
-          {/* <ReviewModal
-          open={isReviewModalOpen}
-          onClose={() => setReviewModalOpen(false)}
-        /> */}
+          <ReviewModal
+            open={isReviewModalOpen}
+            onClose={() => setReviewModalOpen(false)}
+          />
         </div>
 
         {/* Similar Products */}
