@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import productData from "../components/product";
-const { products, facets } = productData.data;
 import { FaHeart } from "react-icons/fa";
 import { FaFilter, FaTimes } from "react-icons/fa";
 import { motion, useInView } from "framer-motion";
@@ -12,6 +10,7 @@ import {
   addProduct,
   removeProduct,
 } from "../store/SaveProduct/savedProduct.slice";
+import { getAllProducts } from "../store/Product/productApi";
 export default function ProductData() {
   const [priceRange, setPriceRange] = useState([200, 250000]);
   const [selectedStock, setSelectedStock] = useState(false);
@@ -22,33 +21,63 @@ export default function ProductData() {
   const [selectedSize, setSelectedSize] = useState("");
   const [showSidebar, setShowSidebar] = useState(false); // Toggle sidebar on small screens
 
-  // Filter products dynamically
-  const filteredProducts = products.filter((product) => {
-    const matchesPrice =
-      product.price >= priceRange[0] && product.price <= priceRange[1];
-    const matchesStock = !selectedStock || product.stock < 10;
-    const matchesSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "" || product.category === selectedCategory;
-    const matchesBrand =
-      selectedBrand === "" || product.brand === selectedBrand;
-    const matchesColor =
-      selectedColor === "" || product.color?.includes(selectedColor);
-    const matchesSize =
-      selectedSize === "" || product.size?.includes(selectedSize);
+  const {
+    productList: products,
+    totalProducts,
+    totalPages,
+    facets,
+    currentPage,
+    loading,
+    error,
+  } = useSelector((state) => state.productData);
 
-    return (
-      matchesPrice &&
-      matchesStock &&
-      matchesSearch &&
-      matchesCategory &&
-      matchesBrand &&
-      matchesColor &&
-      matchesSize
+  const dispatch = useDispatch();
+  const recordsPerPage = 5;
+  useEffect(() => {
+    dispatch(
+      getAllProducts({
+        page: currentPage,
+        limit: recordsPerPage,
+      })
     );
-  });
+  }, [dispatch, currentPage]);
+  // Filter products dynamically
+  const filteredProducts = loading
+    ? []
+    : products.filter((product) => {
+        const matchesPrice =
+          product.price >= priceRange[0] && product.price <= priceRange[1];
+        const matchesStock = !selectedStock || product.stock < 10;
+        const matchesSearch = product.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+        const matchesCategory =
+          selectedCategory === "" ||
+          product.category.toLowerCase() === selectedCategory.toLowerCase();
+        const matchesBrand =
+          selectedBrand === "" ||
+          product.brand.toLowerCase() === selectedBrand.toLowerCase();
+        const matchesColor =
+          selectedColor === "" ||
+          product.color?.some((color) =>
+            color.toLowerCase().includes(selectedColor.toLowerCase())
+          );
+        const matchesSize =
+          selectedSize === "" ||
+          product.size?.some((size) =>
+            size.toLowerCase().includes(selectedSize.toLowerCase())
+          );
+
+        return (
+          matchesPrice &&
+          matchesStock &&
+          matchesSearch &&
+          matchesCategory &&
+          matchesBrand &&
+          matchesColor &&
+          matchesSize
+        );
+      });
 
   const handleResetFilter = () => {
     setPriceRange([0, 250000]);
@@ -127,7 +156,7 @@ export default function ProductData() {
               className="w-full border rounded-md p-2"
             >
               <option value="">All</option>
-              {facets.categories.map((category) => (
+              {facets?.categories.map((category) => (
                 <option key={category} value={category}>
                   {category}
                 </option>
@@ -144,7 +173,7 @@ export default function ProductData() {
               className="w-full border rounded-md p-2"
             >
               <option value="">All</option>
-              {facets.brands.map((brand) => (
+              {facets?.brands.map((brand) => (
                 <option key={brand} value={brand}>
                   {brand}
                 </option>
@@ -317,9 +346,9 @@ export function ProductCard({ product, onRemove }) {
             <span className="text-sm text-gray-500 line-through">
               ₹{product.originalPrice}
             </span>
-            <span className="text-sm font-bold text-green-600">
+            {/* <span className="text-sm font-bold text-green-600">
               {product.discount}
-            </span>
+            </span> */}
           </div>
           <p className="text-sm text-gray-600 mt-2">{product.delivery}</p>
           {product.size && (

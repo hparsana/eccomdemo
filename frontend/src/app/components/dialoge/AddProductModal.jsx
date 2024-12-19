@@ -62,7 +62,14 @@ const AddProductModal = ({ open, product, onClose }) => {
     control,
     name: "size",
   });
-
+  const {
+    fields: featuresFields,
+    append: appendFeatures,
+    remove: removeFeatures,
+  } = useFieldArray({
+    control,
+    name: "features",
+  });
   const {
     fields: colorFields,
     append: appendColor,
@@ -606,6 +613,41 @@ const AddProductModal = ({ open, product, onClose }) => {
               </div>
             </div>
 
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Features
+              </label>
+              {featuresFields.map((item, index) => (
+                <div key={item.id} className="flex items-center space-x-4 mt-2">
+                  <Controller
+                    name={`features.${index}`}
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                        placeholder="Enter features"
+                      />
+                    )}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeFeatures(index)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => appendFeatures("")}
+                className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
+              >
+                <FaPlus className="mr-2" /> Add Features
+              </button>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <Controller
                 name="discount.startDate"

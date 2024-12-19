@@ -1,6 +1,5 @@
 "use client";
 import { useParams } from "next/navigation";
-import productData from "../../components/product";
 import Image from "next/image";
 import { useState } from "react";
 import ImageZoom from "./productZoom";
@@ -11,17 +10,24 @@ import ReviewModal from "@/app/components/dialoge/ReviewModal";
 import { useSelector } from "react-redux";
 const ProductDetail = () => {
   const { productId } = useParams();
-  const { products } = productData.data;
+  const {
+    productList: products,
+    totalProducts,
+    totalPages,
+    facets,
+    currentPage,
+    loading,
+    error,
+  } = useSelector((state) => state.productData);
   const { userLoggedIn } = useSelector((data) => data?.userAuthData);
 
   const product = products.find((item) => item._id === productId);
   const [mainImage, setMainImage] = useState(product?.images[0].url);
   const similarProducts = products.slice(0, 4); // Mock Similar Products
-  const [currentPage, setCurrentPage] = useState(1);
   const reviewsPerPage = 3;
 
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
-  const paginatedReviews = product.reviews.slice(
+  const paginatedReviews = product?.reviews.slice(
     (currentPage - 1) * reviewsPerPage,
     currentPage * reviewsPerPage
   );
@@ -53,7 +59,7 @@ const ProductDetail = () => {
                   alt={img.alt}
                   width={80}
                   height={80}
-                  className={`cursor-pointer border-2 rounded-lg ${
+                  className={`cursor-pointer object-cover border-2 rounded-lg ${
                     mainImage === img.url
                       ? "border-blue-500"
                       : "border-gray-300"
@@ -78,7 +84,7 @@ const ProductDetail = () => {
                 ₹{product.originalPrice}
               </span>
               <span className="text-green-600 font-semibold text-lg">
-                {product.discount}
+                {product.discount?.percentage}% off
               </span>
             </div>
 
@@ -92,12 +98,12 @@ const ProductDetail = () => {
                 )}
               </div>
               <span className="text-gray-600">
-                {product.rating} ({product.reviews.length} reviews)
+                ({product.reviews.length} reviews)
               </span>
             </div>
 
             {/* Features */}
-            {product.features && (
+            {product?.isFeatured && product?.features?.length !== 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">
                   Key Features:
@@ -111,7 +117,7 @@ const ProductDetail = () => {
             )}
 
             {/* Sizes */}
-            {product.size && (
+            {product.size?.length !== 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">Sizes:</h3>
                 <div className="flex gap-2">
@@ -204,7 +210,7 @@ const ProductDetail = () => {
                   {/* Reviewer Name and Rating */}
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-semibold text-gray-800">
-                      {review.reviewer}
+                      {review.name}
                     </span>
                     <div className="flex text-yellow-500">
                       {Array.from({ length: Math.round(review.rating) }).map(
@@ -220,7 +226,7 @@ const ProductDetail = () => {
 
                   {/* Review Date */}
                   <span className="text-xs text-gray-400">
-                    {new Date(review.date).toLocaleDateString("en-US", {
+                    {new Date(review.createdAt).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",

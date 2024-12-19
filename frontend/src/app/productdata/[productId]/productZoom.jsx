@@ -25,8 +25,8 @@ const ImageZoom = ({ mainImage }) => {
 
     // Update styles for the highlighted area
     setHighlightStyle({
-      top: y - 70 > 0 ? y - 70 : 0,
-      left: x - 70 > 0 ? x - 70 : 0,
+      top: y - 70,
+      left: x - 70,
       width: 150,
       height: 150,
     });

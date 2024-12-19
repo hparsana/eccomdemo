@@ -27,6 +27,21 @@ const nextConfig = {
         hostname: "images.pexels.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "static.nike.com",
+        pathname: "**", // Allows all paths under this domain
+      },
+      {
+        protocol: "https",
+        hostname: "assets.adidas.com",
+        pathname: "**", // Allows all paths under this domain
+      },
+      {
+        protocol: "https",
+        hostname: "localhost",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };

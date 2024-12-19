@@ -64,6 +64,10 @@ const AddProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Discount start date must be before the end date.");
   }
 
+  let featureValid = false;
+  if (Array.isArray(features) && features.length !== 0) {
+    featureValid = true;
+  }
   // Create product
   const product = new Product({
     name,
@@ -86,7 +90,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     ram,
     storage,
     rating,
-    isFeatured,
+    isFeatured: featureValid,
     tags,
     availability,
     vendor,

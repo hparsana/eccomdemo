@@ -18,12 +18,6 @@ export const getAllProducts = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        throw new Error("No token found");
-      }
-
       const response = await axios.post(
         PRODUCTS.GET_ALL_PRODUCTS,
         {},
@@ -38,10 +32,6 @@ export const getAllProducts = createAsyncThunk(
             minPrice,
             maxPrice,
           },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
         }
       );
 

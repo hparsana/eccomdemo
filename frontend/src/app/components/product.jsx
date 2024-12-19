@@ -578,13 +578,7 @@ const productData = {
     totalPages: 2,
     currentPage: 2,
     facets: {
-      categories: [
-        "Footwear",
-        "Electronics",
-        "Wearables",
-        "Cameras",
-        "Home Appliances",
-      ],
+      categories: ["apparel", "electronics"],
       brands: ["Nike", "Sony", "Puma", "Fitbit", "Nikon", "Dyson", "Bose"],
       priceRange: { min: 6999, max: 179999 },
     },
