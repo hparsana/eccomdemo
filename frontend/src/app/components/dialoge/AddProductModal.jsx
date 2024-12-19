@@ -385,24 +385,41 @@ const AddProductModal = ({ open, product, onClose }) => {
                       </div>
                     )}
                   />
+                  <Controller
+                    name="batteryLife"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Battery Life
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          placeholder="Enter battery life"
+                        />
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="warranty"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="mt-4">
+                        <label className="block text-sm font-medium text-gray-700">
+                          warranty
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          placeholder="Enter warranty"
+                        />
+                      </div>
+                    )}
+                  />
                 </div>
-                <Controller
-                  name="batteryLife"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="mt-4">
-                      <label className="block text-sm font-medium text-gray-700">
-                        Battery Life
-                      </label>
-                      <input
-                        {...field}
-                        type="text"
-                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
-                        placeholder="Enter battery life"
-                      />
-                    </div>
-                  )}
-                />
               </>
             )}
 

@@ -147,56 +147,100 @@ export const addProductSchemaValidation = z.object({
 
 export const updateProductSchemaValidation = z.object({
   name: z
-    .string()
+    .string({ required_error: "Product name is required" })
     .trim()
     .min(3, { message: "Product name must be at least 3 characters" })
-    .max(100, { message: "Product name must not be more than 100 characters" })
-    .optional(),
+    .max(100, { message: "Product name must not be more than 100 characters" }),
 
   description: z
-    .string()
+    .string({ required_error: "Product description is required" })
     .trim()
     .min(10, { message: "Product description must be at least 10 characters" })
     .max(500, {
       message: "Product description must not be more than 500 characters",
-    })
-    .optional(),
+    }),
 
   price: z
-    .number()
-    .positive({ message: "Product price must be a positive value" })
-    .optional(),
+    .number({ required_error: "Product price is required" })
+    .positive({ message: "Product price must be a positive value" }),
+
+  originalPrice: z
+    .number({ required_error: "Product originalPrice is required" })
+    .positive({ message: "Product originalPrice must be a positive value" }),
 
   category: z
-    .string()
+    .string({ required_error: "Product category is required" })
     .trim()
     .min(3, { message: "Product category must be at least 3 characters" })
     .max(50, {
       message: "Product category must not be more than 50 characters",
+    }),
+
+  brand: z
+    .string({ required_error: "Brand is required" })
+    .trim()
+    .min(2, { message: "Brand must be at least 2 characters" })
+    .max(50, { message: "Brand must not be more than 50 characters" }),
+
+  stock: z
+    .number({ required_error: "Stock is required" })
+    .int({ message: "Stock must be an integer" })
+    .nonnegative({ message: "Stock cannot be negative" }),
+
+  weight: z
+    .number()
+    .nonnegative({ message: "Weight cannot be negative" })
+    .optional(),
+
+  dimensions: z
+    .object({
+      length: z.number().optional(),
+      width: z.number().optional(),
+      height: z.number().optional(),
     })
     .optional(),
 
-  brand: z
-    .string()
-    .trim()
-    .min(2, { message: "Brand must be at least 2 characters" })
-    .max(50, { message: "Brand must not be more than 50 characters" })
-    .optional(),
-
-  stock: z
-    .number()
-    .int({ message: "Stock must be an integer" })
-    .nonnegative({ message: "Stock cannot be negative" })
-    .optional(),
+  size: z.array(z.string()).optional(),
+  color: z.array(z.string()).optional(),
 
   images: z
     .array(
       z.object({
-        url: z.string().url({ message: "Invalid URL for the image" }),
+        url: z
+          .string({ required_error: "Image URL is required" })
+          .url({ message: "Invalid URL for the image" }),
         alt: z.string().optional(),
       })
     )
-    .min(1, { message: "At least one image is required" })
+    .min(1, { message: "At least one image is required" }),
+
+  warranty: z.string().optional(),
+  batteryLife: z.string().optional(),
+  features: z.array(z.string()).optional(),
+  resolution: z.string().optional(),
+  processor: z.string().optional(),
+  ram: z.string().optional(),
+  storage: z.string().optional(),
+
+  rating: z.number().min(0).max(5).optional(),
+
+  isFeatured: z.boolean().optional(),
+
+  tags: z.array(z.string()).optional(),
+
+  availability: z.enum(["In Stock", "Out of Stock", "Preorder"]).optional(),
+
+  vendor: z.string().optional(),
+
+  shippingDetails: z
+    .object({
+      isFreeShipping: z.boolean().optional(),
+      shippingCost: z
+        .number()
+        .nonnegative({ message: "Shipping cost cannot be negative" })
+        .optional(),
+      shippingRegions: z.array(z.string()).optional(),
+    })
     .optional(),
 
   discount: z
@@ -210,10 +254,9 @@ export const updateProductSchemaValidation = z.object({
         .number()
         .min(0, { message: "Discount amount must be at least 0" })
         .optional(),
-      startDate: dateOnlySchema.optional(),
-      endDate: dateOnlySchema.optional(),
+      startDate: z.string().optional(),
+      endDate: z.string().optional(),
     })
-    .partial()
     .optional(),
 });
 

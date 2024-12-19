@@ -112,8 +112,6 @@ export const updateProduct = createAsyncThunk(
 
       return rejectWithValue("Failed to update product.");
     } catch (error) {
-      console.log(error);
-
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }

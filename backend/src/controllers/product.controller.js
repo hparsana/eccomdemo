@@ -343,7 +343,6 @@ const updateProductById = asyncHandler(async (req, res) => {
   if (vendor) product.vendor = vendor;
   if (Object.keys(shippingDetails).length > 0)
     product.shippingDetails = shippingDetails;
-
   // Save the updated product
   await product.save();
 
