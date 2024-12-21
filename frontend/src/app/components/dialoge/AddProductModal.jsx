@@ -318,6 +318,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                     <select
                       {...field}
                       className="w-full px-4 py-2 border rounded-md"
+                      disabled={!!product} // Disable if editing
                     >
                       <option value="">Select a category</option>
                       <option value="electronics">Electronics</option>
@@ -357,6 +358,9 @@ const AddProductModal = ({ open, product, onClose }) => {
             {/* Conditionally Render Fields Based on Category */}
             {selectedCategory === "electronics" && (
               <>
+                <h1 className="  text-[20px] font-normal font-serif">
+                  Electronics Details Fields
+                </h1>
                 <div className="grid grid-cols-2 gap-4">
                   <Controller
                     name="processor"
@@ -393,10 +397,44 @@ const AddProductModal = ({ open, product, onClose }) => {
                     )}
                   />
                   <Controller
+                    name="storage"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Storage
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          placeholder="Enter storage"
+                        />
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="resolution"
+                    control={control}
+                    render={({ field }) => (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Resolution
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          placeholder="Enter resolution (e.g., 3216 x 1440 pixels)"
+                        />
+                      </div>
+                    )}
+                  />
+                  <Controller
                     name="batteryLife"
                     control={control}
                     render={({ field }) => (
-                      <div className="mt-4">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700">
                           Battery Life
                         </label>
@@ -413,7 +451,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="warranty"
                     control={control}
                     render={({ field }) => (
-                      <div className="mt-4">
+                      <div>
                         <label className="block text-sm font-medium text-gray-700">
                           warranty
                         </label>

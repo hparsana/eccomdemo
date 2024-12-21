@@ -33,9 +33,14 @@ export const USERS = {
 
 export const PRODUCTS = {
   GET_ALL_PRODUCTS: `${LOCAL_PATH}/product/getproducts`,
+  GET_ONE_PRODUCTS: `${LOCAL_PATH}/product/getoneproduct`,
   ADD_PRODUCT: `${LOCAL_PATH}/product/addproduct`,
   UPDATE_PRODUCT: `${LOCAL_PATH}/product/updateoneproduct`,
   DELETE_PRODUCT: `${LOCAL_PATH}/product/deleteoneproduct`,
+
+  // review
+  ADD_REVIEW: `${LOCAL_PATH}/product/reviews`,
+  UPDATE_REVIEW: `${LOCAL_PATH}/product`,
 };
 
 export const ORDERS = {

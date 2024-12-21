@@ -14,6 +14,7 @@ import {
 import AddProductModal from "@/app/components/dialoge/AddProductModal";
 import { deleteProduct, getAllProducts } from "@/app/store/Product/productApi";
 import { useDispatch, useSelector } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ProductsListPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -255,39 +256,47 @@ const ProductsListPage = () => {
                       </td>
                     </tr>
                     {expandedRow === product._id && (
-                      <tr className="border-t bg-gray-100">
-                        <td colSpan="6" className="p-4">
-                          <div>
-                            <p>
-                              <strong>Description:</strong>{" "}
-                              {product.description}
-                            </p>
-                            <p>
-                              <strong>Stock:</strong> {product.stock}
-                            </p>
-                            <p>
-                              <strong>Discount Details:</strong>{" "}
-                              {product.discount?.isActive
-                                ? `${product.discount.percentage}% off, valid from ${new Date(
-                                    product.discount.startDate
-                                  ).toLocaleDateString()} to ${new Date(
-                                    product.discount.endDate
-                                  ).toLocaleDateString()}`
-                                : "No Discount"}
-                            </p>
-                            <div className="flex mt-2 space-x-4">
-                              {product.images.map((img, index) => (
-                                <img
-                                  key={index}
-                                  src={img.url}
-                                  alt={img.alt}
-                                  className="w-20 h-20 rounded-lg object-cover"
-                                />
-                              ))}
+                      <AnimatePresence>
+                        <motion.tr
+                          className="border-t bg-gray-100"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <td colSpan="6" className="p-4">
+                            <div>
+                              <p>
+                                <strong>Description:</strong>{" "}
+                                {product.description}
+                              </p>
+                              <p>
+                                <strong>Stock:</strong> {product.stock}
+                              </p>
+                              <p>
+                                <strong>Discount Details:</strong>{" "}
+                                {product.discount?.isActive
+                                  ? `${product.discount.percentage}% off, valid from ${new Date(
+                                      product.discount.startDate
+                                    ).toLocaleDateString()} to ${new Date(
+                                      product.discount.endDate
+                                    ).toLocaleDateString()}`
+                                  : "No Discount"}
+                              </p>
+                              <div className="flex mt-2 space-x-4">
+                                {product.images.map((img, index) => (
+                                  <img
+                                    key={index}
+                                    src={img.url}
+                                    alt={img.alt}
+                                    className="w-20 h-20 rounded-lg object-cover"
+                                  />
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                      </tr>
+                          </td>
+                        </motion.tr>
+                      </AnimatePresence>
                     )}
                   </React.Fragment>
                 ))}
