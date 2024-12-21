@@ -219,6 +219,7 @@ const getProductById = asyncHandler(async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(id)) {
     throw new ApiError(400, "Invalid Product ID format");
   }
+
   // Fetch product details
   const product = await Product.findById(id).lean();
   if (!product) {
@@ -234,8 +235,17 @@ const getProductById = asyncHandler(async (req, res, next) => {
     endDate: { $gte: startOfToday }, // Only include active or today-expiring discounts
   }).lean();
 
+  // Fetch similar products based on category and brand (excluding the current product)
+  const similarProducts = await Product.find({
+    category: product.category,
+    brand: product.brand,
+    _id: { $ne: id }, // Exclude the current product
+  })
+    .limit(4) // Limit to 4 similar products
+    .lean();
+
   // Merge discount details with the product
-  const productWithDiscount = {
+  const productWithAdditionalData = {
     ...product,
     discount: discount
       ? {
@@ -246,13 +256,18 @@ const getProductById = asyncHandler(async (req, res, next) => {
           isActive: discount.isActive,
         }
       : null, // No discount for this product
+    similarProducts,
   };
 
-  // Return the product with discount details
+  // Return the product with additional details
   return res
     .status(200)
     .json(
-      new ApiResponse(200, productWithDiscount, "Product fetched successfully")
+      new ApiResponse(
+        200,
+        productWithAdditionalData,
+        "Product fetched successfully"
+      )
     );
 });
 

@@ -1,10 +1,18 @@
-"use client";
-
+import {
+  addReview,
+  getProductById,
+  updateReview,
+} from "@/app/store/Product/productApi";
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FaStar } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
-const ReviewModal = ({ open, review, onClose, onSubmit }) => {
+const ReviewModal = ({ open, review, onClose, productId }) => {
+  console.log(review);
+
+  const dispatch = useDispatch();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: review || {
       rating: 0,
@@ -12,9 +20,25 @@ const ReviewModal = ({ open, review, onClose, onSubmit }) => {
     },
   });
 
-  const handleAdd = () => {
-    reset();
-    onClose();
+  const handleAdd = (data) => {
+    const dataAll = { ...data, rating: parseFloat(data.rating) };
+    const action = review?._id
+      ? updateReview({ productId, reviewId: review._id, reviewData: dataAll })
+      : addReview({ productId, reviewData: dataAll });
+
+    dispatch(action)
+      .then((response) => {
+        if (response.error) {
+          toast.error(response.payload || null);
+          return;
+        }
+        dispatch(getProductById(productId)); // Refresh product details
+        reset();
+        onClose();
+      })
+      .catch((error) => {
+        console.error("Failed to add/edit review:", error);
+      });
   };
 
   React.useEffect(() => {
@@ -66,16 +90,13 @@ const ReviewModal = ({ open, review, onClose, onSubmit }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      {/* Modal Container */}
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-3">
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-gray-800">
           Add/Edit Review
         </h2>
 
-        {/* Form */}
         <form onSubmit={handleSubmit(handleAdd)} className="space-y-6">
-          {/* Rating */}
           <Controller
             name="rating"
             control={control}
@@ -95,7 +116,6 @@ const ReviewModal = ({ open, review, onClose, onSubmit }) => {
             )}
           />
 
-          {/* Comment */}
           <Controller
             name="comment"
             control={control}
@@ -120,7 +140,6 @@ const ReviewModal = ({ open, review, onClose, onSubmit }) => {
             )}
           />
 
-          {/* Buttons */}
           <div className="flex justify-end space-x-4">
             <button
               type="button"

@@ -52,7 +52,7 @@ const Navbar = () => {
       : [
           { path: "/", name: "Home" },
           { path: "/productdata", name: "Products" },
-          { path: "/logout", name: "Logout" },
+          // { path: "/logout", name: "Logout" },
         ]
     : [
         { path: "/", name: "Home" },

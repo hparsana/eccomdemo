@@ -42,6 +42,16 @@ const nextConfig = {
         hostname: "localhost",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "fdn2.gsmarena.com",
+        pathname: "**", // Allows all paths under this domain
+      },
+      {
+        protocol: "https",
+        hostname: "fdn.gsmarena.com",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };

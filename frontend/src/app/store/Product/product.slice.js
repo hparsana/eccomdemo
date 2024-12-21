@@ -1,11 +1,12 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllProducts } from "./productApi";
+import { getAllProducts, getProductById } from "./productApi";
 
 const ProductSlice = createSlice({
   name: "products",
   initialState: {
     productList: [],
+    productOne: null,
     facets: null,
     totalProducts: 0,
     totalPages: 0,
@@ -16,6 +17,7 @@ const ProductSlice = createSlice({
   reducers: {
     ResetProducts: (state) => {
       state.productList = [];
+      state.productOne = null;
       state.facets = null;
       state.totalProducts = 0;
       state.totalPages = 0;
@@ -44,6 +46,20 @@ const ProductSlice = createSlice({
       .addCase(getAllProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch products.";
+      })
+      .addCase(getProductById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.productOne = null; // Reset selected product
+      })
+      .addCase(getProductById.fulfilled, (state, action) => {
+        state.productOne = action.payload; // Store fetched product
+        state.loading = false;
+      })
+      .addCase(getProductById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch product details.";
+        state.productOne = null;
       });
   },
 });

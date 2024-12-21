@@ -137,3 +137,85 @@ export const deleteProduct = createAsyncThunk(
     }
   }
 );
+
+export const getProductById = createAsyncThunk(
+  "products/getProductById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${PRODUCTS.GET_ONE_PRODUCTS}/${id}`,
+        {}
+      );
+
+      if (response.data.success) {
+        return response.data.data; // Return the product data
+      }
+
+      return rejectWithValue("Failed to fetch product details.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const addReview = createAsyncThunk(
+  "products/addReview",
+  async ({ productId, reviewData }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await axios.post(
+        `${PRODUCTS.ADD_REVIEW}/${productId}`, // Replace with your API endpoint
+        reviewData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        return response.data.data; // Return the updated product with reviews
+      }
+
+      return rejectWithValue("Failed to add review.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const updateReview = createAsyncThunk(
+  "products/updateReview",
+  async ({ productId, reviewId, reviewData }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await axios.put(
+        `${PRODUCTS.UPDATE_REVIEW}/${productId}/reviews/${reviewId}`,
+        reviewData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        return response.data.data; // Return updated product data
+      }
+
+      return rejectWithValue("Failed to update review.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
