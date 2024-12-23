@@ -235,13 +235,14 @@ const getProductById = asyncHandler(async (req, res, next) => {
     endDate: { $gte: startOfToday }, // Only include active or today-expiring discounts
   }).lean();
 
-  // Fetch similar products based on category and brand (excluding the current product)
   const similarProducts = await Product.find({
-    category: product.category,
-    brand: product.brand,
+    $or: [
+      { brand: product.brand }, // Match the brand
+      { category: product.category }, // Match the category
+    ],
     _id: { $ne: id }, // Exclude the current product
   })
-    .limit(4) // Limit to 4 similar products
+    .limit(4)
     .lean();
 
   // Merge discount details with the product

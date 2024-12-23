@@ -263,7 +263,7 @@ export default function ProductData() {
         </aside>
 
         {/* Product Listing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:px-0 px-3 mb-5 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6  md:px-0 px-3 mb-5 flex-1">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
@@ -351,7 +351,7 @@ export function ProductCard({ product, onRemove }) {
             </span> */}
           </div>
           <p className="text-sm text-gray-600 mt-2">{product.delivery}</p>
-          {product.size && (
+          {product.size?.length !== 0 && (
             <p className="text-sm text-gray-600 mt-2">
               Available Sizes: {product.size.join(", ")}
             </p>
@@ -360,6 +360,14 @@ export function ProductCard({ product, onRemove }) {
             <p className="text-sm text-gray-600 mt-2">
               Available Colors: {product.color.join(", ")}
             </p>
+          )}
+          {product.ram && product.ram !== "N/A" && (
+            <div className="flex gap-x-4">
+              <p className="text-sm text-gray-600 mt-2">Ram: {product.ram}</p>
+              <p className="text-sm text-gray-600 mt-2">
+                Storage: {product.storage}
+              </p>
+            </div>
           )}
           {product.stock < 10 && (
             <p className="text-sm text-red-600 mt-1 font-semibold">

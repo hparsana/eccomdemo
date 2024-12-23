@@ -21,7 +21,6 @@ import { toast } from "react-toastify";
 const ProductDetail = () => {
   const { productId } = useParams();
   const {
-    productList,
     productOne: product,
     currentPage,
     loading,
@@ -31,6 +30,10 @@ const ProductDetail = () => {
 
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [openAccordion, setOpenAccordion] = useState(0);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -42,7 +45,7 @@ const ProductDetail = () => {
       setMainImage(product.images[0].url || null);
     }
   }, [product]);
-  const similarProducts = productList?.slice(0, 4);
+  const similarProducts = product?.similarProducts;
 
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const reviewsPerPage = 3;
@@ -51,7 +54,9 @@ const ProductDetail = () => {
     (currentPage - 1) * reviewsPerPage,
     currentPage * reviewsPerPage
   );
-
+  const handleAccordionToggle = (index) => {
+    setOpenAccordion(openAccordion === index ? null : index);
+  };
   const handleEditReview = (review) => {
     setSelectedReview(review); // Set the review to be edited
     setReviewModalOpen(true); // Open the modal
@@ -70,7 +75,7 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen md:mb-0mb-16">
+    <div className="bg-gray-100 min-h-screen md:mb-0 mb-16">
       <div className="max-w-[1400px] mx-auto py-8 px-4 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white p-6 rounded-lg shadow-md">
           {/* Product Images */}
@@ -158,13 +163,16 @@ const ProductDetail = () => {
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">Sizes:</h3>
                 <div className="flex gap-2">
-                  {product.size.map((size) => (
-                    <span
-                      key={size}
-                      className="border px-3 py-1 rounded-md text-gray-700"
+                  {product.size.map((size, index) => (
+                    <button
+                      key={index}
+                      className={`border px-3 py-1 rounded-md text-gray-700 cursor-pointer  focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+                        selectedSize === size ? "bg-blue-500 text-white" : ""
+                      }`}
+                      onClick={() => setSelectedSize(size)}
                     >
                       {size}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -176,16 +184,25 @@ const ProductDetail = () => {
                 <h3 className="font-semibold text-gray-700 mb-2">
                   Available Colors:
                 </h3>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   {product.color.map((color, idx) => (
-                    <span
+                    <button
                       key={idx}
-                      className="w-8 h-8 rounded-full border"
+                      onClick={() => setSelectedColor(color)}
+                      className={`w-10 h-10 rounded-full border-2 cursor-pointer transition ${
+                        selectedColor === color
+                          ? "ring-2 ring-blue-500 scale-105"
+                          : "hover:opacity-75"
+                      }`}
                       style={{
                         backgroundColor: color,
                         borderColor: color === "white" ? "gray" : color,
                       }}
-                    />
+                    >
+                      {selectedColor === color && (
+                        <span className="block w-full h-full rounded-full border-4 border-white"></span>
+                      )}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -399,6 +416,65 @@ const ProductDetail = () => {
                 className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-semibold"
               >
                 Write a Review
+              </button>
+            </div>
+          </div>
+          {/* Questions & Answers */}
+          <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+            <h2 className="text-2xl font-bold mb-4">Questions & Answers</h2>
+            <div className="accordion space-y-4">
+              {[...Array(2)].map((_, idx) => (
+                <div key={idx} className="border rounded-lg overflow-hidden">
+                  {/* Accordion Header */}
+                  <button
+                    className="w-full text-left bg-gray-100 px-4 py-3 font-medium text-gray-800 flex justify-between items-center"
+                    onClick={() => setOpenAccordion(idx)}
+                  >
+                    <span>{`Question ${idx + 1}: This is a sample question.`}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className={`h-5 w-5 transform transition-transform ${
+                        openAccordion === idx ? "rotate-180" : ""
+                      }`}
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 10.918l3.71-3.688a.75.75 0 011.06 1.062l-4 4a.75.75 0 01-1.06 0l-4-4a.75.75 0 01.02-1.06z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </button>
+
+                  {/* Accordion Content */}
+                  <div
+                    className={`transition-all duration-300 ${
+                      openAccordion === idx ? "max-h-40 p-4" : "max-h-0"
+                    } overflow-hidden bg-white`}
+                  >
+                    <p className="text-gray-600">
+                      {idx % 2 === 0
+                        ? "This is the answer to the question. It provides all the necessary details."
+                        : "This question has not been answered yet. Please check back later."}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Ask a Question Button */}
+            <div className="mt-6">
+              <button
+                onClick={() => {
+                  if (userLoggedIn) {
+                    setReviewModalOpen(true);
+                  } else {
+                    toast.error("You need to log in to ask a question.");
+                  }
+                }}
+                className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition font-semibold"
+              >
+                Ask a Question
               </button>
             </div>
           </div>

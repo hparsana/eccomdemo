@@ -508,45 +508,6 @@ const AddProductModal = ({ open, product, onClose }) => {
                     <FaPlus className="mr-2" /> Add Size
                   </button>
                 </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Colors
-                  </label>
-                  {colorFields.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center space-x-4 mt-2"
-                    >
-                      <Controller
-                        name={`color.${index}`}
-                        control={control}
-                        render={({ field }) => (
-                          <input
-                            {...field}
-                            type="text"
-                            className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
-                            placeholder="Enter color"
-                          />
-                        )}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeColor(index)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => appendColor("")}
-                    className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
-                  >
-                    <FaPlus className="mr-2" /> Add Color
-                  </button>
-                </div>
               </>
             )}
 
@@ -650,7 +611,41 @@ const AddProductModal = ({ open, product, onClose }) => {
                 </button>
               </div>
             </div>
-
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Colors
+              </label>
+              {colorFields.map((item, index) => (
+                <div key={item.id} className="flex items-center space-x-4 mt-2">
+                  <Controller
+                    name={`color.${index}`}
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        {...field}
+                        type="text"
+                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                        placeholder="Enter color"
+                      />
+                    )}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeColor(index)}
+                    className="text-red-500 hover:text-red-600"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => appendColor("")}
+                className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
+              >
+                <FaPlus className="mr-2" /> Add Color
+              </button>
+            </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">
                 Features
