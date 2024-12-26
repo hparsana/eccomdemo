@@ -6,7 +6,7 @@ import { Discount } from "../models/discount.model.js";
 import mongoose from "mongoose";
 
 const AddProduct = asyncHandler(async (req, res) => {
-  console.log("come in <<<<<<<<<", req.body);
+  console.log("Incoming request body <<<<<<<<<", req.body);
 
   const {
     name,
@@ -35,6 +35,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     vendor,
     shippingDetails = {},
     discount = {}, // Optional discount details
+    generalSpecifications = [], // Add generalSpecifications here
   } = req.body;
 
   // Validate required fields
@@ -64,10 +65,24 @@ const AddProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Discount start date must be before the end date.");
   }
 
+  // Validate generalSpecifications, if provided
+  if (generalSpecifications.length > 0) {
+    const invalidSpecifications = generalSpecifications.filter(
+      (spec) => !spec.key || !spec.value
+    );
+    if (invalidSpecifications.length > 0) {
+      throw new ApiError(
+        400,
+        "Each general specification must have both a key and a value."
+      );
+    }
+  }
+
   let featureValid = false;
   if (Array.isArray(features) && features.length !== 0) {
     featureValid = true;
   }
+
   // Create product
   const product = new Product({
     name,
@@ -95,6 +110,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     availability,
     vendor,
     shippingDetails,
+    generalSpecifications, // Add this field to the product
   });
 
   await product.save();
@@ -323,6 +339,7 @@ const updateProductById = asyncHandler(async (req, res) => {
     vendor,
     shippingDetails = {},
     discount,
+    generalSpecifications = [], // Added generalSpecifications here
   } = req.body;
 
   // Validate the ID format
@@ -363,6 +380,22 @@ const updateProductById = asyncHandler(async (req, res) => {
   if (vendor) product.vendor = vendor;
   if (Object.keys(shippingDetails).length > 0)
     product.shippingDetails = shippingDetails;
+
+  // Update generalSpecifications if provided
+  if (generalSpecifications.length > 0) {
+    // Validate generalSpecifications
+    const invalidSpecifications = generalSpecifications.filter(
+      (spec) => !spec.key || !spec.value
+    );
+    if (invalidSpecifications.length > 0) {
+      throw new ApiError(
+        400,
+        "Each general specification must have both a key and a value."
+      );
+    }
+    product.generalSpecifications = generalSpecifications;
+  }
+
   // Save the updated product
   await product.save();
 

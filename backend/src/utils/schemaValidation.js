@@ -143,6 +143,19 @@ export const addProductSchemaValidation = z.object({
       endDate: z.string().optional(),
     })
     .optional(),
+  // Added generalSpecifications
+  generalSpecifications: z
+    .array(
+      z.object({
+        key: z
+          .string({ required_error: "Specification key is required" })
+          .min(1, { message: "Specification key cannot be empty" }),
+        value: z
+          .string({ required_error: "Specification value is required" })
+          .min(1, { message: "Specification value cannot be empty" }),
+      })
+    )
+    .optional(),
 });
 
 export const updateProductSchemaValidation = z.object({
@@ -257,6 +270,19 @@ export const updateProductSchemaValidation = z.object({
       startDate: z.string().optional(),
       endDate: z.string().optional(),
     })
+    .optional(),
+  // Added generalSpecifications
+  generalSpecifications: z
+    .array(
+      z.object({
+        key: z
+          .string({ required_error: "Specification key is required" })
+          .min(1, { message: "Specification key cannot be empty" }),
+        value: z
+          .string({ required_error: "Specification value is required" })
+          .min(1, { message: "Specification value cannot be empty" }),
+      })
+    )
     .optional(),
 });
 

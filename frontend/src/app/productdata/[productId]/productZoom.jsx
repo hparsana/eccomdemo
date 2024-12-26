@@ -9,12 +9,17 @@ const ImageZoom = ({ mainImage }) => {
 
   const handleMouseMove = (e) => {
     const rect = e.target.getBoundingClientRect();
-    const x = e.clientX - rect.left; // X-coordinate relative to the image
-    const y = e.clientY - rect.top; // Y-coordinate relative to the image
+    const highlightSize = 190; // Size of the square highlight box
+    let x = e.clientX - rect.left - highlightSize / 2; // Center horizontally
+    let y = e.clientY - rect.top - highlightSize / 2; // Center vertically
+
+    // Ensure the square stays within the bounds of the image
+    x = Math.max(0, Math.min(x, rect.width - highlightSize));
+    y = Math.max(0, Math.min(y, rect.height - highlightSize));
 
     // Calculate zoomed image position
-    const zoomX = (x / rect.width) * 100; // Percentage position in X
-    const zoomY = (y / rect.height) * 100; // Percentage position in Y
+    const zoomX = ((x + highlightSize / 2) / rect.width) * 100; // Adjusted for square center
+    const zoomY = ((y + highlightSize / 2) / rect.height) * 100; // Adjusted for square center
 
     // Update styles for the zoomed area
     setZoomStyle({
@@ -23,12 +28,12 @@ const ImageZoom = ({ mainImage }) => {
       backgroundSize: "250%",
     });
 
-    // Update styles for the highlighted area
+    // Update styles for the square highlight area
     setHighlightStyle({
-      top: y - 70,
-      left: x - 70,
-      width: 150,
-      height: 150,
+      top: y,
+      left: x,
+      width: highlightSize,
+      height: highlightSize,
     });
   };
 
@@ -50,13 +55,12 @@ const ImageZoom = ({ mainImage }) => {
           height={700}
           className="rounded-lg w-full h-[500px] object-cover"
         />
-        {/* Highlighted Area */}
+        {/* Square Highlighted Area */}
         {zoomVisible && (
           <div
             className="absolute bg-green-200 opacity-50 pointer-events-none"
             style={{
               position: "absolute",
-              borderRadius: "50%",
               ...highlightStyle,
             }}
           ></div>

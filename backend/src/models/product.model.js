@@ -1,4 +1,18 @@
 import mongoose from "mongoose";
+
+const generalSpecificationSchema = new mongoose.Schema({
+  key: {
+    type: String,
+    // required: [true, "Specification key is required"],
+    trim: true,
+  },
+  value: {
+    type: String,
+    // required: [true, "Specification value is required"],
+    trim: true,
+  },
+});
+
 const productSchema = new mongoose.Schema(
   {
     name: {
@@ -125,6 +139,10 @@ const productSchema = new mongoose.Schema(
       isFreeShipping: { type: Boolean, default: false },
       shippingCost: { type: Number, default: 0 },
       shippingRegions: { type: [String], default: [] },
+    },
+    generalSpecifications: {
+      type: [generalSpecificationSchema], // Embed general specifications
+      default: [],
     },
     createdAt: {
       type: Date,

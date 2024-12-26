@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import ImageZoom from "./productZoom";
 import {
+  FaClipboardList,
   FaEdit,
   FaLaptop,
   FaShippingFast,
@@ -79,7 +80,7 @@ const ProductDetail = () => {
       <div className="max-w-[1400px] mx-auto py-8 px-4 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white p-6 rounded-lg shadow-md">
           {/* Product Images */}
-          <div>
+          <div className="lg:sticky lg:top-6 lg:self-start">
             {/* Only render Image component if mainImage is valid */}
             {mainImage && (
               <Image
@@ -91,7 +92,7 @@ const ProductDetail = () => {
               />
             )}
             {mainImage && <ImageZoom mainImage={mainImage} />}
-            <div className="flex flex-wrap gap-4 mt-4">
+            <div className="flex flex-wrap md:gap-4 gap-3 mt-4">
               {product.images.map((img) => (
                 <Image
                   key={img._id}
@@ -191,7 +192,7 @@ const ProductDetail = () => {
                       onClick={() => setSelectedColor(color)}
                       className={`w-10 h-10 rounded-full border-2 cursor-pointer transition ${
                         selectedColor === color
-                          ? "ring-2 ring-blue-500 scale-105"
+                          ? "ring-2 ring-blue-500 "
                           : "hover:opacity-75"
                       }`}
                       style={{
@@ -260,6 +261,27 @@ const ProductDetail = () => {
                     <strong className="text-gray-800">Warranty:</strong>{" "}
                     {product.warranty || "N/A"}
                   </li>
+                </ul>
+              </div>
+            )}
+            {/* General Specifications */}
+            {product.generalSpecifications?.length > 0 && (
+              <div className="bg-gray-50 p-4 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold text-blue-700 mb-3 flex items-center">
+                  <i className="text-blue-500 mr-2">
+                    <FaClipboardList /> {/* Example React Icon */}
+                  </i>
+                  General Specifications
+                </h3>
+                <ul className="grid grid-cols-1  gap-4 text-gray-600">
+                  {product.generalSpecifications.map((spec, index) => (
+                    <li key={index} className="flex items-center">
+                      <strong className="text-gray-800 mr-2">
+                        {spec.key}:
+                      </strong>
+                      <span>{spec.value}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             )}

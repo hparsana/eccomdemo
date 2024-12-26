@@ -13,35 +13,38 @@ import { useDispatch, useSelector } from "react-redux";
 const AddProductModal = ({ open, product, onClose }) => {
   const { control, handleSubmit, reset, watch, setError } = useForm({
     defaultValues: {
-      name: product?.name || "",
-      description: product?.description || "",
-      price: product?.price || "",
-      originalPrice: product?.originalPrice || "",
-      category: product?.category || "",
-      brand: product?.brand || "",
-      stock: product?.stock || "",
-      weight: product?.weight || 0,
-      dimensions: product?.dimensions || { length: 0, width: 0, height: 0 },
-      size: product?.size || [],
-      color: product?.color || [],
-      images: product?.images?.length ? product.images : [{ url: "", alt: "" }],
-      warranty: product?.warranty || "No warranty",
-      batteryLife: product?.batteryLife || "N/A",
-      features: product?.features || [],
-      resolution: product?.resolution || "N/A",
-      processor: product?.processor || "N/A",
-      ram: product?.ram || "N/A",
-      storage: product?.storage || "N/A",
-      tags: product?.tags || [],
+      name: product?.name || "", // Initialize as empty string
+      description: product?.description || "", // Initialize as empty string
+      price: product?.price || "", // Initialize as empty string
+      originalPrice: product?.originalPrice || "", // Initialize as empty string
+      category: product?.category || "", // Initialize as empty string
+      brand: product?.brand || "", // Initialize as empty string
+      stock: product?.stock || 0, // Initialize as number
+      weight: product?.weight || 0, // Initialize as number
+      dimensions: product?.dimensions || { length: 0, width: 0, height: 0 }, // Initialize as object
+      size: product?.size || [], // Initialize as array
+      color: product?.color || [], // Initialize as array
+      images: product?.images?.length ? product.images : [{ url: "", alt: "" }], // Initialize with array containing empty object
+      warranty: product?.warranty || "No warranty", // Default value
+      batteryLife: product?.batteryLife || "N/A", // Default value
+      features: product?.features || [], // Initialize as array
+      resolution: product?.resolution || "N/A", // Default value
+      processor: product?.processor || "N/A", // Default value
+      ram: product?.ram || "N/A", // Default value
+      storage: product?.storage || "N/A", // Default value
+      tags: product?.tags || [], // Initialize as array
+      generalSpecifications: product?.generalSpecifications || [
+        { key: "", value: "" },
+      ], // Initialize as array of objects
       discount: {
-        percentage: product?.discount?.percentage || "",
-        amount: product?.discount?.amount || "",
+        percentage: product?.discount?.percentage || "", // Initialize as empty string
+        amount: product?.discount?.amount || "", // Initialize as empty string
         startDate: product?.discount?.startDate
           ? new Date(product.discount?.startDate).toISOString().split("T")[0]
-          : "",
+          : "", // Convert date or initialize as empty string
         endDate: product?.discount?.endDate
           ? new Date(product.discount?.endDate).toISOString().split("T")[0]
-          : "",
+          : "", // Convert date or initialize as empty string
       },
     },
   });
@@ -77,6 +80,15 @@ const AddProductModal = ({ open, product, onClose }) => {
   } = useFieldArray({
     control,
     name: "color",
+  });
+
+  const {
+    fields: generalSpecificationFields,
+    append: appendSpecification,
+    remove: removeSpecification,
+  } = useFieldArray({
+    control,
+    name: "generalSpecifications", // This should match the key in `defaultValues`
   });
 
   const selectedCategory = watch("category");
@@ -681,6 +693,92 @@ const AddProductModal = ({ open, product, onClose }) => {
                 <FaPlus className="mr-2" /> Add Features
               </button>
             </div>
+            <div className="mt-4">
+              <h1 className="text-[20px] font-normal font-serif">
+                General Specifications
+              </h1>
+              {generalSpecificationFields.map((item, index) => (
+                <div
+                  key={item.id}
+                  className="flex items-center w-full gap-4  mt-2"
+                >
+                  <div className="flex  gap-x-4 w-full">
+                    {/* Specification Key */}
+
+                    <Controller
+                      name={`generalSpecifications.${index}.key`}
+                      control={control}
+                      rules={{ required: "Specification key is required" }}
+                      render={({ field, fieldState: { error } }) => (
+                        <div className="w-full">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Specification Name
+                          </label>
+                          <input
+                            {...field}
+                            type="text"
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                              error ? "border-red-500" : "border-gray-300"
+                            }`}
+                            placeholder="e.g., Display Size"
+                          />
+                          {error && (
+                            <span className="text-red-500 text-sm">
+                              {error.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    />
+
+                    {/* Specification Value */}
+                    <Controller
+                      name={`generalSpecifications.${index}.value`}
+                      control={control}
+                      rules={{ required: "Specification value is required" }}
+                      render={({ field, fieldState: { error } }) => (
+                        <div className="w-full">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Specification Value
+                          </label>
+                          <input
+                            {...field}
+                            type="text"
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                              error ? "border-red-500" : "border-gray-300"
+                            }`}
+                            placeholder="e.g., 108 cm (43 inches)"
+                          />
+                          {error && (
+                            <span className="text-red-500 text-sm">
+                              {error.message}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </div>
+                  {/* Remove Button */}
+                  <button
+                    type="button"
+                    onClick={() => removeSpecification(index)}
+                    className="text-red-500 hover:text-red-600 mt-4"
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              ))}
+
+              {/* Add Specification Button */}
+              <button
+                type="button"
+                onClick={() => appendSpecification({ key: "", value: "" })}
+                className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
+              >
+                <FaPlus className="mr-2" /> Add Specification
+              </button>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <Controller
                 name="discount.startDate"
