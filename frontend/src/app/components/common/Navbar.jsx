@@ -20,7 +20,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const { userLoggedIn, authUser } = useSelector((state) => state.userAuthData);
   const { savedProducts } = useSelector((state) => state.savedProductData);
-
+  const { cartItems } = useSelector((state) => state.cartData);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -64,7 +64,7 @@ const Navbar = () => {
     { path: "/", icon: <AiOutlineHome size={28} />, name: "Home" },
     { path: "/productdata", icon: <FiBox size={28} />, name: "Products" },
     {
-      path: "/cart",
+      path: "/productcart",
       icon: <AiOutlineShoppingCart size={28} />,
       name: "Cart",
       badge: 3, // Attach cart count to cart item
@@ -146,17 +146,21 @@ const Navbar = () => {
 
           {/* Cart Icon with Item Count */}
           <div className="flex items-center justify-center relative">
-            <Image
-              src="/images/cart_icon.png"
-              alt="Cart Icon"
-              width={25}
-              height={24}
-              className="cursor-pointer"
-            />
-            {/* Cart Badge */}
-            <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-              3 {/* Dynamic count */}
-            </div>
+            <Link href="/productcart">
+              <Image
+                src="/images/cart_icon.png"
+                alt="Cart Icon"
+                width={25}
+                height={24}
+                className="cursor-pointer"
+              />
+              {/* Cart Badge */}
+              {cartItems?.length !== 0 && (
+                <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItems?.length || 0} {/* Dynamic count */}
+                </div>
+              )}
+            </Link>
           </div>
           <div className="h-8 w-[2px] bg-[#C7C1C2] opacity-50"></div>
           <div className="flex items-center justify-center relative">

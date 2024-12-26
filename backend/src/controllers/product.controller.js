@@ -244,24 +244,31 @@ const getProductById = asyncHandler(async (req, res, next) => {
 
   // Fetch discount details if available
   const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0); // Start of the current day
+  startOfToday.setHours(0, 0, 0, 0);
 
   const discount = await Discount.findOne({
     product: id,
-    endDate: { $gte: startOfToday }, // Only include active or today-expiring discounts
+    endDate: { $gte: startOfToday },
   }).lean();
 
+  // Fetch similar products
   const similarProducts = await Product.find({
-    $or: [
-      { brand: product.brand }, // Match the brand
-      { category: product.category }, // Match the category
-    ],
-    _id: { $ne: id }, // Exclude the current product
+    $or: [{ brand: product.brand }, { category: product.category }],
+    _id: { $ne: id },
   })
     .limit(4)
     .lean();
 
-  // Merge discount details with the product
+  // Fetch "You might be interested in" products
+  const youMightBeInterestedIn = await Product.find({
+    category: product.category, // Match the same category
+    _id: { $ne: id }, // Exclude the current product
+  })
+    .sort({ views: -1 }) // Example: Sort by most viewed products
+    .limit(4)
+    .lean();
+
+  // Merge all data
   const productWithAdditionalData = {
     ...product,
     discount: discount
@@ -272,8 +279,9 @@ const getProductById = asyncHandler(async (req, res, next) => {
           endDate: discount.endDate,
           isActive: discount.isActive,
         }
-      : null, // No discount for this product
+      : null,
     similarProducts,
+    youMightBeInterestedIn,
   };
 
   // Return the product with additional details

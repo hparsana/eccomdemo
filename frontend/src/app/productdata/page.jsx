@@ -20,7 +20,9 @@ export default function ProductData() {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [showSidebar, setShowSidebar] = useState(false); // Toggle sidebar on small screens
-
+  const [freeShipping, setFreeShipping] = useState(false);
+  const [selectedRating, setSelectedRating] = useState("");
+  const [selectedDiscount, setSelectedDiscount] = useState("");
   const {
     productList: products,
     totalProducts,
@@ -67,6 +69,13 @@ export default function ProductData() {
           product.size?.some((size) =>
             size.toLowerCase().includes(selectedSize.toLowerCase())
           );
+        const matchesDiscount =
+          selectedDiscount === "" ||
+          product.discount?.percentage >= parseInt(selectedDiscount);
+        const matchesRating =
+          selectedRating === "" || product.rating >= parseInt(selectedRating);
+        const matchesFreeShipping =
+          !freeShipping || product.shippingDetails?.isFreeShipping;
 
         return (
           matchesPrice &&
@@ -75,7 +84,10 @@ export default function ProductData() {
           matchesCategory &&
           matchesBrand &&
           matchesColor &&
-          matchesSize
+          matchesSize &&
+          matchesDiscount &&
+          matchesRating &&
+          matchesFreeShipping
         );
       });
 
@@ -181,7 +193,7 @@ export default function ProductData() {
             </select>
           </div>
           <div className="flex justify-between items-center gap-x-2">
-            {selectedCategory === "Footwear" && (
+            {selectedCategory === "apparel" && (
               <div className="mb-6 w-full">
                 <label className="block font-medium text-gray-700 mb-2">
                   Size
@@ -202,8 +214,8 @@ export default function ProductData() {
                 </select>
               </div>
             )}
-            {selectedCategory === "Footwear" ||
-            selectedCategory === "Electronics" ? (
+            {selectedCategory === "apparel" ||
+            selectedCategory === "electronics" ? (
               <div className="mb-6 w-full">
                 <label className="block font-medium text-gray-700 mb-2">
                   Color
@@ -246,6 +258,52 @@ export default function ProductData() {
               <h4 className="font-normal">₹{priceRange[0]}</h4>
               <h4 className="font-normal">₹{priceRange[1]}</h4>
             </div>
+          </div>
+          <div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-2">
+              Discount
+            </label>
+            <select
+              value={selectedDiscount}
+              onChange={(e) => setSelectedDiscount(e.target.value)}
+              className="w-full border rounded-md p-2"
+            >
+              <option value="">All</option>
+              <option value="10">10% or more</option>
+              <option value="20">20% or more</option>
+              <option value="30">30% or more</option>
+              <option value="50">50% or more</option>
+            </select>
+          </div>
+          <div className="mb-6">
+            <label className="block font-medium text-gray-700 mb-2">
+              Rating
+            </label>
+            <select
+              value={selectedRating}
+              onChange={(e) => setSelectedRating(e.target.value)}
+              className="w-full border rounded-md p-2"
+            >
+              <option value="">All</option>
+              <option value="1">1 Star & above</option>
+              <option value="2">2 Stars & above</option>
+              <option value="3">3 Stars & above</option>
+              <option value="4">4 Stars & above</option>
+              <option value="5">5 Stars</option>
+            </select>
+          </div>
+          <div className="mb-6">
+            <label className="inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={freeShipping}
+                onChange={() => setFreeShipping(!freeShipping)}
+                className="form-checkbox h-4 w-4 text-blue-500"
+              />
+              <span className="ml-2 text-gray-700 font-medium">
+                Free Shipping
+              </span>
+            </label>
           </div>
           <div>
             <label className="inline-flex items-center cursor-pointer">

@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ImageZoom from "./productZoom";
@@ -18,6 +18,8 @@ import ReviewModal from "@/app/components/dialoge/ReviewModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getProductById } from "@/app/store/Product/productApi";
 import { toast } from "react-toastify";
+import { addItemToCart } from "@/app/store/Cart/cart.slice";
+import RecentlyViewed from "./RecentlyViewed";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -28,12 +30,14 @@ const ProductDetail = () => {
     error,
   } = useSelector((state) => state.productData);
   const { userLoggedIn, authUser } = useSelector((data) => data?.userAuthData);
+  const cartItems = useSelector((state) => state.cartData.cartItems);
 
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [openAccordion, setOpenAccordion] = useState(0);
+  const [recentViews, setRecentViews] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -46,8 +50,44 @@ const ProductDetail = () => {
       setMainImage(product.images[0].url || null);
     }
   }, [product]);
-  const similarProducts = product?.similarProducts;
 
+  useEffect(() => {
+    if (product) {
+      const recentViews = JSON.parse(localStorage.getItem("recentViews")) || [];
+
+      // Remove duplicates
+      const updatedViews = recentViews.filter(
+        (item) => item._id !== product._id
+      );
+
+      // Add the current product
+      updatedViews.push({
+        _id: product._id,
+        name: product.name,
+        brand: product.brand,
+        image: product.images[0]?.url || "",
+        price: product.price,
+        lastViewed: new Date().toISOString(),
+      });
+
+      // Limit to last 10 products
+      if (updatedViews.length > 10) {
+        updatedViews.shift();
+      }
+
+      // Save to localStorage
+      localStorage.setItem("recentViews", JSON.stringify(updatedViews));
+    }
+  }, [product]);
+
+  useEffect(() => {
+    const storedRecentViews =
+      JSON.parse(localStorage.getItem("recentViews")) || [];
+    setRecentViews(storedRecentViews);
+  }, []);
+
+  const similarProducts = product?.similarProducts;
+  const youMightBeInterestedIn = product?.youMightBeInterestedIn;
   const [isReviewModalOpen, setReviewModalOpen] = useState(false);
   const reviewsPerPage = 3;
 
@@ -58,6 +98,31 @@ const ProductDetail = () => {
   const handleAccordionToggle = (index) => {
     setOpenAccordion(openAccordion === index ? null : index);
   };
+  const handleAddToCart = () => {
+    if (!product) return;
+
+    dispatch(
+      addItemToCart({
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.images || "",
+        discount: product?.discount || {},
+        quantity: 1,
+        size: selectedSize || product.size[0],
+        color: selectedColor || product.color[0],
+      })
+    );
+
+    toast.success("Product added to cart!");
+  };
+  const handleGoToCart = () => {
+    redirect("/productcart");
+  };
+
+  const isInCart = cartItems?.some((item) => item.id === product?._id); // Check if product is in the cart
+
   const handleEditReview = (review) => {
     setSelectedReview(review); // Set the review to be edited
     setReviewModalOpen(true); // Open the modal
@@ -74,6 +139,10 @@ const ProductDetail = () => {
   if (!product) {
     return <div className="text-center text-gray-700">Product not found!</div>;
   }
+
+  const handleInterestedClick = (id) => {
+    redirect(`/productdata/${id}`);
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen md:mb-0 mb-16">
@@ -180,30 +249,36 @@ const ProductDetail = () => {
             )}
 
             {/* Color Options */}
-            {product.color?.length !== 0 && (
+            {product.color?.length !== 0 && product.images?.length !== 0 && (
               <div>
                 <h3 className="font-semibold text-gray-700 mb-2">
                   Available Colors:
                 </h3>
-                <div className="flex gap-3">
+                <div className="flex gap-4">
                   {product.color.map((color, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setSelectedColor(color)}
-                      className={`w-10 h-10 rounded-full border-2 cursor-pointer transition ${
-                        selectedColor === color
-                          ? "ring-2 ring-blue-500 "
-                          : "hover:opacity-75"
-                      }`}
-                      style={{
-                        backgroundColor: color,
-                        borderColor: color === "white" ? "gray" : color,
-                      }}
-                    >
-                      {selectedColor === color && (
-                        <span className="block w-full h-full rounded-full border-4 border-white"></span>
-                      )}
-                    </button>
+                    <div key={idx} className="flex flex-col items-center">
+                      <button
+                        onClick={() => setSelectedColor(color)}
+                        className={`w-16 h-16 rounded-md border-2 cursor-pointer transition ${
+                          selectedColor === color
+                            ? "ring-2 ring-blue-500 "
+                            : "hover:opacity-75"
+                        }`}
+                        style={{
+                          borderColor:
+                            selectedColor === color ? "blue" : "gray",
+                        }}
+                      >
+                        <img
+                          src={product.images[idx]?.url} // Use corresponding image for the color
+                          alt={`Color option ${color}`}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      </button>
+                      <span className="mt-2 text-sm text-gray-700">
+                        {color}
+                      </span>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -310,10 +385,22 @@ const ProductDetail = () => {
 
             {/* Buttons */}
             <div className="flex gap-6 mt-4">
-              <button className="bg-yellow-500 text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-yellow-600 transition">
-                Add to Cart
-              </button>
-              <button className="bg-orange-500 text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-orange-600 transition">
+              {isInCart ? (
+                <button
+                  className="bg-[#ff9f00] text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-orange-400 transition"
+                  onClick={handleGoToCart}
+                >
+                  Go to Cart
+                </button>
+              ) : (
+                <button
+                  className="bg-yellow-500 text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-yellow-600 transition"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </button>
+              )}
+              <button className="bg-[#fb641b] text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-orange-600 transition">
                 Buy Now
               </button>
             </div>
@@ -441,6 +528,46 @@ const ProductDetail = () => {
               </button>
             </div>
           </div>
+          {/* You might be interested in */}
+
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">
+              You might be interested in
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {youMightBeInterestedIn?.map((item, key) => (
+                <div
+                  className="flex items-center bg-white p-1 shadow-md"
+                  key={key}
+                >
+                  <Image
+                    src={item?.images[1]?.url}
+                    alt="Product Image"
+                    width={700}
+                    height={700}
+                    className="rounded-lg md:w-[200px] w-[100px] md:h-[200px] h-[100px] object-cover"
+                  />
+                  <div className="md:ml-3 ml-1">
+                    <h3 className="md:text-[20px] text-[15px] font-mono">
+                      {item?.name}
+                    </h3>
+                    <h3>
+                      <span className="text-[20px] font-semibold font-mono">
+                        Brand:{" "}
+                      </span>
+                      {item?.brand}
+                    </h3>
+                    <button
+                      className=" bg-blue-400 px-3 py-1 md:mt-3 mt-1 text-white"
+                      onClick={() => handleInterestedClick(item?._id)}
+                    >
+                      Shop Now
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* Questions & Answers */}
           <div className="bg-white rounded-lg shadow-md p-6 mt-8">
             <h2 className="text-2xl font-bold mb-4">Questions & Answers</h2>
@@ -511,7 +638,7 @@ const ProductDetail = () => {
         </div>
 
         {/* Similar Products */}
-        <div className="mt-8">
+        <div className="bg-gray-50 p-6 rounded-lg shadow-md mt-8">
           <h2 className="text-2xl font-bold mb-4">Similar Products</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {similarProducts.map((item) => (
@@ -523,6 +650,7 @@ const ProductDetail = () => {
             ))}
           </div>
         </div>
+        <RecentlyViewed recentViews={recentViews} />
       </div>
     </div>
   );
