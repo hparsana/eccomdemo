@@ -8,6 +8,18 @@ import {
   UserRolesEnum,
 } from "../utils/constant.js";
 
+const AddressSchema = new mongoose.Schema({
+  fullName: { type: String, required: false },
+  phone: { type: String, required: true },
+  addressLine1: { type: String, required: true },
+  addressLine2: { type: String, default: "" },
+  city: { type: String, required: true },
+  state: { type: String, required: true },
+  postalCode: { type: String, required: true },
+  country: { type: String, required: true },
+  isDefault: { type: Boolean, default: false }, // Default address flag
+});
+
 const UserSchema = new mongoose.Schema(
   {
     username: {
@@ -59,6 +71,10 @@ const UserSchema = new mongoose.Schema(
     },
     resetToken: {
       type: String,
+    },
+    addresses: {
+      type: [AddressSchema], // Embedding the Address schema
+      default: [], // No addresses initially
     },
   },
   {

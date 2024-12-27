@@ -52,6 +52,11 @@ const nextConfig = {
         hostname: "fdn.gsmarena.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "assets.aceternity.com",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };

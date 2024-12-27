@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 export const LOCAL_PATH = "https://eccomdemo.onrender.com/api/v1";
 // export const LOCAL_PATH = "http://localhost:5000/api/v1";
 // export const LOCAL_PATH = "http://192.168.29.162:5000/api/v1";
+
+// export const LOCAL_PATH = "http://192.168.29.162:5000/api/v1";
 // export const SOCKET_URL = "http://192.168.1.15:5000";
 
 // let accessTokenFromStorage =
@@ -48,4 +50,10 @@ export const ORDERS = {
   ADD_ORDER: `${LOCAL_PATH}/order/createorder`,
   DELETE_ORDER: `${LOCAL_PATH}/order/deleteorder`,
   UPDATE_ORDER_STATUS: `${LOCAL_PATH}/order/updateorderstatus`,
+};
+
+export const SAVEDPRODUCT = {
+  GET_ALL_SAVEDPRODUCTS: `${LOCAL_PATH}/savedproduct/getsavedproducts`, // Replace with your API endpoint
+  ADD_SAVEDPRODUCTS: `${LOCAL_PATH}/savedproduct/addsaveproduct`,
+  DELETE_SAVEDPRODUCTS: `${LOCAL_PATH}/savedproduct/removesavedproduct`,
 };

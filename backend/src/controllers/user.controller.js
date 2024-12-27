@@ -423,6 +423,142 @@ const updateUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, updatedUser, "User updated successfully."));
 });
 
+const addAddress = asyncHandler(async (req, res) => {
+  const {
+    fullName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    isDefault,
+  } = req.body;
+
+  if (!phone || !addressLine1 || !city || !state || !postalCode || !country) {
+    throw new ApiError(400, "All required fields must be provided.");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  if (isDefault) {
+    user.addresses.forEach((address) => (address.isDefault = false));
+  }
+
+  user.addresses.push({
+    fullName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    isDefault,
+  });
+  await user.save();
+
+  return res
+    .status(201)
+    .json(new ApiResponse(201, user.addresses, "Address added successfully."));
+});
+
+const getAllAddresses = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id).select("addresses");
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user.addresses, "Addresses fetched successfully.")
+    );
+});
+
+const updateAddress = asyncHandler(async (req, res) => {
+  const { addressId } = req.params;
+  const {
+    fullName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    isDefault,
+  } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(addressId)) {
+    throw new ApiError(400, "Invalid address ID format.");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  const address = user.addresses.id(addressId);
+  if (!address) {
+    throw new ApiError(404, "Address not found.");
+  }
+
+  if (isDefault) {
+    user.addresses.forEach((addr) => (addr.isDefault = false));
+  }
+
+  Object.assign(address, {
+    fullName,
+    phone,
+    addressLine1,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    country,
+    isDefault,
+  });
+  await user.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user.addresses, "Address updated successfully.")
+    );
+});
+
+const deleteAddress = asyncHandler(async (req, res) => {
+  const { addressId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(addressId)) {
+    throw new ApiError(400, "Invalid address ID format.");
+  }
+
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found.");
+  }
+
+  const address = user.addresses.id(addressId);
+  if (!address) {
+    throw new ApiError(404, "Address not found.");
+  }
+
+  address.remove();
+  await user.save();
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, user.addresses, "Address deleted successfully.")
+    );
+});
+
 export {
   Register,
   LoginUser,
@@ -436,4 +572,8 @@ export {
   UpdatePassword,
   getAllUsers,
   updateUser,
+  addAddress,
+  getAllAddresses,
+  updateAddress,
+  deleteAddress,
 };

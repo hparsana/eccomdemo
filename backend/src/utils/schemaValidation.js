@@ -474,3 +474,20 @@ export const updateAddressSchemaValidation = z.object({
     .min(2, { message: "Country must be at least 2 characters" })
     .optional(),
 });
+
+export const addressSchemaValidation = z.object({
+  fullName: z.string().optional(),
+  phone: z
+    .string({ required_error: "Phone number is required." })
+    .min(10)
+    .max(15),
+  addressLine1: z
+    .string({ required_error: "Address Line 1 is required." })
+    .min(1),
+  addressLine2: z.string().optional(),
+  city: z.string({ required_error: "City is required." }).min(1),
+  state: z.string({ required_error: "State is required." }).min(1),
+  postalCode: z.string({ required_error: "Postal code is required." }).min(1),
+  country: z.string({ required_error: "Country is required." }).min(1),
+  isDefault: z.boolean().optional(),
+});

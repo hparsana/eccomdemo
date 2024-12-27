@@ -1,8 +1,6 @@
 import React from "react";
 
 const CartProduct = ({ product, updateQuantity, removeItem }) => {
-  console.log("images", product);
-
   const imageUrl =
     product.image && product.image.length > 0
       ? product.image[0]?.url
@@ -17,7 +15,13 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
       />
       <div className="flex-1">
         <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-        <p className="text-sm text-gray-600">Brand: {product.brand}</p>
+        <p className="text-sm text-gray-600">Brand: {product?.brand}</p>
+        <div className="flex gap-x-5 mt-1">
+          <p className="text-sm text-gray-600">Color: {product.color}</p>
+          {product.size && (
+            <p className="text-sm text-gray-600">Size: {product.size}</p>
+          )}
+        </div>
         <p className="text-sm text-gray-600">{product.description}</p>
         <div className="flex items-center mt-2">
           <span className="text-lg font-bold text-gray-800">
@@ -30,6 +34,24 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
             {product.discount?.percentage}% Off
           </span>
         </div>
+        <p className="text-sm text-gray-600 mt-1">
+          <span className="text-gray-800 font-medium">Discount Details:</span>
+          <span className="text-green-600 font-semibold">
+            {" "}
+            Save ₹{product.discount?.amount}
+          </span>
+          <span className="text-gray-600 md:ml-2">Valid from</span>
+          <span className="text-blue-500">
+            {" "}
+            {new Date(product.discount?.startDate).toLocaleDateString()}
+          </span>
+          <span className="text-gray-600"> to</span>
+          <span className="text-blue-500">
+            {" "}
+            {new Date(product.discount?.endDate).toLocaleDateString()}
+          </span>
+        </p>
+
         <div className="flex items-center mt-3 space-x-4">
           <div className="flex items-center border border-gray-300 rounded-md">
             <button

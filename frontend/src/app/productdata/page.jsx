@@ -6,11 +6,14 @@ import { motion, useInView } from "framer-motion";
 import { Slider } from "@mui/material";
 import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addProduct,
-  removeProduct,
-} from "../store/SaveProduct/savedProduct.slice";
 import { getAllProducts } from "../store/Product/productApi";
+import { NavbarDemo } from "./NavbarMid";
+import {
+  fetchSavedProducts,
+  saveProduct,
+  unsaveProduct,
+} from "@/app/store/SaveProduct/savedProductApi";
+
 export default function ProductData() {
   const [priceRange, setPriceRange] = useState([200, 250000]);
   const [selectedStock, setSelectedStock] = useState(false);
@@ -107,6 +110,9 @@ export default function ProductData() {
 
   return (
     <div className="bg-gray-50">
+      <div className=" md:block hidden">
+        <NavbarDemo />
+      </div>
       <div className="lg:w-[90%] md:w-[95%] w-full mx-auto min-h-[80vh] flex flex-col md:flex-row gap-6 mt-6">
         {/* Sidebar Toggle Button (Small Screens) */}
         <div className="flex justify-between items-center md:hidden px-4">
@@ -321,7 +327,7 @@ export default function ProductData() {
         </aside>
 
         {/* Product Listing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6  md:px-0 px-3 mb-5 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 md:gap-y-0 gap-y-3 md:mb-16 mb-28  md:px-0 px-3 flex-1">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
@@ -340,11 +346,16 @@ export default function ProductData() {
 export function ProductCard({ product, onRemove }) {
   const [like, setLike] = useState(false); // Local like state
   const dispatch = useDispatch();
+  const { userLoggedIn } = useSelector((state) => state.userAuthData);
+
   const savedProducts = useSelector(
     (state) => state.savedProductData.savedProducts
   ); // Access Redux state
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
+  useEffect(() => {
+    dispatch(fetchSavedProducts());
+  }, [dispatch, userLoggedIn]);
 
   // Initialize "like" status from Redux state
   useEffect(() => {
@@ -355,9 +366,9 @@ export function ProductCard({ product, onRemove }) {
   // Handle Like/Unlike
   const handleLike = () => {
     if (like) {
-      dispatch(removeProduct(product._id)); // Remove from Redux
+      dispatch(unsaveProduct(product._id)); // Remove from Redux
     } else {
-      dispatch(addProduct(product)); // Add to Redux
+      dispatch(saveProduct(product)); // Add to Redux
     }
     setLike(!like); // Toggle local state
   };

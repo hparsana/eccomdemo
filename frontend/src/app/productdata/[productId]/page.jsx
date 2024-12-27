@@ -34,7 +34,7 @@ const ProductDetail = () => {
 
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("7");
   const [selectedColor, setSelectedColor] = useState(null);
   const [openAccordion, setOpenAccordion] = useState(0);
   const [recentViews, setRecentViews] = useState([]);
@@ -109,6 +109,7 @@ const ProductDetail = () => {
         originalPrice: product.originalPrice,
         image: product.images || "",
         discount: product?.discount || {},
+        brand: product?.brand || "",
         quantity: 1,
         size: selectedSize || product.size[0],
         color: selectedColor || product.color[0],
@@ -160,7 +161,7 @@ const ProductDetail = () => {
                 className="rounded-lg lg:hidden block w-full h-auto object-cover"
               />
             )}
-            {mainImage && <ImageZoom mainImage={mainImage} />}
+            {mainImage && <ImageZoom mainImage={mainImage} product={product} />}
             <div className="flex flex-wrap md:gap-4 gap-3 mt-4">
               {product.images.map((img) => (
                 <Image

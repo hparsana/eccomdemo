@@ -1,12 +1,25 @@
 "use client";
+import {
+  fetchSavedProducts,
+  saveProduct,
+  unsaveProduct,
+} from "@/app/store/SaveProduct/savedProductApi";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaHeart } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
 
-const ImageZoom = ({ mainImage }) => {
+const ImageZoom = ({ mainImage, product }) => {
   const [zoomVisible, setZoomVisible] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({});
   const [highlightStyle, setHighlightStyle] = useState({});
+  const [like, setLike] = useState(false); // Local like state
+  const dispatch = useDispatch();
+  const { userLoggedIn } = useSelector((state) => state.userAuthData);
 
+  const savedProducts = useSelector(
+    (state) => state.savedProductData.savedProducts
+  );
   const handleMouseMove = (e) => {
     const rect = e.target.getBoundingClientRect();
     const highlightSize = 190; // Size of the square highlight box
@@ -36,7 +49,23 @@ const ImageZoom = ({ mainImage }) => {
       height: highlightSize,
     });
   };
+  useEffect(() => {
+    dispatch(fetchSavedProducts());
+  }, [dispatch, userLoggedIn]);
 
+  useEffect(() => {
+    const isLiked = savedProducts.some((item) => item._id === product._id);
+    setLike(isLiked);
+  }, [savedProducts, product._id]);
+
+  const handleLike = () => {
+    if (like) {
+      dispatch(unsaveProduct(product._id)); // Remove from Redux
+    } else {
+      dispatch(saveProduct(product)); // Add to Redux
+    }
+    setLike(!like); // Toggle local state
+  };
   return (
     <div className="relative">
       <div
@@ -55,6 +84,16 @@ const ImageZoom = ({ mainImage }) => {
           height={700}
           className="rounded-lg w-full h-[500px] object-cover"
         />
+        <div
+          className="absolute top-5 right-3 bg-white w-12 h-12 rounded-full flex justify-center items-center shadow-lg"
+          onMouseEnter={() => setZoomVisible(false)}
+          onMouseLeave={() => setZoomVisible(true)}
+        >
+          <FaHeart
+            className={`w-7 h-7 ${like ? "text-red-500" : "text-gray-300"} cursor-pointer`}
+            onClick={handleLike}
+          />
+        </div>
         {/* Square Highlighted Area */}
         {zoomVisible && (
           <div

@@ -12,10 +12,15 @@ import {
   UpdatePassword,
   getAllUsers,
   updateUser,
+  getAllAddresses,
+  addAddress,
+  updateAddress,
+  deleteAddress,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
 import {
+  addressSchemaValidation,
   signUpSchemaValidation,
   updateUserSchemaValidation,
 } from "../utils/schemaValidation.js";
@@ -56,6 +61,25 @@ routes.route("/forgotpassword/verifyemail").post(VerifyEmailForPassword);
 routes.route("/forgotpassword/verifyemailotp").post(UserOtpVerify);
 routes.route("/forgotpassword/verifypassword").post(UpdatePassword);
 
+//address
+routes
+  .route("/addresses")
+  .get(authMiddleWare(["USER", "ADMIN"]), getAllAddresses) // Get all addresses
+  .post(
+    validate(addressSchemaValidation),
+    authMiddleWare(["USER", "ADMIN"]),
+    addAddress
+  ); // Add a new address
+
+routes
+  .route("/addresses/:addressId")
+  .put(
+    validate(addressSchemaValidation),
+    authMiddleWare(["USER", "ADMIN"]),
+    updateAddress
+  ) // Update an address
+  .delete(authMiddleWare(["USER", "ADMIN"]), deleteAddress); // Delete an address
+
 // SSO routes
 routes.route("/google").get(
   passport.authenticate("google", {
@@ -69,4 +93,5 @@ routes.route("/google").get(
 routes
   .route("/google/callback")
   .get(passport.authenticate("google"), handleSocialLogin);
+
 export default routes;
