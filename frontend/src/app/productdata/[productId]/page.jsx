@@ -20,6 +20,7 @@ import { getProductById } from "@/app/store/Product/productApi";
 import { toast } from "react-toastify";
 import { addItemToCart } from "@/app/store/Cart/cart.slice";
 import RecentlyViewed from "./RecentlyViewed";
+import RatingsAndReviews from "./RattingBar";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -147,8 +148,8 @@ const ProductDetail = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen md:mb-0 mb-16">
-      <div className="max-w-[1400px] mx-auto py-8 px-4 lg:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 bg-white p-6 rounded-lg shadow-md">
+      <div className="max-w-[1500px] mx-auto py-8 md:px-4 px-2 lg:px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:gap-10 gap-5 bg-white md:p-6 p-2 rounded-lg shadow-md">
           {/* Product Images */}
           <div className="lg:sticky lg:top-6 lg:self-start">
             {/* Only render Image component if mainImage is valid */}
@@ -156,28 +157,59 @@ const ProductDetail = () => {
               <Image
                 src={mainImage}
                 alt="Product Image"
-                width={700}
-                height={700}
-                className="rounded-lg lg:hidden block w-full h-auto object-cover"
+                width={400}
+                height={400}
+                className="rounded-lg lg:hidden block w-full h-[300px] md:h-[500px] object-cover"
               />
             )}
-            {mainImage && <ImageZoom mainImage={mainImage} product={product} />}
-            <div className="flex flex-wrap md:gap-4 gap-3 mt-4">
-              {product.images.map((img) => (
-                <Image
-                  key={img._id}
-                  src={img.url}
-                  alt={img.alt || "Product Thumbnail"}
-                  width={80}
-                  height={80}
-                  className={`cursor-pointer object-cover md:w-[80px] w-[60px] md:h-[80px] h-[60px] border-2 rounded-lg ${
-                    mainImage === img.url
-                      ? "border-blue-500"
-                      : "border-gray-300"
-                  }`}
-                  onClick={() => setMainImage(img.url)}
-                />
-              ))}
+            <div className="flex flex-col md:flex-row gap-5 items-center md:items-start">
+              {/* Thumbnail Images */}
+              <div className="flex lg:flex-col lg:mt-0 mt-4 flex-wrap gap-4">
+                {product.images.map((img) => (
+                  <Image
+                    key={img._id}
+                    src={img.url}
+                    alt={img.alt || "Product Thumbnail"}
+                    width={100}
+                    height={100}
+                    className={`cursor-pointer object-cover w-[60px] h-[60px] md:w-[70px] md:h-[70px] border-2 rounded-lg transition-all duration-200 hover:scale-105 ${
+                      mainImage === img.url
+                        ? "border-blue-500"
+                        : "border-gray-300"
+                    }`}
+                    onClick={() => setMainImage(img.url)}
+                  />
+                ))}
+              </div>
+
+              {/* Main Image with Zoom */}
+              {mainImage && (
+                <div className="flex-1 ">
+                  <ImageZoom mainImage={mainImage} product={product} />
+                </div>
+              )}
+            </div>
+
+            {/* Buttons */}
+            <div className="flex justify-center mx-auto gap-6 md:mt-6 mt-3 w-full ">
+              {isInCart ? (
+                <button
+                  className="bg-[#ff9f00] text-white lg:ml-[88px] text-lg py-3 w-full md:px-6 px-5 rounded-lg hover:bg-orange-400 transition"
+                  onClick={handleGoToCart}
+                >
+                  Go to Cart
+                </button>
+              ) : (
+                <button
+                  className="bg-yellow-500 text-white lg:ml-[88px] text-lg w-full py-3 md:px-6 px-5 rounded-lg hover:bg-yellow-600 transition"
+                  onClick={handleAddToCart}
+                >
+                  Add to Cart
+                </button>
+              )}
+              <button className="bg-[#fb641b] text-white text-lg py-3 w-full md:px-6 px-5 rounded-lg hover:bg-orange-600 transition">
+                Buy Now
+              </button>
             </div>
           </div>
 
@@ -384,28 +416,6 @@ const ProductDetail = () => {
               </ul>
             </div>
 
-            {/* Buttons */}
-            <div className="flex gap-6 mt-4">
-              {isInCart ? (
-                <button
-                  className="bg-[#ff9f00] text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-orange-400 transition"
-                  onClick={handleGoToCart}
-                >
-                  Go to Cart
-                </button>
-              ) : (
-                <button
-                  className="bg-yellow-500 text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-yellow-600 transition"
-                  onClick={handleAddToCart}
-                >
-                  Add to Cart
-                </button>
-              )}
-              <button className="bg-[#fb641b] text-white text-lg py-3 md:px-6 px-5 rounded-lg hover:bg-orange-600 transition">
-                Buy Now
-              </button>
-            </div>
-
             {/* Delivery Info */}
             <div className="flex items-center gap-4 mt-4 text-green-600 font-semibold">
               <FaTruck className="w-5 h-5" />
@@ -427,41 +437,11 @@ const ProductDetail = () => {
           <h2 className="text-2xl font-bold mb-4">Ratings & Reviews</h2>
 
           {/* Overall Rating */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="text-center">
-              <p className="text-4xl font-bold text-blue-600">
-                {product.ratingAverage || 4.5}
-              </p>
-              <p className="text-sm text-gray-500">out of 5</p>
-            </div>
-            <div className="flex flex-col gap-1 flex-1">
-              {Array.from({ length: 5 }).map((_, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-sm">
-                  <div className="flex text-yellow-500">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <FaStar
-                        key={i}
-                        className={`${
-                          i < 5 - idx ? "text-yellow-500" : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <div className="h-2 bg-gray-300 flex-1 rounded-lg overflow-hidden">
-                    <div
-                      className="bg-yellow-500 h-full"
-                      style={{ width: `${(5 - idx) * 15}%` }} // Demo percentages
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">{(5 - idx) * 20}%</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
+          <RatingsAndReviews category={product?.subcategory || "electronics"} />
           {/* Ratings and Reviews */}
           <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-            <h2 className="text-2xl font-bold mb-4">Ratings & Reviews</h2>
+            {/* <h2 className="text-2xl font-bold mb-4">Ratings & Reviews</h2> */}
 
             {/* User Reviews */}
             <div className=" grid md:grid-cols-2 items-center gap-4">

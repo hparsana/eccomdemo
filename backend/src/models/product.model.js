@@ -37,6 +37,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: [true, "Product category is required"],
     },
+    subcategory: {
+      type: String,
+      // required: [true, "Product category is required"],
+    },
     brand: {
       type: String,
       required: [true, "Brand is required"],
