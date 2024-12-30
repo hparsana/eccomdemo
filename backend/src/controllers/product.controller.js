@@ -14,6 +14,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     price,
     originalPrice,
     category,
+    subcategory,
     brand,
     stock,
     weight,
@@ -44,6 +45,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     !description ||
     !price ||
     !category ||
+    !subcategory ||
     !brand ||
     stock === undefined
   ) {
@@ -90,6 +92,7 @@ const AddProduct = asyncHandler(async (req, res) => {
     price,
     originalPrice,
     category,
+    subcategory,
     brand,
     stock,
     weight,
@@ -326,6 +329,7 @@ const updateProductById = asyncHandler(async (req, res) => {
     price,
     originalPrice,
     category,
+    subcategory,
     brand,
     stock,
     weight,
@@ -367,6 +371,7 @@ const updateProductById = asyncHandler(async (req, res) => {
   if (price !== undefined) product.price = price;
   if (originalPrice !== undefined) product.originalPrice = originalPrice;
   if (category) product.category = category;
+  if (subcategory) product.subcategory = subcategory;
   if (brand) product.brand = brand;
   if (stock !== undefined) product.stock = stock;
   if (weight !== undefined) product.weight = weight;

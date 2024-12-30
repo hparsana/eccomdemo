@@ -10,7 +10,7 @@ import Product from "./Product/product.slice";
 import Order from "./Order/order.slice";
 import SavedProduct from "./SaveProduct/savedProduct.slice";
 import Cart from "./Cart/cart.slice"; // Import Cart reducer
-
+import Category from "./Category/category.slice";
 const rootReducer = combineReducers({
   userAuthData: Auth,
   userData: User,
@@ -18,6 +18,7 @@ const rootReducer = combineReducers({
   orderData: Order,
   savedProductData: SavedProduct,
   cartData: Cart, // Add Cart reducer
+  categoryData: Category, // Add Category reducer
 });
 
 export const store = configureStore(

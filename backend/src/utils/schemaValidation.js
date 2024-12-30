@@ -60,7 +60,13 @@ export const addProductSchemaValidation = z.object({
     .max(50, {
       message: "Product category must not be more than 50 characters",
     }),
-
+  subcategory: z
+    .string({ required_error: "Product subcategory is required" })
+    .trim()
+    .min(3, { message: "Product subcategory must be at least 3 characters" })
+    .max(50, {
+      message: "Product subcategory must not be more than 50 characters",
+    }),
   brand: z
     .string({ required_error: "Brand is required" })
     .trim()
@@ -188,7 +194,13 @@ export const updateProductSchemaValidation = z.object({
     .max(50, {
       message: "Product category must not be more than 50 characters",
     }),
-
+  subcategory: z
+    .string({ required_error: "Product subcategory is required" })
+    .trim()
+    .min(3, { message: "Product subcategory must be at least 3 characters" })
+    .max(50, {
+      message: "Product subcategory must not be more than 50 characters",
+    }),
   brand: z
     .string({ required_error: "Brand is required" })
     .trim()

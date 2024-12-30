@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { addItemToCart } from "@/app/store/Cart/cart.slice";
 import RecentlyViewed from "./RecentlyViewed";
 import RatingsAndReviews from "./RattingBar";
+import ProductImageSlider from "./ProductImageSlider";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -36,7 +37,10 @@ const ProductDetail = () => {
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
   const [selectedSize, setSelectedSize] = useState("7");
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedColor, setSelectedColor] = useState({
+    index: 0,
+    color: null,
+  });
   const [openAccordion, setOpenAccordion] = useState(0);
   const [recentViews, setRecentViews] = useState([]);
 
@@ -45,6 +49,7 @@ const ProductDetail = () => {
   useEffect(() => {
     dispatch(getProductById(productId));
   }, [productId, dispatch]);
+  console.log("product details", product);
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -113,7 +118,7 @@ const ProductDetail = () => {
         brand: product?.brand || "",
         quantity: 1,
         size: selectedSize || product.size[0],
-        color: selectedColor || product.color[0],
+        color: selectedColor?.color || product.color[0],
       })
     );
 
@@ -137,7 +142,11 @@ const ProductDetail = () => {
       toast.error("You are not authenticated please Login or Signup");
     }
   };
-
+  if (loading) {
+    return (
+      <div className="text-center text-gray-700">Product is Loading..!</div>
+    );
+  }
   if (!product) {
     return <div className="text-center text-gray-700">Product not found!</div>;
   }
@@ -153,16 +162,8 @@ const ProductDetail = () => {
           {/* Product Images */}
           <div className="lg:sticky lg:top-6 lg:self-start">
             {/* Only render Image component if mainImage is valid */}
-            {mainImage && (
-              <Image
-                src={mainImage}
-                alt="Product Image"
-                width={400}
-                height={400}
-                className="rounded-lg lg:hidden block w-full h-[300px] md:h-[500px] object-cover"
-              />
-            )}
-            <div className="flex flex-col md:flex-row gap-5 items-center md:items-start">
+            {mainImage && <ProductImageSlider images={product?.images} />}
+            <div className="lg:flex hidden flex-col md:flex-row gap-5 items-center md:items-start">
               {/* Thumbnail Images */}
               <div className="flex lg:flex-col lg:mt-0 mt-4 flex-wrap gap-4">
                 {product.images.map((img) => (
@@ -191,7 +192,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-center mx-auto gap-6 md:mt-6 mt-3 w-full ">
+            <div className="flex justify-center mx-auto gap-6 lg:mt-6 mt-10 w-full ">
               {isInCart ? (
                 <button
                   className="bg-[#ff9f00] text-white lg:ml-[88px] text-lg py-3 w-full md:px-6 px-5 rounded-lg hover:bg-orange-400 transition"
@@ -291,19 +292,19 @@ const ProductDetail = () => {
                   {product.color.map((color, idx) => (
                     <div key={idx} className="flex flex-col items-center">
                       <button
-                        onClick={() => setSelectedColor(color)}
+                        onClick={() => setSelectedColor({ index: idx, color })} // Set both index and color
                         className={`w-16 h-16 rounded-md border-2 cursor-pointer transition ${
-                          selectedColor === color
-                            ? "ring-2 ring-blue-500 "
+                          selectedColor.index === idx
+                            ? "ring-2 ring-blue-500"
                             : "hover:opacity-75"
                         }`}
                         style={{
                           borderColor:
-                            selectedColor === color ? "blue" : "gray",
+                            selectedColor.index === idx ? "blue" : "gray",
                         }}
                       >
                         <img
-                          src={product.images[idx]?.url} // Use corresponding image for the color
+                          src={product.images[idx]?.url} // Use corresponding image for the index
                           alt={`Color option ${color}`}
                           className="w-full h-full object-cover rounded-md"
                         />
@@ -438,7 +439,10 @@ const ProductDetail = () => {
 
           {/* Overall Rating */}
 
-          <RatingsAndReviews category={product?.subcategory || "electronics"} />
+          <RatingsAndReviews
+            category={product?.subcategory || "electronics"}
+            reviews={product?.reviews}
+          />
           {/* Ratings and Reviews */}
           <div className="bg-white rounded-lg shadow-md p-6 mt-8">
             {/* <h2 className="text-2xl font-bold mb-4">Ratings & Reviews</h2> */}

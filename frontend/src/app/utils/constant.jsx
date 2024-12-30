@@ -57,3 +57,16 @@ export const SAVEDPRODUCT = {
   ADD_SAVEDPRODUCTS: `${LOCAL_PATH}/savedproduct/addsaveproduct`,
   DELETE_SAVEDPRODUCTS: `${LOCAL_PATH}/savedproduct/removesavedproduct`,
 };
+
+export const CATEGORIES = {
+  GET_ALL_CATEGORIES: `${LOCAL_PATH}/category`, // Matches the GET '/' route for all categories
+  GET_ONE_CATEGORY: `${LOCAL_PATH}/category`, // Append `/:id` dynamically for a single category
+  ADD_CATEGORY: `${LOCAL_PATH}/category`, // Matches the POST '/' route to add a category
+  UPDATE_CATEGORY: `${LOCAL_PATH}/category`, // Append `/:id` dynamically for updating a category
+  DELETE_CATEGORY: `${LOCAL_PATH}/category`, // Append `/:id` dynamically for deleting a category
+
+  // Subcategories
+  ADD_SUBCATEGORY: `${LOCAL_PATH}/category/subcategories`, // Append `/:categoryId/subcategories` dynamically
+  UPDATE_SUBCATEGORY: `${LOCAL_PATH}/category`, // Append `/:categoryId/subcategories/:subcategoryId` dynamically
+  DELETE_SUBCATEGORY: `${LOCAL_PATH}/category`, // Append `/:categoryId/subcategories/:subcategoryId` dynamically
+};

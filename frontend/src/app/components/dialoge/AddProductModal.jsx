@@ -1,4 +1,5 @@
 "use client";
+import { getAllCategories } from "@/app/store/Category/categoryApi";
 import {
   addProduct,
   getAllProducts,
@@ -18,6 +19,7 @@ const AddProductModal = ({ open, product, onClose }) => {
       price: product?.price || "", // Initialize as empty string
       originalPrice: product?.originalPrice || "", // Initialize as empty string
       category: product?.category || "", // Initialize as empty string
+      subcategory: product?.subcategory || "", // Initialize as empty string
       brand: product?.brand || "", // Initialize as empty string
       stock: product?.stock || 0, // Initialize as number
       weight: product?.weight || 0, // Initialize as number
@@ -50,8 +52,15 @@ const AddProductModal = ({ open, product, onClose }) => {
   });
 
   const { currentPage } = useSelector((state) => state.productData);
+  const {
+    categoryList: categories,
+    loading,
+    error,
+  } = useSelector((state) => state.categoryData);
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "images",
@@ -180,7 +189,7 @@ const AddProductModal = ({ open, product, onClose }) => {
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="add-product-modal">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white w-full max-w-3xl rounded-lg shadow-lg relative p-6 overflow-y-auto max-h-[95vh]">
+        <div className="bg-white w-full max-w-5xl rounded-lg shadow-lg relative p-6 overflow-y-auto max-h-[95vh]">
           <h2 className="text-xl font-bold mb-4 text-gray-800">
             {product ? "Edit Product" : "Add Product"}
           </h2>
@@ -317,7 +326,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
               <Controller
                 name="category"
                 control={control}
@@ -333,10 +342,45 @@ const AddProductModal = ({ open, product, onClose }) => {
                       disabled={!!product} // Disable if editing
                     >
                       <option value="">Select a category</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="apparel">Apparel</option>
-                      <option value="furniture">Furniture</option>
+                      {categories?.map((datas, key) => (
+                        <option value={datas?.name} key={datas?._id}>
+                          {datas?.name}
+                        </option>
+                      ))}
                     </select>
+                  </div>
+                )}
+              />
+              <Controller
+                name="subcategory"
+                control={control}
+                rules={{ required: "Subcategory is required" }}
+                render={({ field, fieldState: { error } }) => (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Subcategory
+                    </label>
+                    <select
+                      {...field}
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                        error ? "border-red-500" : "border-gray-300"
+                      }`}
+                      disabled={!!product} // Disable if editing
+                    >
+                      <option value="">Select a Subcategory</option>
+                      {categories
+                        ?.find((cat) => cat.name === selectedCategory)
+                        ?.subcategories?.map((subcat) => (
+                          <option value={subcat.name} key={subcat._id}>
+                            {subcat.name}
+                          </option>
+                        ))}
+                    </select>
+                    {error && (
+                      <span className="text-red-500 text-sm">
+                        {error.message}
+                      </span>
+                    )}
                   </div>
                 )}
               />
@@ -368,7 +412,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               />
             </div>
             {/* Conditionally Render Fields Based on Category */}
-            {selectedCategory === "electronics" && (
+            {selectedCategory?.toLowerCase() === "electronics" && (
               <>
                 <h1 className="  text-[20px] font-normal font-serif">
                   Electronics Details Fields
@@ -480,7 +524,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               </>
             )}
 
-            {selectedCategory === "apparel" && (
+            {selectedCategory?.toLowerCase() === "Fashion" && (
               <>
                 <div className="mt-4">
                   <label className="block text-sm font-medium text-gray-700">
@@ -523,7 +567,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               </>
             )}
 
-            {selectedCategory === "furniture" && (
+            {selectedCategory?.toLowerCase() === "furniture" && (
               <>
                 <div className="grid grid-cols-3 gap-4 mt-4">
                   <Controller
@@ -580,34 +624,70 @@ const AddProductModal = ({ open, product, onClose }) => {
                 </div>
               </>
             )}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Images
-              </label>
-              <div className="space-y-2">
-                {fields.map((item, index) => (
-                  <div key={item.id} className="flex items-center space-x-2">
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Images
+                </label>
+                <div className="space-y-2">
+                  {fields.map((item, index) => (
+                    <div key={item.id} className="flex items-center space-x-2">
+                      <Controller
+                        name={`images.${index}.url`}
+                        control={control}
+                        rules={{
+                          required: "Image URL is required",
+                        }}
+                        render={({ field, fieldState: { error } }) => (
+                          <input
+                            {...field}
+                            type="text"
+                            placeholder="Image URL"
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                              error ? "border-red-500" : "border-gray-300"
+                            }`}
+                          />
+                        )}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => remove(index)}
+                        className="text-red-500 hover:text-red-600"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => append({ url: "", alt: "" })}
+                    className="flex items-center text-blue-500 hover:text-blue-600"
+                  >
+                    <FaPlus className="mr-2" /> Add Image
+                  </button>
+                </div>
+              </div>
+              <div className="">
+                <label className="block text-sm font-medium text-gray-700">
+                  Colors
+                </label>
+                {colorFields.map((item, index) => (
+                  <div key={item.id} className="flex items-center space-x-4 ">
                     <Controller
-                      name={`images.${index}.url`}
+                      name={`color.${index}`}
                       control={control}
-                      rules={{
-                        required: "Image URL is required",
-                      }}
-                      render={({ field, fieldState: { error } }) => (
+                      render={({ field }) => (
                         <input
                           {...field}
                           type="text"
-                          placeholder="Image URL"
-                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
-                            error ? "border-red-500" : "border-gray-300"
-                          }`}
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          placeholder="Enter color"
                         />
                       )}
                     />
                     <button
                       type="button"
-                      onClick={() => remove(index)}
+                      onClick={() => removeColor(index)}
                       className="text-red-500 hover:text-red-600"
                     >
                       <FaTrash />
@@ -616,47 +696,12 @@ const AddProductModal = ({ open, product, onClose }) => {
                 ))}
                 <button
                   type="button"
-                  onClick={() => append({ url: "", alt: "" })}
-                  className="flex items-center text-blue-500 hover:text-blue-600"
+                  onClick={() => appendColor("")}
+                  className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
                 >
-                  <FaPlus className="mr-2" /> Add Image
+                  <FaPlus className="mr-2" /> Add Color
                 </button>
               </div>
-            </div>
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">
-                Colors
-              </label>
-              {colorFields.map((item, index) => (
-                <div key={item.id} className="flex items-center space-x-4 mt-2">
-                  <Controller
-                    name={`color.${index}`}
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        type="text"
-                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
-                        placeholder="Enter color"
-                      />
-                    )}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeColor(index)}
-                    className="text-red-500 hover:text-red-600"
-                  >
-                    <FaTrash />
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => appendColor("")}
-                className="mt-2 text-blue-500 hover:text-blue-600 flex items-center"
-              >
-                <FaPlus className="mr-2" /> Add Color
-              </button>
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">

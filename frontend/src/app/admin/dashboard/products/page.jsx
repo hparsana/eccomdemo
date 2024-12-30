@@ -15,6 +15,7 @@ import AddProductModal from "@/app/components/dialoge/AddProductModal";
 import { deleteProduct, getAllProducts } from "@/app/store/Product/productApi";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAllCategories } from "@/app/store/Category/categoryApi";
 
 const ProductsListPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -26,6 +27,7 @@ const ProductsListPage = () => {
   const [expandedRow, setExpandedRow] = useState(null);
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
 
   const {
     productList: products,
@@ -35,9 +37,15 @@ const ProductsListPage = () => {
     loading,
     error,
   } = useSelector((state) => state.productData);
+  const { categoryList: categories } = useSelector(
+    (state) => state.categoryData
+  );
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
   const recordsPerPage = 5;
 
   useEffect(() => {
@@ -71,6 +79,13 @@ const ProductsListPage = () => {
         );
       }
 
+      // Filter by selected subcategory
+      if (selectedSubcategory) {
+        filtered = filtered.filter(
+          (product) => product.subcategory === selectedSubcategory
+        );
+      }
+
       // Filter by selected brand
       if (selectedBrand) {
         filtered = filtered.filter(
@@ -82,7 +97,23 @@ const ProductsListPage = () => {
     };
 
     applyFilters();
-  }, [searchQuery, selectedCategory, selectedBrand, products]);
+  }, [
+    searchQuery,
+    selectedCategory,
+    selectedSubcategory,
+    selectedBrand,
+    products,
+  ]);
+
+  const HandleResetData = () => {
+    setSortColumn(null);
+    setSortOrder("asc");
+    setSearchQuery("");
+    setSelectedCategory("");
+    setSelectedBrand("");
+    setSelectedSubcategory("");
+    setExpandedRow(null);
+  };
 
   const sortProducts = (column) => {
     const newSortOrder =
@@ -162,13 +193,27 @@ const ProductsListPage = () => {
               className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
             >
               <option value="">All Categories</option>
-              {[...new Set(products?.map((product) => product.category))].map(
-                (category, index) => (
-                  <option key={index} value={category}>
-                    {category}
+
+              {categories?.map((datas, key) => (
+                <option value={datas?.name} key={datas?._id}>
+                  {datas?.name}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedSubcategory}
+              onChange={(e) => setSelectedSubcategory(e.target.value)}
+              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              disabled={!selectedCategory} // Disable if no category is selected
+            >
+              <option value="">All Subcategories</option>
+              {categories
+                ?.find((category) => category.name === selectedCategory)
+                ?.subcategories.map((subcategory) => (
+                  <option value={subcategory.name} key={subcategory._id}>
+                    {subcategory.name}
                   </option>
-                )
-              )}
+                ))}
             </select>
             <select
               value={selectedBrand}
@@ -184,6 +229,9 @@ const ProductsListPage = () => {
                 )
               )}
             </select>
+            <button className=" text-blue-700" onClick={HandleResetData}>
+              Reset Filters
+            </button>
           </div>
           <div className="relative w-80">
             <input

@@ -1,6 +1,24 @@
 import { FaStar } from "react-icons/fa";
 
-const RatingsAndReviews = ({ category }) => {
+const RatingsAndReviews = ({ category, reviews }) => {
+  const calculateStats = (reviews) => {
+    const totalRatings = reviews.length;
+    const totalScore = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = (totalScore / totalRatings).toFixed(1);
+
+    const totalStars = totalScore; // Calculate total stars given
+
+    const ratingsBreakdown = [5, 4, 3, 2, 1].map((star) => ({
+      stars: star,
+      count: reviews.filter((review) => review.rating === star).length,
+    }));
+
+    return { averageRating, totalRatings, totalStars, ratingsBreakdown };
+  };
+
+  const { averageRating, totalRatings, totalStars, ratingsBreakdown } =
+    calculateStats(reviews);
+
   const categoryData = {
     phone: {
       overallRating: 4,
@@ -76,14 +94,14 @@ const RatingsAndReviews = ({ category }) => {
   ];
 
   return (
-    <div className="p-5 bg-white w-full  rounded-md md:max-w-[1400px] mx-auto">
+    <div className="p-5 bg-white w-full rounded-md md:max-w-[1400px] mx-auto">
       <div className="flex flex-wrap justify-between items-center">
         {/* Overall Rating */}
         <div className="md:flex justify-start items-center flex-wrap md:flex-nowrap">
           <div className="text-center md:min-w-[150px] mb-5 md:mb-0">
             <div className="flex justify-center items-center">
               <h3 className="text-4xl font-bold text-blue-600">
-                {currentCategory.overallRating}
+                {averageRating}
               </h3>
               <span className="ml-2">
                 <FaStar className="w-6 h-6 mt-1 text-yellow-500" />
@@ -91,25 +109,26 @@ const RatingsAndReviews = ({ category }) => {
             </div>
 
             <p className="text-gray-500 text-sm">
-              {currentCategory.totalRatings} Ratings <br /> & <br />{" "}
-              {currentCategory.totalReviews} Reviews
+              {totalStars} Ratings <br /> & <br /> {reviews.length} Reviews
             </p>
           </div>
 
           {/* Ratings Breakdown */}
           <div className="flex flex-col gap-3 md:ml-5">
-            {[5, 4, 3, 2, 1].map((stars, index) => (
-              <div key={stars} className="flex items-center gap-3">
+            {ratingsBreakdown.map((breakdown, index) => (
+              <div key={breakdown.stars} className="flex items-center gap-3">
                 <span className="w-5 text-sm font-semibold text-gray-600">
-                  {stars}★
+                  {breakdown.stars}★
                 </span>
                 <div className="w-40 bg-gray-200 h-2 rounded-md">
                   <div
                     className={`${ratingColors[index]} h-2 rounded-md`}
-                    style={{ width: `${stars * 10}%` }}
+                    style={{
+                      width: `${(breakdown.count / totalRatings) * 100 || 0}%`,
+                    }}
                   ></div>
                 </div>
-                <span className="text-gray-500 text-sm">{stars * 10000}</span>
+                <span className="text-gray-500 text-sm">{breakdown.count}</span>
               </div>
             ))}
           </div>
@@ -152,14 +171,6 @@ const RatingsAndReviews = ({ category }) => {
           ))}
         </div>
       </div>
-
-      {/* Center Highlight Section */}
-      {/* <div className="mt-8 p-5 bg-gray-100 rounded-md text-center">
-        <h4 className="text-xl font-semibold mb-2 text-green-700">
-          What Customers Love
-        </h4>
-        <p className="text-gray-600 text-sm">{currentCategory.highlight}</p>
-      </div> */}
     </div>
   );
 };

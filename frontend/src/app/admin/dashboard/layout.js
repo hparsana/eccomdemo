@@ -33,6 +33,7 @@ const DashboardLayout = ({ children }) => {
     { name: "Dashboard", path: "/admin/dashboard", icon: FaHome },
     { name: "Products", path: "/admin/dashboard/products", icon: FaBox },
     { name: "Users", path: "/admin/dashboard/users", icon: FaChartBar },
+    { name: "Categorys", path: "/admin/dashboard/category", icon: FaBox },
     { name: "Orders", path: "/admin/dashboard/orders", icon: AiOutlineProduct },
   ];
 

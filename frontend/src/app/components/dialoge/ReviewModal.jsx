@@ -10,8 +10,6 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 const ReviewModal = ({ open, review, onClose, productId }) => {
-  console.log(review);
-
   const dispatch = useDispatch();
   const { control, handleSubmit, reset } = useForm({
     defaultValues: review || {
@@ -29,14 +27,16 @@ const ReviewModal = ({ open, review, onClose, productId }) => {
     dispatch(action)
       .then((response) => {
         if (response.error) {
-          toast.error(response.payload || null);
+          toast.error(response.payload || "Failed to submit review.");
           return;
         }
+        toast.success("Review submitted successfully!");
         dispatch(getProductById(productId)); // Refresh product details
         reset();
         onClose();
       })
       .catch((error) => {
+        toast.error("An error occurred while submitting the review.");
         console.error("Failed to add/edit review:", error);
       });
   };
@@ -93,7 +93,7 @@ const ReviewModal = ({ open, review, onClose, productId }) => {
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 px-3">
       <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
         <h2 className="text-xl font-bold mb-4 text-gray-800">
-          Add/Edit Review
+          {review ? "Edit Review" : "Add Review"}
         </h2>
 
         <form onSubmit={handleSubmit(handleAdd)} className="space-y-6">
@@ -140,20 +140,25 @@ const ReviewModal = ({ open, review, onClose, productId }) => {
             )}
           />
 
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-500"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500"
-            >
-              Submit
-            </button>
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-gray-600">
+              {review ? "Editing your review." : "Share your honest feedback."}
+            </div>
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-500"
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </form>
       </div>

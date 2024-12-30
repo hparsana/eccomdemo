@@ -1,0 +1,278 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  FaEdit,
+  FaTrashAlt,
+  FaSort,
+  FaSortUp,
+  FaSortDown,
+  FaSearch,
+  FaPlus,
+} from "react-icons/fa";
+import {
+  getAllCategories,
+  deleteCategory,
+  deleteSubcategory,
+} from "@/app/store/Category/categoryApi";
+import AddCategoryModal from "@/app/components/dialoge/AddCategoryModal";
+import EditSubcategoryModal from "@/app/components/dialoge/EditSubcategoryModal ";
+
+const CategoriesListPage = () => {
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [addCategoryModalOpen, setAddCategoryModalOpen] = useState(false);
+  const [addSubcategoryModalOpen, setAddSubcategoryModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [expandedCategoryId, setExpandedCategoryId] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+
+  const {
+    categoryList: categories,
+    loading,
+    error,
+  } = useSelector((state) => state.categoryData);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+  const sortCategories = (column) => {
+    const newSortOrder =
+      sortColumn === column && sortOrder === "asc" ? "desc" : "asc";
+    setSortColumn(column);
+    setSortOrder(newSortOrder);
+  };
+
+  const getSortIcon = (column) => {
+    if (sortColumn !== column) return <FaSort />;
+    return sortOrder === "asc" ? <FaSortUp /> : <FaSortDown />;
+  };
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredCategories = categories?.filter((category) =>
+    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleEditCategory = (category) => {
+    setSelectedCategory(category);
+    setAddCategoryModalOpen(true);
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    await dispatch(deleteCategory(categoryId)).unwrap();
+    dispatch(getAllCategories());
+  };
+
+  const toggleExpandCategory = (categoryId) => {
+    setExpandedCategoryId(
+      expandedCategoryId === categoryId ? null : categoryId
+    );
+  };
+
+  const handleAddSubcategory = (category) => {
+    setSelectedCategory(category);
+    setAddSubcategoryModalOpen(true);
+  };
+
+  const handleEditSubcategory = (subcategory) => {
+    setSelectedSubcategory(subcategory);
+    setAddSubcategoryModalOpen(true);
+  };
+  const handleDeleteSubcategory = async (subcategoryId, categoryId) => {
+    try {
+      // Dispatch the action to delete the subcategory
+      await dispatch(deleteSubcategory({ categoryId, subcategoryId })).unwrap();
+
+      // Fetch updated categories list after deletion
+      dispatch(getAllCategories());
+    } catch (error) {
+      console.error("Failed to delete subcategory:", error);
+    }
+  };
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
+        Category
+      </h1>
+      <div className="p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Available Categories</h2>
+          <button
+            onClick={() => setAddCategoryModalOpen(true)}
+            className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+          >
+            Add Category
+          </button>
+        </div>
+        <div className="relative w-80 mb-4">
+          <input
+            type="text"
+            placeholder="Search categories..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+          />
+          <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
+        </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th
+                    className="p-4 text-left text-gray-600 cursor-pointer flex items-center"
+                    onClick={() => sortCategories("name")}
+                  >
+                    Name <span>{getSortIcon("name")} </span>
+                  </th>
+                  <th className="p-4 text-left text-gray-600">Description</th>
+                  <th className="p-4 text-center text-gray-600">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredCategories?.map((category) => (
+                  <React.Fragment key={category._id}>
+                    <tr
+                      className="border-t hover:bg-gray-50 cursor-pointer"
+                      onClick={() => toggleExpandCategory(category._id)}
+                    >
+                      <td className="p-4">{category.name}</td>
+                      <td className="p-4">{category.description}</td>
+                      <td className="p-4 text-center flex justify-center space-x-4">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditCategory(category);
+                          }}
+                          className="text-yellow-500 hover:text-yellow-600"
+                        >
+                          <FaEdit size={20} />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteCategory(category._id);
+                          }}
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          <FaTrashAlt size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                    {expandedCategoryId === category._id && (
+                      <tr>
+                        <td colSpan="3" className="p-4 bg-gray-100">
+                          <ul>
+                            {/* <li className="text-xl font-bold ml-2 flex justify-between   text-black">
+                                Sub-Category List
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAddSubcategory(category);
+                                  }}
+                                  className="text-blue-500 hover:text-blue-600 flex items-center"
+                                >
+                                  <FaPlus className="mr-2" /> Add Subcategory
+                                </button>
+                              </li> */}
+                            {category.subcategories?.length > 0 ? (
+                              category.subcategories.map((subcategory) => (
+                                <li
+                                  key={subcategory._id}
+                                  className="flex justify-between w-[300px] items-center p-2 border-b"
+                                >
+                                  <span className="text-gray-700 font-semibold">
+                                    {subcategory.name}
+                                  </span>
+                                  <div className="flex space-x-4">
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditSubcategory(subcategory);
+                                      }}
+                                      className="text-yellow-500 hover:text-yellow-600"
+                                    >
+                                      <FaEdit size={16} />
+                                    </button>
+                                    <button
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteSubcategory(
+                                          subcategory._id,
+                                          category._id
+                                        );
+                                      }}
+                                      className="text-red-500 hover:text-red-600"
+                                    >
+                                      <FaTrashAlt size={16} />
+                                    </button>
+                                  </div>
+                                </li>
+                              ))
+                            ) : (
+                              <div className="flex items-center justify-between">
+                                <p className="text-gray-700">
+                                  No Subcategories Available
+                                </p>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAddSubcategory(category);
+                                  }}
+                                  className="text-blue-500 hover:text-blue-600 flex items-center"
+                                >
+                                  <FaPlus className="mr-2" /> Add Subcategory
+                                </button>
+                              </div>
+                            )}
+                          </ul>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {addCategoryModalOpen && (
+          <AddCategoryModal
+            open={addCategoryModalOpen}
+            category={selectedCategory}
+            onClose={() => {
+              setAddCategoryModalOpen(false);
+              setSelectedCategory(null);
+            }}
+          />
+        )}
+        {addSubcategoryModalOpen && (
+          <EditSubcategoryModal
+            open={addSubcategoryModalOpen}
+            mode={selectedSubcategory ? "edit" : "add"}
+            subcategory={selectedSubcategory}
+            categoryId={expandedCategoryId}
+            onClose={() => {
+              setAddSubcategoryModalOpen(false);
+              setSelectedSubcategory(null);
+            }}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default CategoriesListPage;

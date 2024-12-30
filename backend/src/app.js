@@ -51,6 +51,7 @@ import productRoutes from "./routes/product.route.js";
 import reviewRoutes from "./routes/review.route.js";
 import orderRoutes from "./routes/order.route.js";
 import saveProductRoutes from "./routes/savedProduct.route.js";
+import categoryRoutes from "./routes/category.route.js";
 
 app.get("/", (req, res) => {
   res.json(
@@ -62,6 +63,7 @@ app.use("/api/v1/product", productRoutes);
 app.use("/api/v1/product", reviewRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/savedproduct", saveProductRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 app.use((err, req, res, next) => {
   if (err instanceof ApiError) {

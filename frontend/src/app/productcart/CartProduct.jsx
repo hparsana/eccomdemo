@@ -1,10 +1,54 @@
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CartProduct = ({ product, updateQuantity, removeItem }) => {
+  const [isToastActive, setIsToastActive] = useState(false); // State to track toast activity
+
   const imageUrl =
     product.image && product.image.length > 0
       ? product.image[0]?.url
       : "/placeholder-image.jpg"; // Fallback to a placeholder image
+
+  const handleQuantityChange = (newQuantity) => {
+    if (isToastActive) return; // Prevent interactions if toast is active
+
+    if (newQuantity < 1) {
+      setIsToastActive(true);
+      toast.error("Quantity cannot be less than 1.", {
+        autoClose: 1000,
+        onClose: () => setIsToastActive(false), // Reset state when toast closes
+      });
+      return;
+    }
+
+    if (newQuantity > 5) {
+      setIsToastActive(true);
+      toast.warn("You can add a maximum of 5 items.", {
+        autoClose: 1000,
+        onClose: () => setIsToastActive(false), // Reset state when toast closes
+      });
+      return;
+    }
+
+    updateQuantity(product.id, newQuantity);
+    setIsToastActive(true);
+    toast.success(`Quantity updated to ${newQuantity}`, {
+      autoClose: 1000,
+      onClose: () => setIsToastActive(false), // Reset state when toast closes
+    });
+  };
+
+  const handleRemoveItem = () => {
+    if (isToastActive) return; // Prevent interactions if toast is active
+
+    setIsToastActive(true);
+    removeItem(product.id);
+    toast.success("Item removed from the cart.", {
+      autoClose: 1000,
+      onClose: () => setIsToastActive(false), // Reset state when toast closes
+    });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 flex items-start gap-4">
@@ -55,8 +99,9 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
         <div className="flex items-center mt-3 space-x-4">
           <div className="flex items-center border border-gray-300 rounded-md">
             <button
-              onClick={() => updateQuantity(product.id, product.quantity - 1)}
-              className="px-3 py-1"
+              onClick={() => handleQuantityChange(product.quantity - 1)}
+              className={`px-3 py-1 ${isToastActive ? "cursor-not-allowed opacity-50" : ""}`}
+              disabled={isToastActive}
             >
               -
             </button>
@@ -67,15 +112,17 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
               className="w-12 text-center border-none focus:outline-none"
             />
             <button
-              onClick={() => updateQuantity(product.id, product.quantity + 1)}
-              className="px-3 py-1"
+              onClick={() => handleQuantityChange(product.quantity + 1)}
+              className={`px-3 py-1 ${isToastActive ? "cursor-not-allowed opacity-50" : ""}`}
+              disabled={isToastActive}
             >
               +
             </button>
           </div>
           <button
-            onClick={() => removeItem(product.id)}
-            className="text-red-600 hover:underline"
+            onClick={handleRemoveItem}
+            className={`text-red-600 hover:underline ${isToastActive ? "cursor-not-allowed opacity-50" : ""}`}
+            disabled={isToastActive}
           >
             REMOVE
           </button>
