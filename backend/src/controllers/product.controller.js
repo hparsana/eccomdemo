@@ -143,6 +143,7 @@ const getProducts = asyncHandler(async (req, res) => {
     limit = 10,
     sort = "-createdAt",
     category,
+    subcategory,
     brand,
     minPrice,
     maxPrice,
@@ -155,6 +156,8 @@ const getProducts = asyncHandler(async (req, res) => {
   const query = {};
 
   if (category) query.category = { $regex: category, $options: "i" };
+  if (subcategory) query.subcategory = { $regex: subcategory, $options: "i" };
+
   if (brand) query.brand = { $regex: brand, $options: "i" };
   if (minPrice || maxPrice) {
     query.price = {};
@@ -178,6 +181,7 @@ const getProducts = asyncHandler(async (req, res) => {
       .lean(), // Fetch plain objects for easier merging
     Product.countDocuments(query),
     Product.distinct("category", query),
+    Product.distinct("subcategory", query),
     Product.distinct("brand", query),
   ]);
 

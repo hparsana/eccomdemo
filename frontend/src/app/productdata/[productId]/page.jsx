@@ -36,7 +36,7 @@ const ProductDetail = () => {
 
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
-  const [selectedSize, setSelectedSize] = useState("7");
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState({
     index: 0,
     color: null,

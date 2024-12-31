@@ -102,6 +102,7 @@ export default function ProductData() {
     setSelectedBrand("");
     setSelectedColor("");
     setSelectedSize("");
+    redirect("/productdata");
   };
 
   const handlePriceChange = (event, newValue) => {
@@ -126,7 +127,7 @@ export default function ProductData() {
 
         {/* Sidebar */}
         <aside
-          className={`fixed md:relative bg-white shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-full md:min-h-[100vh] lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px]  transform ${
+          className={`fixed md:relative bg-white shadow-sm rounded-lg p-4 z-40  top-0 left-0 h-[100vh] md:min-h-[100vh] md:overflow-hidden  overflow-y-scroll lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px]  transform ${
             showSidebar ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 transition-transform duration-300 ease-in-out`}
         >
@@ -311,7 +312,7 @@ export default function ProductData() {
               </span>
             </label>
           </div>
-          <div>
+          <div className="md:mb-0 mb-20">
             <label className="inline-flex items-center cursor-pointer">
               <input
                 type="checkbox"

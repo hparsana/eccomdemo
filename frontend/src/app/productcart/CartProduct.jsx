@@ -61,7 +61,9 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
         <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
         <p className="text-sm text-gray-600">Brand: {product?.brand}</p>
         <div className="flex gap-x-5 mt-1">
-          <p className="text-sm text-gray-600">Color: {product.color}</p>
+          {product.color && (
+            <p className="text-sm text-gray-600">color: {product.color}</p>
+          )}
           {product.size && (
             <p className="text-sm text-gray-600">Size: {product.size}</p>
           )}

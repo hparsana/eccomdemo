@@ -271,7 +271,7 @@ const Navbar = () => {
 
       {/* Bottom Navigation Bar for Small Screens */}
       <div className="fixed bottom-0 left-0 w-full bg-[#F7F7F7] shadow-lg lg:hidden z-50 rounded-t-[40px]">
-        <ul className="flex justify-around items-center py-3">
+        <ul className="flex justify-around items-center py-2">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link href={item.path}>
@@ -282,7 +282,7 @@ const Navbar = () => {
                 >
                   {/* Icon */}
                   <div
-                    className={`h-10 w-10 flex items-center justify-center rounded-full ${
+                    className={`h-6 w-6 flex items-center justify-center rounded-full ${
                       isActive(item.path) ? "bg-blue-100" : "bg-transparent"
                     } transition-all duration-300`}
                   >
@@ -291,14 +291,14 @@ const Navbar = () => {
 
                   {/* Badge for Cart Count */}
                   {item.name === "Cart" && item?.badge > 0 && (
-                    <div className="absolute top-[-2px] -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    <div className="absolute top-[-3px] -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center">
                       {item.badge}
                     </div>
                   )}
 
                   {/* Text Below Icon */}
                   <span
-                    className={`text-sm mt-1 font-medium ${
+                    className={`text-[10px] mt-1 font-medium ${
                       isActive(item.path) ? "text-blue-500" : "text-gray-600"
                     }`}
                   >

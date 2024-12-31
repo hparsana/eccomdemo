@@ -17,6 +17,7 @@ import {
   deleteSubcategory,
 } from "@/app/store/Category/categoryApi";
 import AddCategoryModal from "@/app/components/dialoge/AddCategoryModal";
+import { Pagination } from "@mui/material";
 import EditSubcategoryModal from "@/app/components/dialoge/EditSubcategoryModal ";
 
 const CategoriesListPage = () => {
@@ -28,6 +29,8 @@ const CategoriesListPage = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
 
   const {
     categoryList: categories,
@@ -57,9 +60,26 @@ const CategoriesListPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredCategories = categories?.filter((category) =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCategories = categories?.filter((category) => {
+    const matchesCategory = category.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const matchesSubcategory = category.subcategories?.some((subcategory) =>
+      subcategory.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return matchesCategory || matchesSubcategory;
+  });
+
+  const paginatedCategories = filteredCategories?.slice(
+    (currentPage - 1) * recordsPerPage,
+    currentPage * recordsPerPage
   );
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
 
   const handleEditCategory = (category) => {
     setSelectedCategory(category);
@@ -86,12 +106,10 @@ const CategoriesListPage = () => {
     setSelectedSubcategory(subcategory);
     setAddSubcategoryModalOpen(true);
   };
+
   const handleDeleteSubcategory = async (subcategoryId, categoryId) => {
     try {
-      // Dispatch the action to delete the subcategory
       await dispatch(deleteSubcategory({ categoryId, subcategoryId })).unwrap();
-
-      // Fetch updated categories list after deletion
       dispatch(getAllCategories());
     } catch (error) {
       console.error("Failed to delete subcategory:", error);
@@ -101,9 +119,9 @@ const CategoriesListPage = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
-        Category
+        Category List
       </h1>
-      <div className="p-6">
+      <div className="p-6 h-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Available Categories</h2>
           <button
@@ -143,7 +161,7 @@ const CategoriesListPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredCategories?.map((category) => (
+                {paginatedCategories?.map((category) => (
                   <React.Fragment key={category._id}>
                     <tr
                       className="border-t hover:bg-gray-50 cursor-pointer"
@@ -176,18 +194,17 @@ const CategoriesListPage = () => {
                       <tr>
                         <td colSpan="3" className="p-4 bg-gray-100">
                           <ul>
-                            {/* <li className="text-xl font-bold ml-2 flex justify-between   text-black">
-                                Sub-Category List
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleAddSubcategory(category);
-                                  }}
-                                  className="text-blue-500 hover:text-blue-600 flex items-center"
-                                >
-                                  <FaPlus className="mr-2" /> Add Subcategory
-                                </button>
-                              </li> */}
+                            <li className="p-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddSubcategory(category);
+                                }}
+                                className="text-blue-500 hover:text-blue-600 flex items-center"
+                              >
+                                <FaPlus className="mr-2" /> Add Subcategory
+                              </button>
+                            </li>
                             {category.subcategories?.length > 0 ? (
                               category.subcategories.map((subcategory) => (
                                 <li
@@ -248,6 +265,16 @@ const CategoriesListPage = () => {
             </table>
           </div>
         )}
+        <div className="flex justify-end mt-4">
+          <Pagination
+            count={Math.ceil(filteredCategories?.length / recordsPerPage)}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+            color="primary"
+          />
+        </div>
         {addCategoryModalOpen && (
           <AddCategoryModal
             open={addCategoryModalOpen}

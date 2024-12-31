@@ -1,8 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link"; // Import Next.js Link for navigation
+import { useDispatch, useSelector } from "react-redux";
 import { cn } from "@/lib/utils";
-
+import { getAllCategories } from "../store/Category/categoryApi";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa"; // Import arrow icons
+import SubcategoryLink from "./SubcategoryLink";
+import { useSearchParams } from "next/navigation";
+import { getAllProducts } from "../store/Product/productApi";
 export function NavbarDemo() {
   return (
     <div className="relative w-full flex items-center justify-center">
@@ -14,20 +19,31 @@ export function NavbarDemo() {
 function Navbar() {
   const [active, setActive] = useState(null);
 
-  const megaMenuData = {
-    Electronics: {
-      Mobiles: ["Mi", "Realme", "Samsung", "Infinix", "OPPO", "Apple"],
-      "Mobile Accessories": ["Mobile Cases", "Headphones", "Power Banks"],
-    },
-    "TVs & Appliances": {
-      Televisions: ["Smart TVs", "LED TVs", "QLED TVs"],
-      Refrigerators: ["Single Door", "Double Door"],
-    },
-    "Home & Furniture": {
-      Furniture: ["Sofas", "Beds", "Dining Tables"],
-      Decor: ["Curtains", "Cushions", "Wall Art"],
-    },
-  };
+  // Fetch categories and subcategories dynamically
+  const {
+    categoryList: categories,
+    loading,
+    error,
+  } = useSelector((state) => state.categoryData);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    const subcategory = searchParams.get("subcategory");
+
+    dispatch(
+      getAllProducts({
+        category: category,
+        subcategory: subcategory,
+      })
+    );
+  }, [searchParams]); // Trigger useEffect when searchParams change
 
   const handleMouseEnter = (category) => {
     setActive(category);
@@ -39,50 +55,52 @@ function Navbar() {
 
   return (
     <div className="w-full bg-white shadow-md z-50">
-      <nav className="container mx-auto flex items-center justify-center gap-x-16 px-6 py-4">
-        {Object.keys(megaMenuData).map((category) => (
+      <nav className="container mx-auto flex items-center justify-around px-6 py-4">
+        {/* Show loading state */}
+        {loading && <p>Loading categories...</p>}
+
+        {/* Error handling */}
+        {error && <p className="text-red-500">Error: {error}</p>}
+
+        {/* Display categories dynamically */}
+        {categories?.map((category) => (
           <div
-            key={category}
+            key={category._id}
             className="group relative cursor-pointer"
-            onMouseEnter={() => handleMouseEnter(category)}
+            onMouseEnter={() => handleMouseEnter(category.name)}
             onMouseLeave={handleMouseLeave}
           >
-            {/* Title */}
-            <span className="font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200">
-              {category}
+            {/* Category Name */}
+            <span className="font-medium text-[14px] text-gray-700 hover:text-blue-600 transition-colors duration-200 flex items-center">
+              {category.name}
+              {active === category.name ? (
+                <FaChevronUp className="ml-2 text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200" />
+              ) : (
+                <FaChevronDown className="ml-2 text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200" />
+              )}
             </span>
 
-            {/* Dropdown (Menu) */}
+            {/* Dropdown (Subcategories) */}
             <div
               className={cn(
-                "absolute left-0 top-full bg-white shadow-xl border border-gray-200 mt-2 rounded-lg transform transition-all duration-500 ease-in-out",
-                active === category
+                "absolute left-1/2 transform -translate-x-1/2 bg-white shadow-xl border border-gray-200 mt-2 rounded-lg transition-all duration-500 ease-in-out", // Centered dropdown
+                active === category.name
                   ? "opacity-100 scale-100 translate-y-0 visible"
                   : "opacity-0 scale-95 translate-y-2 invisible"
               )}
-              style={{ minWidth: "300px", maxWidth: "600px" }}
+              style={{ minWidth: "300px", maxWidth: "800px" }}
             >
-              <div className="grid grid-cols-2 gap-6 p-4">
-                {Object.entries(megaMenuData[category]).map(
-                  ([subcategory, items]) => (
-                    <div key={subcategory} className="flex flex-col">
-                      <h3 className="font-semibold text-gray-900 mb-2">
-                        {subcategory}
-                      </h3>
-                      <ul className="space-y-1">
-                        {items.map((item, index) => (
-                          <li key={index}>
-                            <Link
-                              href={`/productdata`}
-                              className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
-                            >
-                              {item}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )
+              <div className="grid grid-cols-2 gap-3 p-3">
+                {category.subcategories?.length > 0 ? (
+                  category.subcategories.map((subcategory) => (
+                    <SubcategoryLink
+                      key={subcategory._id}
+                      category={category.name}
+                      subcategory={subcategory.name}
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">No subcategories available</p>
                 )}
               </div>
             </div>
