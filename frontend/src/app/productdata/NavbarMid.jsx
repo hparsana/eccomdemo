@@ -83,7 +83,7 @@ function Navbar() {
             {/* Dropdown (Subcategories) */}
             <div
               className={cn(
-                "absolute left-1/2 transform -translate-x-1/2 bg-white shadow-xl border border-gray-200 mt-2 rounded-lg transition-all duration-500 ease-in-out", // Centered dropdown
+                "absolute left-1/2 transform -translate-x-1/2 bg-white shadow-xl border border-gray-200 mt-2 rounded-lg duration-300", // Centered dropdown
                 active === category.name
                   ? "opacity-100 scale-100 translate-y-0 visible"
                   : "opacity-0 scale-95 translate-y-2 invisible"

@@ -9,7 +9,8 @@ import useAxios from "../utils/commonAxios";
 import withAuth from "../components/Auth/withAuth";
 import { getUserData } from "../store/Auth/authApi";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+
 const LoginPage = () => {
   const { userLoggedIn } = useSelector((data) => data?.userAuthData);
   const [loginLoading, setLoginLoading] = useState(false);
@@ -28,6 +29,7 @@ const LoginPage = () => {
 
   const axios = useAxios();
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
 
   // Function to check if the input is an email
   const isEmail = (input) => {
@@ -53,6 +55,13 @@ const LoginPage = () => {
         dispatch(getUserData());
         setLoginLoading(false);
 
+        const pageRedirecrt = searchParams.get("page");
+
+        if (pageRedirecrt) {
+          console.log(pageRedirecrt, "jenish<<<<<<<<");
+          router.push("/productdata/address");
+          return;
+        }
         router.push("/");
       } else {
         toast.error("Invalid username or password.");

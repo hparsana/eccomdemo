@@ -464,7 +464,7 @@ const addAddress = asyncHandler(async (req, res) => {
 
   return res
     .status(201)
-    .json(new ApiResponse(201, user.addresses, "Address added successfully."));
+    .json(new ApiResponse(200, user.addresses, "Address added successfully."));
 });
 
 const getAllAddresses = asyncHandler(async (req, res) => {
@@ -535,21 +535,29 @@ const updateAddress = asyncHandler(async (req, res) => {
 const deleteAddress = asyncHandler(async (req, res) => {
   const { addressId } = req.params;
 
+  // Validate the address ID
   if (!mongoose.Types.ObjectId.isValid(addressId)) {
     throw new ApiError(400, "Invalid address ID format.");
   }
 
+  // Find the user
   const user = await User.findById(req.user._id);
   if (!user) {
     throw new ApiError(404, "User not found.");
   }
 
+  // Check if the address exists in the user's address list
   const address = user.addresses.id(addressId);
   if (!address) {
     throw new ApiError(404, "Address not found.");
   }
 
-  address.remove();
+  // Remove the address using pull
+  user.addresses = user.addresses.filter(
+    (addr) => addr._id.toString() !== addressId
+  );
+
+  // Save the updated user document
   await user.save();
 
   return res

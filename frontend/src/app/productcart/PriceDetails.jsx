@@ -26,7 +26,7 @@ const PriceDetails = ({ totalData, itemsCount }) => {
           <span>Total Amount</span>
           <span>₹{totalData.totalAmount}</span>
         </div>
-        <p className="text-green-600 text-sm mt-2">
+        <p className="text-green-600 text-lg mt-2">
           You will save ₹{totalData.discount} on this order.
         </p>
       </div>

@@ -35,7 +35,13 @@ const withAuth = (
           redirect("/login");
         } else if (!authentication && userLoggedIn) {
           const redirectPath = roleRedirectMap[authUser?.role] || "/";
-          redirect(redirectPath);
+          const userAtivepath = localStorage.getItem("currentActivePage");
+
+          if (userAtivepath && userAtivepath !== null) {
+            redirect("/productdata/address");
+          } else {
+            redirect(redirectPath);
+          }
         } else if (
           allowedRoles.length > 0 &&
           !allowedRoles.includes(authUser?.role)

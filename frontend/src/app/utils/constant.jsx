@@ -70,3 +70,10 @@ export const CATEGORIES = {
   UPDATE_SUBCATEGORY: `${LOCAL_PATH}/category`, // Append `/:categoryId/subcategories/:subcategoryId` dynamically
   DELETE_SUBCATEGORY: `${LOCAL_PATH}/category`, // Append `/:categoryId/subcategories/:subcategoryId` dynamically
 };
+
+export const ADDRESSES = {
+  GET_ALL: `${LOCAL_PATH}/user/addresses`,
+  ADD: `${LOCAL_PATH}/user/addresses`,
+  UPDATE: `${LOCAL_PATH}/user/addresses/:addressId`,
+  DELETE: `${LOCAL_PATH}/user/addresses/:addressId`,
+};

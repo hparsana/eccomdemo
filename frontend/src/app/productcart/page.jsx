@@ -7,9 +7,14 @@ import {
   updateItemQuantity,
   removeItemFromCart,
 } from "../store/Cart/cart.slice";
+import { FaShieldAlt } from "react-icons/fa";
+import { redirect } from "next/navigation";
 
 const Cart = () => {
   const { cartItems } = useSelector((state) => state.cartData);
+  const { userLoggedIn, authUser } = useSelector(
+    (state) => state?.userAuthData
+  );
   const dispatch = useDispatch();
 
   const calculateTotal = () => {
@@ -29,6 +34,17 @@ const Cart = () => {
       deliveryCharge: totalPrice > 5000 ? 0 : 99,
       totalAmount: totalPrice + (totalPrice > 5000 ? 0 : 99),
     };
+  };
+
+  const handlePlaceOrder = () => {
+    if (userLoggedIn) {
+      redirect("/productdata/address");
+      return;
+    } else {
+      localStorage.setItem("currentActivePage", "/productdata/address");
+      redirect("/login?page=address");
+      return;
+    }
   };
 
   return (
@@ -52,16 +68,26 @@ const Cart = () => {
               ))}
             </div>
           </div>
-
-          <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky top-3 md:mt-10 mt-4 md:mb-0 mb-20">
-            <PriceDetails
-              totalData={calculateTotal()}
-              itemsCount={cartItems.length}
-            />
-            <div className="mt-6 flex justify-end">
-              <button className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg">
-                PLACE ORDER
-              </button>
+          <div>
+            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky top-3 md:mt-10 mt-4 md:mb-0 mb-20">
+              <PriceDetails
+                totalData={calculateTotal()}
+                itemsCount={cartItems.length}
+              />
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg"
+                  onClick={handlePlaceOrder}
+                >
+                  PLACE ORDER
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3 mt-6">
+              <FaShieldAlt className="text-[#878787] text-[25px]" />
+              <h1 className="md:text-[16px] text-[14px] text-left text-[#878787] md:pr-10 font-medium">
+                Safe and Secure Payments. Easy returns. 100% Authentic products.
+              </h1>
             </div>
           </div>
         </div>

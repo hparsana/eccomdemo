@@ -381,7 +381,7 @@ export function ProductCard({ product, onRemove }) {
   return (
     <motion.div
       ref={ref}
-      className="relative bg-white shadow-md rounded-lg overflow-hidden h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="relative bg-white shadow-md rounded-lg mt-5  h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: 0.1 }}
