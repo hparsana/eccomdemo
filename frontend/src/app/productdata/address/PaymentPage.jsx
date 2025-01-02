@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaCreditCard, FaPaypal, FaApplePay } from "react-icons/fa";
 
-const PaymentPage = () => {
+const PaymentPage = ({ isProductSummarySelected }) => {
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [cardDetails, setCardDetails] = useState({
     cardNumber: "",
@@ -37,7 +37,7 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center px-4">
+    <div className="p-6 h-auto  flex items-center justify-center px-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Payment</h2>
 

@@ -55,7 +55,18 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   };
 
   const handleAddNewAddress = () => {
-    reset(); // Clear the form
+    reset({
+      // Reset all form fields to empty values
+      fullName: "",
+      phone: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+      isDefault: false,
+    });
     setShowForm(true); // Show the form for adding
     setSelectedAddressId(null); // Ensure no address is pre-filled
     setShowPaymentButton(false); // Hide the payment button while adding
@@ -63,11 +74,13 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
 
   const handleSelectSavedAddress = (address) => {
     setSelectedSavedAddress(address); // Store the selected address
-    setShowPaymentButton(true); // Show the payment button
+    // setShowPaymentButton(true); // Show the payment button
+    handleAddressSelection(!!address);
+    setShowPaymentButton(true);
   };
   useEffect(() => {
     // Reset selection state when component loads
-    if (addressList.length === 0) {
+    if (addressList.length === 0 || !selectedSavedAddress) {
       handleAddressSelection(false);
     }
   }, [addressList, handleAddressSelection]);
@@ -92,9 +105,9 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   // Determine the addresses to display
   const visibleAddresses = showAll ? addressList : addressList.slice(0, 2);
   return (
-    <div className=" p-6 bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center px-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <div className=" p-6  flex items-center justify-center md:px-4 px-2">
+      <div className="bg-white md:p-8 p-2 rounded-lg shadow-md w-full max-w-2xl">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 md:px-0 px-3">
           Shipping Address
         </h2>
 
@@ -107,9 +120,12 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
             {loading ? (
               <p>Loading addresses...</p>
             ) : (
-              <div className="bg-gray-100 p-4 rounded-lg shadow-md text-gray-700">
+              <div className=" ">
                 {visibleAddresses.map((addr, key) => (
-                  <div key={key} className="mb-4 border-b pb-2">
+                  <div
+                    key={key}
+                    className="mb-4 border-b p-2 bg-gray-100 rounded-lg  shadow-md text-gray-700"
+                  >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <input
@@ -118,7 +134,7 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
                           value={addr._id}
                           checked={addr._id === selectedSavedAddress?._id}
                           onChange={() => handleSelectSavedAddress(addr)}
-                          className="mr-2 accent-blue-500"
+                          className="mr-2 accent-blue-500 h-5 w-6"
                         />
                         <div>
                           <h3 className="text-lg font-semibold text-orange-500">
@@ -164,14 +180,13 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
             )}
 
             {/* Add New Address Button */}
-            {!showForm && (
-              <button
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 font-bold"
-                onClick={handleAddNewAddress}
-              >
-                Add New Address
-              </button>
-            )}
+
+            <button
+              className="mt-4 bg-blue-500 text-white py-2 px-4  rounded-lg hover:bg-blue-600 font-bold"
+              onClick={handleAddNewAddress}
+            >
+              Add New Address
+            </button>
           </div>
         )}
 
@@ -310,9 +325,15 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
         {showPaymentButton && (
           <button
             className="mt-6 w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 font-bold"
-            onClick={() => handleAddressSelection(true)}
+            onClick={() => {
+              if (selectedSavedAddress) {
+                handleChnageTab(); // Notify the parent to move to Product Summary
+              } else {
+                alert("Please select an address.");
+              }
+            }}
           >
-            Proceed to Payment
+            Product Summary
           </button>
         )}
       </div>
