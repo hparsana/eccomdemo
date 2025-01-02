@@ -8,12 +8,15 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-
+import { FaShare } from "react-icons/fa";
+import SocialMediaShareModal from "@/app/components/dialoge/SocialMediaShareModal";
 const ImageZoom = ({ mainImage, product }) => {
   const [zoomVisible, setZoomVisible] = useState(false);
   const [zoomStyle, setZoomStyle] = useState({});
   const [highlightStyle, setHighlightStyle] = useState({});
   const [like, setLike] = useState(false); // Local like state
+  const [modalOpen, setModalOpen] = useState(false);
+
   const dispatch = useDispatch();
   const { userLoggedIn } = useSelector((state) => state.userAuthData);
 
@@ -66,6 +69,9 @@ const ImageZoom = ({ mainImage, product }) => {
     }
     setLike(!like); // Toggle local state
   };
+
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
   return (
     <div className="relative">
       <div
@@ -94,6 +100,16 @@ const ImageZoom = ({ mainImage, product }) => {
             onClick={handleLike}
           />
         </div>
+        <div
+          className="absolute top-20 right-3 bg-white w-12 h-12 rounded-full flex justify-center items-center shadow-lg"
+          onMouseEnter={() => setZoomVisible(false)}
+          onMouseLeave={() => setZoomVisible(true)}
+        >
+          <FaShare
+            className={`w-7 h-7 text-gray-600 cursor-pointer`}
+            onClick={handleOpenModal}
+          />
+        </div>
         {/* Square Highlighted Area */}
         {zoomVisible && (
           <div
@@ -113,6 +129,12 @@ const ImageZoom = ({ mainImage, product }) => {
           style={zoomStyle}
         ></div>
       )}
+
+      <SocialMediaShareModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        product={product}
+      />
     </div>
   );
 };

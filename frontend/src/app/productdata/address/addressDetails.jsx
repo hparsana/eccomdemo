@@ -12,7 +12,7 @@ import {
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
 
-const AddressPage = ({ handleChnageTab }) => {
+const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [showForm, setShowForm] = useState(false); // Toggle for form display
   const [showPaymentButton, setShowPaymentButton] = useState(false); // Toggle payment button
@@ -65,6 +65,12 @@ const AddressPage = ({ handleChnageTab }) => {
     setSelectedSavedAddress(address); // Store the selected address
     setShowPaymentButton(true); // Show the payment button
   };
+  useEffect(() => {
+    // Reset selection state when component loads
+    if (addressList.length === 0) {
+      handleAddressSelection(false);
+    }
+  }, [addressList, handleAddressSelection]);
 
   const onSubmit = async (data) => {
     if (selectedAddressId) {
@@ -148,10 +154,10 @@ const AddressPage = ({ handleChnageTab }) => {
                 {/* "See More" Button */}
                 {addressList.length > 2 && (
                   <button
-                    className="mt-4 text-blue-500 hover:underline"
+                    className="mt-0 text-blue-500 hover:underline ml-4"
                     onClick={() => setShowAll((prev) => !prev)}
                   >
-                    {showAll ? "See Less" : "See More"}
+                    {showAll ? "See Less..." : "See More..."}
                   </button>
                 )}
               </div>
@@ -304,7 +310,7 @@ const AddressPage = ({ handleChnageTab }) => {
         {showPaymentButton && (
           <button
             className="mt-6 w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 font-bold"
-            onClick={() => handleChnageTab()}
+            onClick={() => handleAddressSelection(true)}
           >
             Proceed to Payment
           </button>
