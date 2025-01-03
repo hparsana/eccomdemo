@@ -39,7 +39,7 @@ const ProductSummaryPage = ({
   useEffect(() => {
     // Reset selection state when component loads
     if (isAddressSelected) {
-      handleSummarySelection(false);
+      handleSummarySelection(true);
     }
   }, [isAddressSelected, handleSummarySelection]);
   return (
@@ -65,7 +65,7 @@ const ProductSummaryPage = ({
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky top-3 md:mt-10 mt-4 md:mb-0 mb-20">
+            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky    md:mb-0 mb-20">
               <PriceDetails
                 totalData={calculateTotal()}
                 itemsCount={cartItems.length}

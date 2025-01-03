@@ -35,6 +35,7 @@ export default function ProductData() {
     loading,
     error,
   } = useSelector((state) => state.productData);
+  const { userLoggedIn } = useSelector((state) => state.userAuthData);
 
   const dispatch = useDispatch();
   const recordsPerPage = 5;
@@ -46,6 +47,9 @@ export default function ProductData() {
       })
     );
   }, [dispatch, currentPage]);
+  useEffect(() => {
+    dispatch(fetchSavedProducts());
+  }, [dispatch, userLoggedIn]);
   // Filter products dynamically
   const filteredProducts = loading
     ? []
@@ -328,11 +332,15 @@ export default function ProductData() {
         </aside>
 
         {/* Product Listing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 md:gap-y-0 gap-y-3 md:mb-16 mb-28  md:px-0 px-3 flex-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 md:gap-y-0 gap-y-3 md:mb-16 mb-28 md:px-0 px-3 flex-1">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard key={product._id} product={product} />
             ))
+          ) : loading ? (
+            <div className="col-span-full flex justify-center items-center">
+              <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
           ) : (
             <p className="col-span-full text-center text-gray-600">
               No products match your filters.
@@ -347,16 +355,12 @@ export default function ProductData() {
 export function ProductCard({ product, onRemove }) {
   const [like, setLike] = useState(false); // Local like state
   const dispatch = useDispatch();
-  const { userLoggedIn } = useSelector((state) => state.userAuthData);
 
   const savedProducts = useSelector(
     (state) => state.savedProductData.savedProducts
   ); // Access Redux state
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  useEffect(() => {
-    dispatch(fetchSavedProducts());
-  }, [dispatch, userLoggedIn]);
 
   // Initialize "like" status from Redux state
   useEffect(() => {

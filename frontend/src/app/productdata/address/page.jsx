@@ -1,34 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import PaymentPage from "./PaymentPage";
+import { useState, useEffect } from "react";
+import { Stepper, Step, StepLabel } from "@mui/material";
+import StepConnector, {
+  stepConnectorClasses,
+} from "@mui/material/StepConnector";
+import { styled } from "@mui/material/styles";
 import AddressPage from "./addressDetails";
-import withAuth from "@/app/components/Auth/withAuth";
 import ProductSummaryPage from "./ProductSummaryPage";
+import PaymentPage from "./PaymentPage";
+import withAuth from "@/app/components/Auth/withAuth";
+import { MdOutlineArrowBackIosNew } from "react-icons/md";
+// Styled Connector for Custom Colors
+const CustomConnector = styled(StepConnector)(({ theme }) => ({
+  [`& .${stepConnectorClasses.line}`]: {
+    borderColor: theme.palette.primary.main,
+    borderTopWidth: 3,
+  },
+}));
+
+// Styled Step for Active and Completed States
+const CustomStepLabel = styled(StepLabel)(({ theme }) => ({
+  "& .MuiStepIcon-root": {
+    color: theme.palette.primary.light, // Default color
+  },
+  "& .MuiStepIcon-root.Mui-active": {
+    color: theme.palette.primary.main, // Active step color
+  },
+  "& .MuiStepIcon-root.Mui-completed": {
+    color: theme.palette.success.main, // Completed step color
+  },
+}));
 
 const TabBarLayout = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isAddressSelected, setIsAddressSelected] = useState(false);
   const [isProductSummarySelected, setisProductSummarySelected] =
     useState(false);
 
+  const steps = ["Address", "Product Summary", "Payment"];
+
   const handleAddressSelection = (selected) => {
     setIsAddressSelected(selected);
   };
+
   const handleSummarySelection = (selected) => {
     setisProductSummarySelected(selected);
   };
+
   const handleProceedToProductSummary = () => {
     if (isAddressSelected) {
-      setCurrentStep(2); // Move to Product Summary
+      setCurrentStep(1);
     } else {
       alert("Please select an address first.");
     }
   };
 
   const handleProceedToPayment = () => {
-    setisProductSummarySelected(true);
-    setCurrentStep(3); // Move to Payment Page
+    if (isProductSummarySelected) {
+      setCurrentStep(2);
+    } else {
+      alert("Please complete the product summary first.");
+    }
   };
 
   useEffect(() => {
@@ -36,70 +69,47 @@ const TabBarLayout = () => {
   }, []);
 
   return (
-    <div className=" bg-gradient-to-br from-gray-50 min-h-[90vh] to-gray-200 flex  justify-center px-4 py-10">
-      {/* Container */}
-      <div className="container mx-auto bg-white shadow-lg rounded-lg p-4 md:p-8 transition-all duration-500">
-        {/* Step Navigation */}
-        <div className="flex justify-center mb-6 space-x-4">
-          <div
-            className={`flex-1 text-center py-2 px-4 rounded-lg cursor-pointer ${
-              currentStep === 1
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-600"
-            }`}
-            onClick={() => setCurrentStep(1)}
-          >
-            Address
-          </div>
-          <div
-            className={`flex-1 text-center py-2 px-4 rounded-lg cursor-pointer ${
-              currentStep === 2
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-600"
-            }`}
-            onClick={() => isAddressSelected && setCurrentStep(2)}
-          >
-            Product Summary
-          </div>
-          <div
-            className={`flex-1 text-center py-2 px-4 rounded-lg cursor-pointer ${
-              currentStep === 3
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-600"
-            }`}
-            onClick={() =>
-              currentStep === 2 && isProductSummarySelected && setCurrentStep(3)
-            }
-          >
-            Payment
-          </div>
-        </div>
+    <div className="bg-gradient-to-br from-gray-50 min-h-[90vh] to-gray-200 flex justify-center px-4 py-10">
+      <div className="container mx-auto bg-white shadow-lg rounded-lg p-2 md:p-8">
+        {/* Material-UI Stepper */}
+        <Stepper
+          activeStep={currentStep}
+          alternativeLabel
+          connector={<CustomConnector />}
+          className=""
+        >
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <CustomStepLabel>{label}</CustomStepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
         {/* Content Sections */}
-        <div className="grid grid-cols-1 3 gap-6">
-          {/* Address Section */}
-          {currentStep === 1 && (
-            <div className="col-span-1 md:col-span-1">
+        <div className="mt-8">
+          {currentStep === 0 && (
+            <div>
               <h2 className="text-xl font-bold mb-4 text-gray-800">
                 Shipping Address
               </h2>
+
               <AddressPage
                 handleAddressSelection={handleAddressSelection}
                 handleChnageTab={handleProceedToProductSummary}
               />
             </div>
           )}
-
-          {/* Product Summary Section */}
-          {currentStep === 2 && (
-            <div
-              className={`col-span-1 md:col-span-1 ${
-                isAddressSelected ? "opacity-100" : "opacity-50"
-              }`}
-            >
+          {currentStep === 1 && (
+            <div>
               <h2 className="text-xl font-bold mb-4 text-gray-800">
                 Product Summary
               </h2>
+              <button
+                className="flex items-center text-gray-500 hover:text-gray-700"
+                onClick={() => setCurrentStep(0)}
+              >
+                <MdOutlineArrowBackIosNew className="mr-1" /> Back
+              </button>
               <ProductSummaryPage
                 handleProceedToPayment={handleProceedToPayment}
                 isAddressSelected={isAddressSelected}
@@ -107,15 +117,15 @@ const TabBarLayout = () => {
               />
             </div>
           )}
-
-          {/* Payment Section */}
-          {currentStep === 3 && (
-            <div
-              className={`col-span-1 md:col-span-1 ${
-                isProductSummarySelected ? "opacity-100" : "opacity-50"
-              }`}
-            >
+          {currentStep === 2 && (
+            <div>
               <h2 className="text-xl font-bold mb-4 text-gray-800">Payment</h2>
+              <button
+                className=" flex items-center text-gray-500 hover:text-gray-700"
+                onClick={() => setCurrentStep(1)}
+              >
+                <MdOutlineArrowBackIosNew className="mr-1" /> Back
+              </button>
               <PaymentPage
                 isProductSummarySelected={isProductSummarySelected}
               />

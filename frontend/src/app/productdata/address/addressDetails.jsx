@@ -11,6 +11,7 @@ import {
 } from "@/app/store/Address/addressApi";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
+import { toast } from "react-toastify";
 
 const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -88,18 +89,17 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const onSubmit = async (data) => {
     if (selectedAddressId) {
       // Update address
-      await dispatch(
+      dispatch(
         updateAddress({ addressId: selectedAddressId, updatedData: data })
       );
       dispatch(getAllAddresses());
     } else {
       // Add new address
-      await dispatch(addAddress(data));
+      dispatch(addAddress(data));
       dispatch(getAllAddresses());
     }
     reset(); // Clear the form
     setShowForm(false); // Hide the form after submission
-    setShowPaymentButton(true); // Show the payment button
     setSelectedAddressId(null);
   };
   // Determine the addresses to display
@@ -329,7 +329,7 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
               if (selectedSavedAddress) {
                 handleChnageTab(); // Notify the parent to move to Product Summary
               } else {
-                alert("Please select an address.");
+                toast.error("Please select an address.");
               }
             }}
           >

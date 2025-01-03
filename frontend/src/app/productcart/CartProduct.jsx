@@ -51,7 +51,7 @@ const CartProduct = ({ product, updateQuantity, removeItem }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 flex items-start gap-4">
+    <div className="bg-white rounded-lg shadow-md p-4 flex flex-wrap items-start gap-4">
       <img
         src={imageUrl}
         alt={product.name || "Product Image"}
