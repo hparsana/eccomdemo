@@ -7,7 +7,6 @@ export const fetchSavedProducts = createAsyncThunk(
   "savedProducts/fetchSavedProducts",
   async (_, { rejectWithValue, getState }) => {
     const { userLoggedIn } = getState().userAuthData;
-    console.log("check user login", userLoggedIn);
 
     if (!userLoggedIn) {
       // Return local storage data for unauthenticated users

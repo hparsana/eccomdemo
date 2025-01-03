@@ -157,13 +157,14 @@ const getProducts = asyncHandler(async (req, res) => {
 
   if (category) query.category = { $regex: category, $options: "i" };
   if (subcategory) query.subcategory = { $regex: subcategory, $options: "i" };
-
   if (brand) query.brand = { $regex: brand, $options: "i" };
+
   if (minPrice || maxPrice) {
     query.price = {};
     if (minPrice) query.price.$gte = parseFloat(minPrice);
     if (maxPrice) query.price.$lte = parseFloat(maxPrice);
   }
+
   if (search) {
     query.$or = [
       { name: { $regex: search, $options: "i" } },
@@ -172,64 +173,69 @@ const getProducts = asyncHandler(async (req, res) => {
     ];
   }
 
-  // Parallel execution of queries
-  const [products, totalProducts, categories, brands] = await Promise.all([
-    Product.find(query)
-      .sort(sort)
-      .skip((pageNumber - 1) * limitNumber)
-      .limit(limitNumber)
-      .lean(), // Fetch plain objects for easier merging
-    Product.countDocuments(query),
-    Product.distinct("category", query),
-    Product.distinct("subcategory", query),
-    Product.distinct("brand", query),
-  ]);
+  try {
+    const [products, totalProducts, categories, subcategories, brands] =
+      await Promise.all([
+        Product.find(query)
+          .sort(sort)
+          .skip((pageNumber - 1) * limitNumber)
+          .limit(limitNumber)
+          .lean(), // Fetch plain objects for easier merging
+        Product.countDocuments(query),
+        Product.distinct("category"), // Distinct categories
+        Product.distinct("subcategory"), // Distinct subcategories
+        Product.distinct("brand"), // Distinct brands
+      ]);
 
-  // Fetch discount data for the products
-  const productIds = products.map((product) => product._id);
-  const startOfToday = new Date();
-  startOfToday.setHours(0, 0, 0, 0); // Start of today
+    // Fetch discount data for the products
+    const productIds = products.map((product) => product._id);
+    const startOfToday = new Date();
+    startOfToday.setHours(0, 0, 0, 0); // Start of today
 
-  const discounts = await Discount.find({
-    product: { $in: productIds },
-    endDate: { $gte: startOfToday },
-  }).lean();
+    const discounts = await Discount.find({
+      product: { $in: productIds },
+      endDate: { $gte: startOfToday },
+    }).lean();
 
-  // Merge discount data with products
-  const productsWithDiscounts = products.map((product) => {
-    const discount = discounts.find(
-      (disc) => disc.product.toString() === product._id.toString()
-    );
-    return {
-      ...product,
-      discount: discount
-        ? {
-            percentage: discount.percentage,
-            amount: discount.amount,
-            startDate: discount.startDate,
-            endDate: discount.endDate,
-            isActive: discount.isActive,
-          }
-        : null, // No discount for this product
-    };
-  });
+    // Merge discount data with products
+    const productsWithDiscounts = products.map((product) => {
+      const discount = discounts.find(
+        (disc) => disc.product.toString() === product._id.toString()
+      );
+      return {
+        ...product,
+        discount: discount
+          ? {
+              percentage: discount.percentage,
+              amount: discount.amount,
+              startDate: discount.startDate,
+              endDate: discount.endDate,
+              isActive: discount.isActive,
+            }
+          : null, // No discount for this product
+      };
+    });
 
-  return res.status(200).json(
-    new ApiResponse(200, {
-      products: productsWithDiscounts,
-      totalProducts,
-      totalPages: Math.ceil(totalProducts / limitNumber),
-      currentPage: pageNumber,
-      facets: {
-        categories,
-        brands,
-        priceRange: {
-          min: minPrice || 0,
-          max: maxPrice || 1000,
+    return res.status(200).json(
+      new ApiResponse(200, {
+        products: productsWithDiscounts,
+        totalProducts,
+        totalPages: Math.ceil(totalProducts / limitNumber),
+        currentPage: pageNumber,
+        facets: {
+          categories,
+          subcategories,
+          brands,
+          priceRange: {
+            min: minPrice || 0,
+            max: maxPrice || 1000,
+          },
         },
-      },
-    })
-  );
+      })
+    );
+  } catch (error) {
+    return res.status(500).json(new ApiResponse(500, { error: error.message }));
+  }
 });
 
 const getProductById = asyncHandler(async (req, res, next) => {

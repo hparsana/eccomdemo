@@ -37,12 +37,14 @@ function Navbar() {
     const category = searchParams.get("category");
     const subcategory = searchParams.get("subcategory");
 
-    dispatch(
-      getAllProducts({
-        category: category,
-        subcategory: subcategory,
-      })
-    );
+    if (category && subcategory) {
+      dispatch(
+        getAllProducts({
+          category: category,
+          subcategory: subcategory,
+        })
+      );
+    }
   }, [searchParams]); // Trigger useEffect when searchParams change
 
   const handleMouseEnter = (category) => {

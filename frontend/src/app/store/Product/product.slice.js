@@ -16,6 +16,7 @@ const ProductSlice = createSlice({
   },
   reducers: {
     ResetProducts: (state) => {
+      console.log("right this is good<<<<<<<", state);
       state.productList = [];
       state.productOne = null;
       state.facets = null;

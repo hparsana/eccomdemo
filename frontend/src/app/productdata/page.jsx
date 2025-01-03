@@ -13,9 +13,10 @@ import {
   saveProduct,
   unsaveProduct,
 } from "@/app/store/SaveProduct/savedProductApi";
+import { ResetProducts } from "../store/Product/product.slice";
 
 export default function ProductData() {
-  const [priceRange, setPriceRange] = useState([200, 250000]);
+  const [priceRange, setPriceRange] = useState([0, 250000]);
   const [selectedStock, setSelectedStock] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -26,6 +27,8 @@ export default function ProductData() {
   const [freeShipping, setFreeShipping] = useState(false);
   const [selectedRating, setSelectedRating] = useState("");
   const [selectedDiscount, setSelectedDiscount] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [debouncedPriceRange, setDebouncedPriceRange] = useState([200, 250000]);
   const {
     productList: products,
     totalProducts,
@@ -39,14 +42,78 @@ export default function ProductData() {
 
   const dispatch = useDispatch();
   const recordsPerPage = 5;
+  const lastCalled = useRef(0);
+
   useEffect(() => {
-    dispatch(
-      getAllProducts({
+    const handler = setTimeout(() => {
+      if (searchTerm) {
+        setDebouncedSearchTerm(searchTerm); // Update debounced term after delay
+      }
+    }, 500); // Adjust debounce delay as needed (e.g., 300ms, 500ms)
+
+    return () => {
+      clearTimeout(handler); // Clear timeout if the value changes before delay
+    };
+  }, [searchTerm]);
+  // Debouncing for Price Range
+  useEffect(() => {
+    dispatch(ResetProducts());
+    const handler = setTimeout(() => {
+      const queryParams = {
         page: currentPage,
         limit: recordsPerPage,
-      })
-    );
-  }, [dispatch, currentPage]);
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
+        ...(selectedCategory && { category: selectedCategory }),
+        ...(selectedBrand && { brand: selectedBrand }),
+        ...(priceRange[0] && { minPrice: priceRange[0] }),
+        ...(priceRange[1] && { maxPrice: priceRange[1] }),
+      };
+
+      dispatch(getAllProducts(queryParams));
+    }, 500); // Debounce delay for price range and other updates
+
+    return () => {
+      clearTimeout(handler);
+    }; // Clear the timeout if dependencies change
+  }, [
+    debouncedSearchTerm,
+    priceRange,
+    selectedCategory,
+    selectedBrand,
+    currentPage,
+    dispatch,
+  ]);
+
+  useEffect(() => {
+    const fetchFilteredProducts = () => {
+      const now = Date.now();
+      if (now - lastCalled.current < 600) return; // Avoid multiple calls within 500ms
+      lastCalled.current = now;
+
+      const queryParams = {
+        page: currentPage || 1,
+        limit: recordsPerPage || 10,
+      };
+
+      if (debouncedSearchTerm) queryParams.search = debouncedSearchTerm;
+      if (selectedCategory) queryParams.category = selectedCategory;
+      if (selectedBrand) queryParams.brand = selectedBrand;
+      if (debouncedPriceRange[0]) queryParams.minPrice = debouncedPriceRange[0];
+      if (debouncedPriceRange[1]) queryParams.maxPrice = debouncedPriceRange[1];
+
+      // dispatch(getAllProducts(queryParams));
+    };
+
+    fetchFilteredProducts();
+  }, [
+    selectedCategory,
+    selectedBrand,
+    currentPage,
+    debouncedSearchTerm,
+    // debouncedPriceRange,
+    dispatch,
+  ]);
+
   useEffect(() => {
     dispatch(fetchSavedProducts());
   }, [dispatch, userLoggedIn]);
@@ -54,18 +121,6 @@ export default function ProductData() {
   const filteredProducts = loading
     ? []
     : products.filter((product) => {
-        const matchesPrice =
-          product.price >= priceRange[0] && product.price <= priceRange[1];
-        const matchesStock = !selectedStock || product.stock < 10;
-        const matchesSearch = product.name
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-        const matchesCategory =
-          selectedCategory === "" ||
-          product.category.toLowerCase() === selectedCategory.toLowerCase();
-        const matchesBrand =
-          selectedBrand === "" ||
-          product.brand.toLowerCase() === selectedBrand.toLowerCase();
         const matchesColor =
           selectedColor === "" ||
           product.color?.some((color) =>
@@ -76,25 +131,13 @@ export default function ProductData() {
           product.size?.some((size) =>
             size.toLowerCase().includes(selectedSize.toLowerCase())
           );
-        const matchesDiscount =
-          selectedDiscount === "" ||
-          product.discount?.percentage >= parseInt(selectedDiscount);
         const matchesRating =
           selectedRating === "" || product.rating >= parseInt(selectedRating);
         const matchesFreeShipping =
           !freeShipping || product.shippingDetails?.isFreeShipping;
 
         return (
-          matchesPrice &&
-          matchesStock &&
-          matchesSearch &&
-          matchesCategory &&
-          matchesBrand &&
-          matchesColor &&
-          matchesSize &&
-          matchesDiscount &&
-          matchesRating &&
-          matchesFreeShipping
+          matchesColor && matchesSize && matchesRating && matchesFreeShipping
         );
       });
 
