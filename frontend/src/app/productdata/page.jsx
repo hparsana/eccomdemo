@@ -4,7 +4,7 @@ import { FaHeart } from "react-icons/fa";
 import { FaFilter, FaTimes } from "react-icons/fa";
 import { motion, useInView } from "framer-motion";
 import { Slider } from "@mui/material";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../store/Product/productApi";
 import { NavbarDemo } from "./NavbarMid";
@@ -41,14 +41,19 @@ export default function ProductData() {
   const { userLoggedIn } = useSelector((state) => state.userAuthData);
 
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
   const recordsPerPage = 5;
   const lastCalled = useRef(0);
 
   useEffect(() => {
+    return () => {
+      dispatch(ResetProducts());
+    };
+  }, []);
+
+  useEffect(() => {
     const handler = setTimeout(() => {
-      if (searchTerm) {
-        setDebouncedSearchTerm(searchTerm); // Update debounced term after delay
-      }
+      setDebouncedSearchTerm(searchTerm); // Update debounced term after delay
     }, 500); // Adjust debounce delay as needed (e.g., 300ms, 500ms)
 
     return () => {
@@ -57,7 +62,7 @@ export default function ProductData() {
   }, [searchTerm]);
   // Debouncing for Price Range
   useEffect(() => {
-    dispatch(ResetProducts());
+    // dispatch(ResetProducts());
     const handler = setTimeout(() => {
       const queryParams = {
         page: currentPage,
@@ -70,7 +75,7 @@ export default function ProductData() {
       };
 
       dispatch(getAllProducts(queryParams));
-    }, 500); // Debounce delay for price range and other updates
+    }, 300); // Debounce delay for price range and other updates
 
     return () => {
       clearTimeout(handler);
@@ -142,14 +147,28 @@ export default function ProductData() {
       });
 
   const handleResetFilter = () => {
-    setPriceRange([0, 250000]);
-    setSelectedStock(false);
-    setSearchTerm("");
-    setSelectedCategory("");
-    setSelectedBrand("");
-    setSelectedColor("");
-    setSelectedSize("");
-    redirect("/productdata");
+    const category = searchParams.get("category");
+    const subcategory = searchParams.get("subcategory");
+    if (
+      (category && subcategory) ||
+      priceRange[0] !== 0 ||
+      priceRange[1] !== 250000 ||
+      selectedStock ||
+      searchTerm ||
+      selectedCategory ||
+      selectedBrand ||
+      selectedColor ||
+      selectedSize
+    ) {
+      setPriceRange([0, 250000]);
+      setSelectedStock(false);
+      setSearchTerm("");
+      setSelectedCategory("");
+      setSelectedBrand("");
+      setSelectedColor("");
+      setSelectedSize("");
+      redirect("/productdata");
+    }
   };
 
   const handlePriceChange = (event, newValue) => {
@@ -247,7 +266,7 @@ export default function ProductData() {
             </select>
           </div>
           <div className="flex justify-between items-center gap-x-2">
-            {selectedCategory === "apparel" && (
+            {selectedCategory === "Shoes" && (
               <div className="mb-6 w-full">
                 <label className="block font-medium text-gray-700 mb-2">
                   Size
@@ -268,8 +287,8 @@ export default function ProductData() {
                 </select>
               </div>
             )}
-            {selectedCategory === "apparel" ||
-            selectedCategory === "electronics" ? (
+            {selectedCategory === "Shoes" ||
+            selectedCategory === "Electronics" ? (
               <div className="mb-6 w-full">
                 <label className="block font-medium text-gray-700 mb-2">
                   Color
@@ -373,20 +392,19 @@ export default function ProductData() {
             </label>
           </div>
         </aside>
-
         {/* Product Listing */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6 md:gap-y-0 gap-y-3 md:mb-16 mb-28 md:px-0 px-3 flex-1">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))
-          ) : loading ? (
+          {loading ? (
             <div className="col-span-full flex justify-center items-center">
               <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
+          ) : filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))
           ) : (
             <p className="col-span-full text-center text-gray-600">
-              No products match your filters.
+              No products found.
             </p>
           )}
         </div>
