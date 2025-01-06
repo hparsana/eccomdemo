@@ -77,3 +77,7 @@ export const ADDRESSES = {
   UPDATE: `${LOCAL_PATH}/user/addresses/:addressId`,
   DELETE: `${LOCAL_PATH}/user/addresses/:addressId`,
 };
+
+export const ERROR_LOGS = {
+  GET_ERROR_LOGS: `${LOCAL_PATH}/errorlogs/error-filelogs`, // Endpoint to fetch logs
+};

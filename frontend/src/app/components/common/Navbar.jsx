@@ -67,7 +67,7 @@ const Navbar = () => {
       path: "/productcart",
       icon: <AiOutlineShoppingCart size={28} />,
       name: "Cart",
-      badge: 3, // Attach cart count to cart item
+      badge: cartItems?.length || 0, // Attach cart count to cart item
     },
     { path: "/profile", icon: <AiOutlineUser size={28} />, name: "Profile" },
   ];

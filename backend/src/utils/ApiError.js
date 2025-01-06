@@ -7,8 +7,6 @@ class ApiError extends Error {
   ) {
     super(message);
     this.message = message;
-    this.data = null;
-    this.success = false;
     this.error = error;
     this.statusCode = statusCode;
     if (stack) {
@@ -21,8 +19,8 @@ class ApiError extends Error {
   // Add a custom toJSON method to ensure message is included
   toJSON() {
     return {
-      data: this.data,
-      success: this.success,
+      data: null,
+      success: false,
       error: this.error,
       statusCode: this.statusCode,
       message: this.message,

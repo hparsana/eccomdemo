@@ -35,6 +35,7 @@ const DashboardLayout = ({ children }) => {
     { name: "Users", path: "/admin/dashboard/users", icon: FaChartBar },
     { name: "Categorys", path: "/admin/dashboard/category", icon: FaBox },
     { name: "Orders", path: "/admin/dashboard/orders", icon: AiOutlineProduct },
+    { name: "Errors", path: "/admin/dashboard/errorlogs", icon: FaBox },
   ];
 
   const handleLogout = () => {
