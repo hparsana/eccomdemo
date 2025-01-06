@@ -106,3 +106,12 @@ app.use(async (err, req, res, next) => {
 });
 
 export default app;
+
+// # Logs
+// logs
+// *.log
+// npm-debug.log*
+// yarn-debug.log*
+// yarn-error.log*
+// lerna-debug.log*
+// .pnpm-debug.log*

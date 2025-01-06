@@ -54,7 +54,7 @@ export default function ErrorLogsPage() {
     logs.map((log, index) => (
       <div
         key={index}
-        className={`p-4 rounded-lg shadow-md border ${getErrorColor(
+        className={`p-4 rounded-lg min-h-[16vh] h-fit shadow-md border ${getErrorColor(
           log.level
         )}`}
       >
@@ -100,9 +100,9 @@ export default function ErrorLogsPage() {
         <h1 className="text-2xl font-bold">Error Logs</h1>
         <button
           onClick={handleRefresh}
-          className="text-blue-600 hover:text-blue-800 focus:outline-none"
+          className="text-blue-600 hover:text-blue-800 text-center focus:outline-none"
         >
-          <FiRefreshCw size={24} />
+          <FiRefreshCw size={24} /> <span className="text-center">Refresh</span>
         </button>
       </div>
 
@@ -122,7 +122,7 @@ export default function ErrorLogsPage() {
       </div>
 
       {/* Logs Content */}
-      <div className="grid grid-cols-1  h-fit sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1  h-auto sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {renderLogs(filterLogs(logList || []))}
       </div>
     </div>
