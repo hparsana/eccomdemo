@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Layout from "./components/Layout";
 import { Providers } from "./store/Providers";
+import { DarkModeProvider } from "./components/common/DarkModeProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,8 +29,11 @@ export default function RootLayout({ children }) {
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <Layout>{children}</Layout>
-          <ToastContainer autoClose={2000} position="bottom-right" />
+          <Layout>
+            {" "}
+            <DarkModeProvider> {children}</DarkModeProvider>
+          </Layout>
+          <ToastContainer autoClose={2000} position="top-center" />
         </body>
       </html>
     </Providers>

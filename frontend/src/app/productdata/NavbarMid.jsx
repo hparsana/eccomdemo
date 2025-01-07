@@ -56,13 +56,19 @@ function Navbar() {
   };
 
   return (
-    <div className="w-full bg-white shadow-md z-50">
+    <div className="w-full bg-white dark:bg-gray-800 shadow-md z-50">
       <nav className="container mx-auto flex items-center justify-around px-6 py-4">
         {/* Show loading state */}
-        {loading && <p>Loading categories...</p>}
+        {loading && (
+          <p className="text-gray-700 dark:text-gray-300">
+            Loading categories...
+          </p>
+        )}
 
         {/* Error handling */}
-        {error && <p className="text-red-500">Error: {error}</p>}
+        {error && (
+          <p className="text-red-500 dark:text-red-400">Error: {error}</p>
+        )}
 
         {/* Display categories dynamically */}
         {categories?.map((category) => (
@@ -73,19 +79,19 @@ function Navbar() {
             onMouseLeave={handleMouseLeave}
           >
             {/* Category Name */}
-            <span className="font-medium text-[14px] text-gray-700 hover:text-blue-600 transition-colors duration-200 flex items-center">
+            <span className="font-medium text-[14px] text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center">
               {category.name}
               {active === category.name ? (
-                <FaChevronUp className="ml-2 text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200" />
+                <FaChevronUp className="ml-2 text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200" />
               ) : (
-                <FaChevronDown className="ml-2 text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200" />
+                <FaChevronDown className="ml-2 text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200" />
               )}
             </span>
 
             {/* Dropdown (Subcategories) */}
             <div
               className={cn(
-                "absolute left-1/2 transform -translate-x-1/2 bg-white shadow-xl border border-gray-200  rounded-lg duration-300", // Centered dropdown
+                "absolute left-1/2 transform -translate-x-1/2 bg-white dark:bg-gray-700 shadow-xl border border-gray-200 dark:border-gray-600 rounded-lg duration-300", // Centered dropdown
                 active === category.name
                   ? "opacity-100 scale-100 translate-y-0 visible"
                   : "opacity-0 scale-95 translate-y-2 invisible"
@@ -102,7 +108,9 @@ function Navbar() {
                     />
                   ))
                 ) : (
-                  <p className="text-gray-500">No subcategories available</p>
+                  <p className="text-gray-500 dark:text-gray-400">
+                    No subcategories available
+                  </p>
                 )}
               </div>
             </div>

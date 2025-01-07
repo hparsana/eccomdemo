@@ -94,13 +94,13 @@ const RatingsAndReviews = ({ category, reviews }) => {
   ];
 
   return (
-    <div className="p-5 bg-white w-full rounded-md md:max-w-[1400px] mx-auto">
+    <div className="p-5 bg-white w-full rounded-md md:max-w-[1400px] mx-auto dark:bg-gray-800">
       <div className="flex flex-wrap justify-between items-center">
         {/* Overall Rating */}
         <div className="md:flex justify-start items-center flex-wrap md:flex-nowrap">
           <div className="text-center md:min-w-[150px] mb-5 md:mb-0">
             <div className="flex justify-center items-center">
-              <h3 className="text-4xl font-bold text-blue-600">
+              <h3 className="text-4xl font-bold text-blue-600 dark:text-blue-400">
                 {averageRating}
               </h3>
               <span className="ml-2">
@@ -108,7 +108,7 @@ const RatingsAndReviews = ({ category, reviews }) => {
               </span>
             </div>
 
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 text-sm dark:text-gray-400">
               {totalStars} Ratings <br /> & <br /> {reviews.length} Reviews
             </p>
           </div>
@@ -117,10 +117,10 @@ const RatingsAndReviews = ({ category, reviews }) => {
           <div className="flex flex-col gap-3 md:ml-5">
             {ratingsBreakdown.map((breakdown, index) => (
               <div key={breakdown.stars} className="flex items-center gap-3">
-                <span className="w-5 text-sm font-semibold text-gray-600">
+                <span className="w-5 text-sm font-semibold text-gray-600 dark:text-gray-300">
                   {breakdown.stars}★
                 </span>
-                <div className="w-40 bg-gray-200 h-2 rounded-md">
+                <div className="w-40 bg-gray-200 h-2 rounded-md dark:bg-gray-600">
                   <div
                     className={`${ratingColors[index]} h-2 rounded-md`}
                     style={{
@@ -128,7 +128,9 @@ const RatingsAndReviews = ({ category, reviews }) => {
                     }}
                   ></div>
                 </div>
-                <span className="text-gray-500 text-sm">{breakdown.count}</span>
+                <span className="text-gray-500 text-sm dark:text-gray-400">
+                  {breakdown.count}
+                </span>
               </div>
             ))}
           </div>
@@ -144,10 +146,10 @@ const RatingsAndReviews = ({ category, reviews }) => {
                   viewBox="0 0 36 36"
                 >
                   <path
-                    className="text-gray-200"
+                    className="text-gray-200 dark:text-gray-600"
                     d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                  a 15.9155 15.9155 0 0 1 0 31.831
+                  a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.5"
@@ -155,18 +157,20 @@ const RatingsAndReviews = ({ category, reviews }) => {
                   <path
                     className={feature.color}
                     d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831"
+                  a 15.9155 15.9155 0 0 1 0 31.831"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2.5"
                     strokeDasharray={`${(feature.rating / 5) * 100}, 100`}
                   />
                 </svg>
-                <div className="absolute inset-0 flex justify-center items-center text-sm font-semibold">
+                <div className="absolute inset-0 flex justify-center items-center text-sm font-semibold dark:text-gray-200">
                   {feature.rating}
                 </div>
               </div>
-              <p className={`mt-2 text-sm ${feature.color}`}>{feature.label}</p>
+              <p className={`mt-2 text-sm ${feature.color} dark:text-gray-300`}>
+                {feature.label}
+              </p>
             </div>
           ))}
         </div>

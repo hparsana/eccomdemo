@@ -79,8 +79,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4">
-      <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+      <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg overflow-hidden dark:bg-gray-800">
         <div className="flex flex-col md:flex-row">
           {/* Left Image Section */}
           <div className="relative md:w-1/2 h-64 md:h-auto">
@@ -94,7 +94,7 @@ const LoginPage = () => {
           </div>
           {/* Right Form Section */}
           <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6 dark:text-blue-300">
               Welcome Back!
             </h2>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -102,7 +102,7 @@ const LoginPage = () => {
               <div className="mb-4">
                 <label
                   htmlFor="username"
-                  className="block text-gray-700 font-semibold mb-2"
+                  className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                 >
                   Username or Email
                 </label>
@@ -114,7 +114,7 @@ const LoginPage = () => {
                   })}
                   className={`w-full px-4 py-2 border ${
                     errors.username ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                  } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300`}
                   placeholder="Enter your username or email"
                 />
                 {errors.username && (
@@ -127,7 +127,7 @@ const LoginPage = () => {
               <div className="mb-4">
                 <label
                   htmlFor="password"
-                  className="block text-gray-700 font-semibold mb-2"
+                  className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                 >
                   Password
                 </label>
@@ -141,14 +141,14 @@ const LoginPage = () => {
                       message: "Password must be at least 8 characters long",
                     },
                     validate: (value) =>
-                      /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(
+                      /(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])/.test(
                         value
                       ) ||
                       "Password must contain at least one uppercase, one lowercase, one number, and one special character",
                   })}
                   className={`w-full px-4 py-2 border ${
                     errors.password ? "border-red-500" : "border-gray-300"
-                  } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                  } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300`}
                   placeholder="Enter your password"
                 />
                 {errors.password && (
@@ -158,10 +158,10 @@ const LoginPage = () => {
                 )}
               </div>
               {/* Login Button */}
-              <p className="text-sm text-gray-600 text-right ">
+              <p className="text-sm text-gray-600 text-right dark:text-gray-400">
                 Forgot your password?{" "}
                 <Link href="/forgotpassword" passHref>
-                  <span className="text-blue-500 hover:underline">
+                  <span className="text-blue-500 hover:underline dark:text-blue-300">
                     Reset it here
                   </span>
                 </Link>
@@ -170,7 +170,7 @@ const LoginPage = () => {
                 {!loginLoading ? (
                   <button
                     type="submit"
-                    className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+                    className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition duration-300 dark:bg-blue-700 dark:hover:bg-blue-800"
                   >
                     Login
                   </button>
@@ -178,7 +178,7 @@ const LoginPage = () => {
                   <button
                     disabled
                     type="button"
-                    className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg transition duration-300"
+                    className="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg transition duration-300 dark:bg-blue-700"
                   >
                     <svg
                       aria-hidden="true"
@@ -203,10 +203,10 @@ const LoginPage = () => {
               </div>
             </form>
             {/* Additional Links */}
-            <p className="text-sm text-gray-600 text-center">
+            <p className="text-sm text-gray-600 text-center dark:text-gray-400">
               Don&apos;t have an account?{" "}
               <Link href="/register" passHref>
-                <span className="text-blue-500 hover:underline">
+                <span className="text-blue-500 hover:underline dark:text-blue-300">
                   Register here
                 </span>
               </Link>
