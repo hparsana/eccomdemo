@@ -122,27 +122,53 @@ export default function ProductData() {
   useEffect(() => {
     dispatch(fetchSavedProducts());
   }, [dispatch, userLoggedIn]);
+
   // Filter products dynamically
   const filteredProducts = loading
     ? []
     : products.filter((product) => {
+        console.log(product);
+
+        // Color Filter
         const matchesColor =
           selectedColor === "" ||
           product.color?.some((color) =>
             color.toLowerCase().includes(selectedColor.toLowerCase())
           );
+
+        // Size Filter
         const matchesSize =
           selectedSize === "" ||
           product.size?.some((size) =>
             size.toLowerCase().includes(selectedSize.toLowerCase())
           );
+
+        // Rating Filter
         const matchesRating =
           selectedRating === "" || product.rating >= parseInt(selectedRating);
+
+        // Free Shipping Filter
         const matchesFreeShipping =
           !freeShipping || product.shippingDetails?.isFreeShipping;
 
+        // Discount Filter
+        const matchesDiscount =
+          selectedDiscount === "" ||
+          (product.discount?.percentage &&
+            product.discount.percentage >= parseInt(selectedDiscount));
+
+        // Stock Filter
+        const matchesStock =
+          !selectedStock || (product.stock && product.stock < 10);
+
+        // Combine all filters
         return (
-          matchesColor && matchesSize && matchesRating && matchesFreeShipping
+          matchesColor &&
+          matchesSize &&
+          matchesRating &&
+          matchesFreeShipping &&
+          matchesDiscount &&
+          matchesStock
         );
       });
 
@@ -237,7 +263,12 @@ export default function ProductData() {
             </label>
             <select
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setSelectedBrand("");
+                setSelectedColor("");
+                setSelectedSize("");
+              }}
               className="w-full border rounded-md p-2"
             >
               <option value="">All</option>

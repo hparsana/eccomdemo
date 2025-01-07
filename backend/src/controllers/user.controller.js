@@ -65,7 +65,7 @@ const Register = asyncHandler(async (req, res) => {
     "-password -refreshToken"
   );
   if (!createdUser) {
-    throw new ApiError(400, "something wrong while registering the user");
+    throw new ApiError(500, "something wrong while registering the user");
   }
   const otp = randomInt(100000, 999999);
   await sendOtpEmail(email, otp);
@@ -190,7 +190,7 @@ const LogoutUser = asyncHandler(async (req, res) => {
       .clearCookie("connect.sid", cookieOptions)
       .json(new ApiResponse(200, {}, "User logged Out"));
   } catch (error) {
-    throw new ApiError(400, "something wrong while logouting User");
+    throw new ApiError(500, "something wrong while logouting User");
   }
 });
 const UserGetWebapp = asyncHandler(async (req, res) => {
@@ -206,7 +206,7 @@ const UserGetWebapp = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, error, "failed Successfully.."));
     }
   } catch (error) {
-    throw new ApiError(400, "something wrong while logouting User", error);
+    throw new ApiError(500, "something wrong while logouting User", error);
   }
 });
 

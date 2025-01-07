@@ -17,7 +17,7 @@ export const authMiddleWare = (allowedRoles = []) =>
 
       // Verify token
       if (!process.env.ACCESS_TOKEN_SECRET) {
-        throw new ApiError(500, "Server configuration error");
+        throw new ApiError(501, "Server configuration error");
       }
 
       let isTokenDecode;

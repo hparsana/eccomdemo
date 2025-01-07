@@ -76,6 +76,13 @@ export const getFileLogs = (req, res) => {
       structuredLogs.push(currentError);
     }
 
+    // Sort logs by timestamp (descending order)
+    structuredLogs.sort((a, b) => {
+      const dateA = new Date(a.timestamp || 0);
+      const dateB = new Date(b.timestamp || 0);
+      return dateB - dateA; // Sort in descending order (newest first)
+    });
+
     // Return consolidated logs
     return res.status(200).json({
       statusCode: 200,

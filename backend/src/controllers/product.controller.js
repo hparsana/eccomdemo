@@ -155,6 +155,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
   const query = {};
 
+  // Build query based on filters
   if (category) query.category = { $regex: category, $options: "i" };
   if (subcategory) query.subcategory = { $regex: subcategory, $options: "i" };
   if (brand) query.brand = { $regex: brand, $options: "i" };
@@ -174,18 +175,19 @@ const getProducts = asyncHandler(async (req, res) => {
   }
 
   try {
-    const [products, totalProducts, categories, subcategories, brands] =
-      await Promise.all([
-        Product.find(query)
-          .sort(sort)
-          .skip((pageNumber - 1) * limitNumber)
-          .limit(limitNumber)
-          .lean(), // Fetch plain objects for easier merging
-        Product.countDocuments(query),
-        Product.distinct("category"), // Distinct categories
-        Product.distinct("subcategory"), // Distinct subcategories
-        Product.distinct("brand"), // Distinct brands
-      ]);
+    const [products, totalProducts, categories, brands] = await Promise.all([
+      Product.find(query)
+        .sort(sort)
+        .skip((pageNumber - 1) * limitNumber)
+        .limit(limitNumber)
+        .lean(),
+      Product.countDocuments(query),
+      Product.distinct("category"),
+      Product.distinct(
+        "brand",
+        category ? { category: { $regex: category, $options: "i" } } : {}
+      ),
+    ]);
 
     // Fetch discount data for the products
     const productIds = products.map((product) => product._id);
@@ -212,7 +214,7 @@ const getProducts = asyncHandler(async (req, res) => {
               endDate: discount.endDate,
               isActive: discount.isActive,
             }
-          : null, // No discount for this product
+          : null,
       };
     });
 
@@ -224,7 +226,6 @@ const getProducts = asyncHandler(async (req, res) => {
         currentPage: pageNumber,
         facets: {
           categories,
-          subcategories,
           brands,
           priceRange: {
             min: minPrice || 0,

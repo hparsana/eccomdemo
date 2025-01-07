@@ -50,41 +50,81 @@ export default function ErrorLogsPage() {
     }
   };
 
-  const renderLogs = (logs) =>
-    logs.map((log, index) => (
+  const renderLogs = (logs) => {
+    // Helper to format date as "Today", "Yesterday", or actual date
+    const formatLogDate = (timestamp) => {
+      const logDate = new Date(timestamp);
+      const today = new Date();
+      const yesterday = new Date();
+      yesterday.setDate(today.getDate() - 1);
+
+      if (logDate.toDateString() === today.toDateString()) {
+        return "Today";
+      } else if (logDate.toDateString() === yesterday.toDateString()) {
+        return "Yesterday";
+      } else {
+        return logDate.toLocaleDateString();
+      }
+    };
+
+    // Check if the log occurred within the last hour
+    const isLatest = (timestamp) => {
+      const logDate = new Date(timestamp);
+      const oneHourAgo = new Date();
+      oneHourAgo.setHours(oneHourAgo.getHours() - 1);
+      return logDate > oneHourAgo;
+    };
+
+    return logs.map((log, index) => (
       <div
         key={index}
-        className={`p-4 rounded-lg min-h-[16vh] h-fit shadow-md border ${getErrorColor(
+        className={`p-4 rounded-lg min-h-[16vh] h-fit shadow-md border-l-4 ${getErrorColor(
           log.level
-        )}`}
+        )} bg-white`}
       >
-        <p className="text-sm">
-          <span className="font-bold">Message:</span> {log.message}
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-800">
+            {formatLogDate(log.timestamp)}{" "}
+            {/* Display 'Latest' label if within the last hour */}
+            {isLatest(log.timestamp) && (
+              <div className="inline-block bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full mt-2">
+                Latest
+              </div>
+            )}
+          </h2>
+          <p className="text-sm text-gray-500">
+            {new Date(log.timestamp).toLocaleTimeString()}
+          </p>
+        </div>
+
+        <p className="text-sm mt-2">
+          <span className="font-bold text-gray-700">Message:</span>{" "}
+          {log.message}
         </p>
+
         {log.route && (
-          <p className="text-sm">
-            <span className="font-bold">Route:</span> {log.route}
+          <p className="text-sm mt-1">
+            <span className="font-bold text-gray-700">Route:</span> {log.route}
           </p>
         )}
+
         {log.method && (
-          <p className="text-sm">
-            <span className="font-bold">Method:</span> {log.method}
+          <p className="text-sm mt-1">
+            <span className="font-bold text-gray-700">Method:</span>{" "}
+            {log.method}
           </p>
         )}
-        <p className="text-sm">
-          <span className="font-bold">Timestamp:</span>{" "}
-          {new Date(log.timestamp).toLocaleString()}
-        </p>
+
         {log.stack && (
-          <div className="mt-2">
+          <div className="mt-4">
             <button
               onClick={() => toggleStackTrace(index)}
-              className="text-blue-600 underline focus:outline-none"
+              className="text-blue-600 underline hover:text-blue-800 focus:outline-none"
             >
               {expandedLogs[index] ? "Hide Stack Trace" : "View Stack Trace"}
             </button>
             {expandedLogs[index] && (
-              <pre className="mt-2 p-2 bg-gray-200 rounded text-sm overflow-x-auto">
+              <pre className="mt-2 p-2 bg-gray-100 rounded text-sm overflow-x-auto text-gray-700">
                 {log.stack}
               </pre>
             )}
@@ -92,6 +132,7 @@ export default function ErrorLogsPage() {
         )}
       </div>
     ));
+  };
 
   return (
     <div className="container  min-h-screen mx-auto p-4">
@@ -100,9 +141,10 @@ export default function ErrorLogsPage() {
         <h1 className="text-2xl font-bold">Error Logs</h1>
         <button
           onClick={handleRefresh}
-          className="text-blue-600 hover:text-blue-800 text-center focus:outline-none"
+          className="text-blue-600 hover:text-blue-800 text-center flex focus:outline-none"
         >
-          <FiRefreshCw size={24} /> <span className="text-center">Refresh</span>
+          <FiRefreshCw size={24} />{" "}
+          <span className="text-center ml-2">Refresh</span>
         </button>
       </div>
 
