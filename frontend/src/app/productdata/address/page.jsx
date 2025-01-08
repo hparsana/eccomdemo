@@ -147,4 +147,4 @@ const TabBarLayout = () => {
   );
 };
 
-export default withAuth(TabBarLayout, true, ["USER", "ADMIN"]);
+export default withAuth(TabBarLayout, true, ["USER"]);

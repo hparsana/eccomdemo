@@ -35,9 +35,7 @@ const AddProductModal = ({ open, product, onClose }) => {
       ram: product?.ram || "N/A", // Default value
       storage: product?.storage || "N/A", // Default value
       tags: product?.tags || [], // Initialize as array
-      generalSpecifications: product?.generalSpecifications || [
-        { key: "", value: "" },
-      ], // Initialize as array of objects
+      generalSpecifications: product?.generalSpecifications || [], // Initialize as array of objects
       discount: {
         percentage: product?.discount?.percentage || "", // Initialize as empty string
         amount: product?.discount?.amount || "", // Initialize as empty string
@@ -189,8 +187,8 @@ const AddProductModal = ({ open, product, onClose }) => {
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="add-product-modal">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white w-full max-w-5xl rounded-lg shadow-lg relative p-6 overflow-y-auto max-h-[95vh]">
-          <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <div className="bg-white w-full max-w-5xl rounded-lg shadow-lg relative p-6 overflow-y-auto max-h-[95vh] dark:bg-gray-800">
+          <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-300">
             {product ? "Edit Product" : "Add Product"}
           </h2>
 
@@ -201,13 +199,13 @@ const AddProductModal = ({ open, product, onClose }) => {
               rules={{ required: "Product name is required" }}
               render={({ field, fieldState: { error } }) => (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                     Product Name
                   </label>
                   <input
                     {...field}
                     type="text"
-                    className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                    className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                       error ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter product name"
@@ -227,13 +225,13 @@ const AddProductModal = ({ open, product, onClose }) => {
               rules={{ required: "Product description is required" }}
               render={({ field, fieldState: { error } }) => (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                     Description
                   </label>
                   <textarea
                     {...field}
                     rows="3"
-                    className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                    className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                       error ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="Enter description"
@@ -254,13 +252,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "originalPrice is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       original Price
                     </label>
                     <input
                       {...field}
                       type="number"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter originalPrice"
@@ -279,13 +277,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Price is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Price
                     </label>
                     <input
                       {...field}
                       type="number"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter price"
@@ -305,13 +303,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Stock is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Stock
                     </label>
                     <input
                       {...field}
                       type="number"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter stock"
@@ -333,7 +331,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Category is required" }}
                 render={({ field }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Category
                     </label>
                     <select
@@ -357,12 +355,12 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Subcategory is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Subcategory
                     </label>
                     <select
                       {...field}
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       disabled={!!product} // Disable if editing
@@ -391,13 +389,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Brand is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Brand
                     </label>
                     <input
                       {...field}
                       type="text"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Enter brand"
@@ -423,13 +421,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Processor
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter processor"
                         />
                       </div>
@@ -440,13 +438,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           RAM
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter RAM"
                         />
                       </div>
@@ -457,13 +455,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Storage
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter storage"
                         />
                       </div>
@@ -474,13 +472,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Resolution
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter resolution (e.g., 3216 x 1440 pixels)"
                         />
                       </div>
@@ -491,13 +489,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Battery Life
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter battery life"
                         />
                       </div>
@@ -508,13 +506,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           warranty
                         </label>
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter warranty"
                         />
                       </div>
@@ -527,7 +525,7 @@ const AddProductModal = ({ open, product, onClose }) => {
             {selectedCategory?.toLowerCase() === "Fashion" && (
               <>
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                     Sizes
                   </label>
                   {sizeFields.map((item, index) => (
@@ -542,7 +540,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                           <input
                             {...field}
                             type="text"
-                            className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                            className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                             placeholder="Enter size"
                           />
                         )}
@@ -575,13 +573,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Length (cm)
                         </label>
                         <input
                           {...field}
                           type="number"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter length"
                         />
                       </div>
@@ -592,13 +590,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Width (cm)
                         </label>
                         <input
                           {...field}
                           type="number"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter width"
                         />
                       </div>
@@ -609,13 +607,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                     control={control}
                     render={({ field }) => (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                           Height (cm)
                         </label>
                         <input
                           {...field}
                           type="number"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter height"
                         />
                       </div>
@@ -626,7 +624,7 @@ const AddProductModal = ({ open, product, onClose }) => {
             )}
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                   Images
                 </label>
                 <div className="space-y-2">
@@ -643,7 +641,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                             {...field}
                             type="text"
                             placeholder="Image URL"
-                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                               error ? "border-red-500" : "border-gray-300"
                             }`}
                           />
@@ -668,7 +666,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                 </div>
               </div>
               <div className="">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                   Colors
                 </label>
                 {colorFields.map((item, index) => (
@@ -680,7 +678,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                         <input
                           {...field}
                           type="text"
-                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                          className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                           placeholder="Enter color"
                         />
                       )}
@@ -704,7 +702,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                 Features
               </label>
               {featuresFields.map((item, index) => (
@@ -716,7 +714,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                       <input
                         {...field}
                         type="text"
-                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                        className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300"
                         placeholder="Enter features"
                       />
                     )}
@@ -739,7 +737,7 @@ const AddProductModal = ({ open, product, onClose }) => {
               </button>
             </div>
             <div className="mt-4">
-              <h1 className="text-[20px] font-normal font-serif">
+              <h1 className="text-[20px] font-normal font-serif dark:text-gray-300">
                 General Specifications
               </h1>
               {generalSpecificationFields.map((item, index) => (
@@ -756,13 +754,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                       rules={{ required: "Specification key is required" }}
                       render={({ field, fieldState: { error } }) => (
                         <div className="w-full">
-                          <label className="block text-sm font-medium text-gray-700">
+                          <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                             Specification Name
                           </label>
                           <input
                             {...field}
                             type="text"
-                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                               error ? "border-red-500" : "border-gray-300"
                             }`}
                             placeholder="e.g., Display Size"
@@ -783,13 +781,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                       rules={{ required: "Specification value is required" }}
                       render={({ field, fieldState: { error } }) => (
                         <div className="w-full">
-                          <label className="block text-sm font-medium text-gray-700">
+                          <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                             Specification Value
                           </label>
                           <input
                             {...field}
                             type="text"
-                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                            className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                               error ? "border-red-500" : "border-gray-300"
                             }`}
                             placeholder="e.g., 108 cm (43 inches)"
@@ -831,13 +829,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Discount start date is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Discount Start Date
                     </label>
                     <input
                       {...field}
                       type="date"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                     />
@@ -856,13 +854,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Discount end date is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Discount End Date
                     </label>
                     <input
                       {...field}
                       type="date"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                     />
@@ -883,13 +881,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Discount percentage is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Discount Percentage
                     </label>
                     <input
                       {...field}
                       type="number"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Discount Percentage"
@@ -909,13 +907,13 @@ const AddProductModal = ({ open, product, onClose }) => {
                 rules={{ required: "Discount amount is required" }}
                 render={({ field, fieldState: { error } }) => (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                       Discount Amount
                     </label>
                     <input
                       {...field}
                       type="number"
-                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
                         error ? "border-red-500" : "border-gray-300"
                       }`}
                       placeholder="Discount Amount"

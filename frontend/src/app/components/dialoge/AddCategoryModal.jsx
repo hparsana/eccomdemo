@@ -48,8 +48,8 @@ const AddCategoryModal = ({ open, category, onClose }) => {
   return (
     <Modal open={open} onClose={onClose} aria-labelledby="add-category-modal">
       <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white w-full max-w-md rounded-lg shadow-lg relative p-6">
-          <h2 className="text-xl font-bold mb-4 text-gray-800">
+        <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-lg shadow-lg relative p-6">
+          <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
             {category ? "Edit Category" : "Add Category"}
           </h2>
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
@@ -59,15 +59,17 @@ const AddCategoryModal = ({ open, category, onClose }) => {
               rules={{ required: "Category name is required" }}
               render={({ field, fieldState: { error } }) => (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Category Name
                   </label>
                   <input
                     {...field}
                     type="text"
                     className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none ${
-                      error ? "border-red-500" : "border-gray-300"
-                    }`}
+                      error
+                        ? "border-red-500"
+                        : "border-gray-300 dark:border-gray-600"
+                    } bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200`}
                     placeholder="Enter category name"
                   />
                   {error && (
@@ -83,13 +85,13 @@ const AddCategoryModal = ({ open, category, onClose }) => {
               control={control}
               render={({ field }) => (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Description
                   </label>
                   <textarea
                     {...field}
                     rows="3"
-                    className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300"
+                    className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                     placeholder="Enter description"
                   ></textarea>
                 </div>
@@ -99,13 +101,13 @@ const AddCategoryModal = ({ open, category, onClose }) => {
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none"
+                className="px-4 py-2 rounded-md bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none"
+                className="px-4 py-2 rounded-md bg-blue-600 dark:bg-blue-500 text-white hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none"
               >
                 {category ? "Update Category" : "Add Category"}
               </button>

@@ -49,8 +49,10 @@ const EditOrderModal = ({ open, order, onClose }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6">
-        <h2 className="text-xl font-bold mb-4 text-gray-800">Edit Order</h2>
+      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 dark:bg-gray-800">
+        <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-300">
+          Edit Order
+        </h2>
 
         <form onSubmit={handleSubmit(handleUpdate)} className="space-y-6">
           <Controller
@@ -58,12 +60,12 @@ const EditOrderModal = ({ open, order, onClose }) => {
             control={control}
             render={({ field }) => (
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Status
                 </label>
                 <select
                   {...field}
-                  className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:border-gray-600  dark:bg-gray-700 text-gray-800 dark:text-gray-200"
                 >
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
@@ -79,7 +81,7 @@ const EditOrderModal = ({ open, order, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400"
+              className="px-4 py-2 rounded-md bg-gray-300 text-gray-800 hover:bg-gray-400 dark:hover:bg-gray-300 dark:bg-gray-400"
             >
               Cancel
             </button>

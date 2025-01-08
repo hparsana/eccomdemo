@@ -47,7 +47,7 @@ const withAuth = (
           !allowedRoles.includes(authUser?.role)
         ) {
           // User's role is not allowed for this page
-          redirect("/unauthorized"); // Redirect to an unauthorized page or home
+          redirect("/admin/dashboard"); // Redirect to an unauthorized page or home
         } else {
           setLoading(false);
         }

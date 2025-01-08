@@ -389,6 +389,18 @@ const updateUser = asyncHandler(async (req, res) => {
     throw new ApiError(404, "User not found.");
   }
 
+  // Check if role is being changed from 'admin' to another role
+  if (user.role === "ADMIN" && role !== "ADMIN") {
+    const adminCount = await User.countDocuments({ role: "ADMIN" });
+
+    if (adminCount <= 1) {
+      throw new ApiError(
+        400,
+        "Cannot change role. At least one ADMIN is required."
+      );
+    }
+  }
+
   // Check for duplicate email or username
   if (username || email) {
     const duplicateUser = await User.findOne({
