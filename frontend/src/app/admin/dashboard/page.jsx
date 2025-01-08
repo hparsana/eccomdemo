@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   FaUsers,
@@ -24,6 +24,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useDispatch, useSelector } from "react-redux";
+import { getOrdersStatitics } from "@/app/store/Order/orderApi";
 
 ChartJS.register(
   CategoryScale,
@@ -38,29 +40,37 @@ ChartJS.register(
 
 const DashBoard = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { currentPage, statitics, loading, error } = useSelector(
+    (state) => state.orderData
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getOrdersStatitics({}));
+  }, []);
 
   const stats = [
     {
       title: "Total Users",
-      value: "1,234",
+      value: statitics?.totalUsers || 0,
       icon: <FaUsers />,
       bgColor: "bg-blue-500",
     },
     {
       title: "Products",
-      value: "543",
+      value: statitics?.totalProducts || 0,
       icon: <FaBoxOpen />,
       bgColor: "bg-green-500",
     },
     {
       title: "Orders",
-      value: "1,027",
+      value: statitics?.totalOrders || 0,
       icon: <FaShoppingCart />,
       bgColor: "bg-yellow-500",
     },
     {
       title: "Revenue",
-      value: "$12,345",
+      value: `₹${statitics?.totalRevenue || 0}`,
       icon: <FaDollarSign />,
       bgColor: "bg-purple-500",
     },

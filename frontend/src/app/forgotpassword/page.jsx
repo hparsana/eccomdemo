@@ -72,7 +72,8 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       //   console.error("Error during registration:", error);
-      toast.error(res?.data?.message || "Please enter Valid Email.");
+      toast.error("Please enter Valid Email.");
+      setLoadingApi(false);
     }
   };
 
@@ -152,7 +153,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
       <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg overflow-hidden">
         <div className="flex flex-col md:flex-row">
           {/* Left Image Section */}
@@ -166,7 +167,7 @@ const ForgotPassword = () => {
             />
           </div>
           {/* Right Form Section */}
-          <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-center">
+          <div className="md:w-1/2 p-6 sm:p-8 flex flex-col justify-center dark:bg-gray-900">
             {step === 1 ? (
               <>
                 <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6">
@@ -178,7 +179,7 @@ const ForgotPassword = () => {
                   <div className="mb-4">
                     <label
                       htmlFor="email"
-                      className="block text-gray-700 font-semibold mb-2"
+                      className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                     >
                       Email
                     </label>
@@ -194,7 +195,7 @@ const ForgotPassword = () => {
                       })}
                       className={`w-full px-4 py-2 border ${
                         errors.email ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200`}
                       placeholder="Enter your email"
                     />
                     {errors.email && (
@@ -251,7 +252,7 @@ const ForgotPassword = () => {
               </>
             ) : step === 3 ? (
               <>
-                <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold text-blue-500 text-center mb-6 dark:text-gray-300">
                   Update Password
                 </h2>
                 <form onSubmit={handleSubmit(handleUpdatePassword)}>
@@ -259,7 +260,7 @@ const ForgotPassword = () => {
                   <div className="mb-4">
                     <label
                       htmlFor="password"
-                      className="block text-gray-700 font-semibold mb-2"
+                      className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                     >
                       New Password
                     </label>
@@ -281,7 +282,7 @@ const ForgotPassword = () => {
                       })}
                       className={`w-full px-4 py-2 border ${
                         errors.password ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200`}
                       placeholder="Enter your new password"
                     />
                     {errors.password && (
@@ -295,7 +296,7 @@ const ForgotPassword = () => {
                   <div className="mb-4">
                     <label
                       htmlFor="confirmPassword"
-                      className="block text-gray-700 font-semibold mb-2"
+                      className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                     >
                       Confirm Password
                     </label>
@@ -312,7 +313,7 @@ const ForgotPassword = () => {
                         errors.confirmPassword
                           ? "border-red-500"
                           : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200`}
                       placeholder="Confirm your new password"
                     />
                     {errors.confirmPassword && (
@@ -360,8 +361,8 @@ const ForgotPassword = () => {
                   </div>
                 </form>
 
-                <p className="text-sm text-gray-600 text-center mt-4">
-                  go back?
+                <p className="text-sm text-gray-600 text-center mt-4 dark:text-gray-300">
+                  go back ?
                   <Link href="/login" passHref>
                     <span className="text-blue-500 hover:underline">
                       Login here
@@ -378,7 +379,7 @@ const ForgotPassword = () => {
                   <div className="mb-4">
                     <label
                       htmlFor="otp"
-                      className="block text-gray-700 font-semibold mb-2"
+                      className="block text-gray-700 font-semibold mb-2 dark:text-gray-300"
                     >
                       OTP
                     </label>
@@ -398,7 +399,7 @@ const ForgotPassword = () => {
                       })}
                       className={`w-full px-4 py-2 border ${
                         errors.otp ? "border-red-500" : "border-gray-300"
-                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none`}
+                      } rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200`}
                       placeholder="Enter your otp"
                     />
                     {errors.otp && (

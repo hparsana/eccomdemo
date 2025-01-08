@@ -5,6 +5,7 @@ import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
 import { sendOrderStatusEmail } from "../utils/mailer.js";
+import { User } from "../models/user.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
@@ -265,37 +266,57 @@ const deleteOrder = asyncHandler(async (req, res) => {
 });
 
 const getOrderStats = asyncHandler(async (req, res) => {
-  const totalOrders = await Order.countDocuments();
-  const totalRevenue = await Order.aggregate([
-    { $group: { _id: null, revenue: { $sum: "$totalAmount" } } },
-  ]);
+  const [
+    totalOrders,
+    totalRevenue,
+    totalUsers,
+    totalProducts,
+    // mostSoldProducts,
+  ] = await Promise.all([
+    // Total orders count
+    Order.countDocuments(),
 
-  const mostSoldProducts = await Order.aggregate([
-    { $unwind: "$items" },
-    {
-      $group: {
-        _id: "$items.product",
-        totalSold: { $sum: "$items.quantity" },
-      },
-    },
-    { $sort: { totalSold: -1 } },
-    { $limit: 5 },
-    {
-      $lookup: {
-        from: "products",
-        localField: "_id",
-        foreignField: "_id",
-        as: "product",
-      },
-    },
-    { $unwind: "$product" },
+    // Total revenue calculation
+    Order.aggregate([
+      { $group: { _id: null, revenue: { $sum: "$totalAmount" } } },
+    ]),
+
+    // Total users count
+    User.countDocuments(),
+
+    // Total products count
+    Product.countDocuments(),
+
+    // Most sold products
+    // Order.aggregate([
+    //   { $unwind: "$items" },
+    //   {
+    //     $group: {
+    //       _id: "$items.product",
+    //       totalSold: { $sum: "$items.quantity" },
+    //     },
+    //   },
+    //   { $sort: { totalSold: -1 } },
+    //   { $limit: 5 },
+    //   {
+    //     $lookup: {
+    //       from: "products",
+    //       localField: "_id",
+    //       foreignField: "_id",
+    //       as: "product",
+    //     },
+    //   },
+    //   { $unwind: "$product" },
+    // ]),
   ]);
 
   return res.status(200).json(
     new ApiResponse(200, {
       totalOrders,
       totalRevenue: totalRevenue[0]?.revenue || 0,
-      mostSoldProducts,
+      totalUsers,
+      totalProducts,
+      // mostSoldProducts,
     })
   );
 });

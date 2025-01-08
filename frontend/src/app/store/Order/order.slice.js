@@ -1,11 +1,18 @@
 "use client";
 import { createSlice } from "@reduxjs/toolkit";
-import { getAllOrders, addOrder, deleteOrder, UpdateOrder } from "./orderApi";
+import {
+  getAllOrders,
+  addOrder,
+  deleteOrder,
+  UpdateOrder,
+  getOrdersStatitics,
+} from "./orderApi";
 
 const OrderSlice = createSlice({
   name: "orders",
   initialState: {
     orderList: [],
+    statitics: {},
     totalOrders: 0,
     totalPages: 0,
     currentPage: 1,
@@ -42,7 +49,18 @@ const OrderSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Failed to fetch orders.";
       })
-
+      .addCase(getOrdersStatitics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getOrdersStatitics.fulfilled, (state, action) => {
+        state.statitics = action.payload;
+        state.loading = false;
+      })
+      .addCase(getOrdersStatitics.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch statitics.";
+      })
       // Add Order
       .addCase(addOrder.pending, (state) => {
         state.loading = true;
