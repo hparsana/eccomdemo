@@ -37,9 +37,11 @@ const PaymentPage = ({ isProductSummarySelected }) => {
   };
 
   return (
-    <div className="p-6 h-auto  flex items-center justify-center px-4">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Payment</h2>
+    <div className="p-6 h-auto flex items-center justify-center px-4 bg-gray-50 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-2xl">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+          Payment
+        </h2>
 
         {/* Payment Options */}
         <div className="space-y-6">
@@ -55,7 +57,9 @@ const PaymentPage = ({ isProductSummarySelected }) => {
             />
             <div className="flex items-center space-x-3">
               <FaCreditCard className="text-blue-500 text-xl" />
-              <span>Credit Card</span>
+              <span className="text-gray-800 dark:text-gray-200">
+                Credit Card
+              </span>
             </div>
           </label>
 
@@ -71,7 +75,9 @@ const PaymentPage = ({ isProductSummarySelected }) => {
             />
             <div className="flex items-center space-x-3">
               <FaCreditCard className="text-green-500 text-xl" />
-              <span>Debit Card</span>
+              <span className="text-gray-800 dark:text-gray-200">
+                Debit Card
+              </span>
             </div>
           </label>
 
@@ -87,7 +93,7 @@ const PaymentPage = ({ isProductSummarySelected }) => {
             />
             <div className="flex items-center space-x-3">
               <FaPaypal className="text-blue-600 text-xl" />
-              <span>PayPal</span>
+              <span className="text-gray-800 dark:text-gray-200">PayPal</span>
             </div>
           </label>
 
@@ -103,15 +109,17 @@ const PaymentPage = ({ isProductSummarySelected }) => {
             />
             <div className="flex items-center space-x-3">
               <FaApplePay className="text-black text-xl" />
-              <span>Apple Pay</span>
+              <span className="text-gray-800 dark:text-gray-200">
+                Apple Pay
+              </span>
             </div>
           </label>
         </div>
 
         {/* Card Details Input */}
-        {paymentMethod === "creditCard" || paymentMethod === "debitCard" ? (
+        {(paymentMethod === "creditCard" || paymentMethod === "debitCard") && (
           <div className="mt-6">
-            <h3 className="text-lg font-medium text-gray-800 mb-4">
+            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4">
               Enter Card Details
             </h3>
             <div className="space-y-4">
@@ -122,7 +130,7 @@ const PaymentPage = ({ isProductSummarySelected }) => {
                 maxLength="16"
                 value={cardDetails.cardNumber}
                 onChange={handleCardChange}
-                className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
               />
               <div className="flex space-x-4">
                 <input
@@ -132,7 +140,7 @@ const PaymentPage = ({ isProductSummarySelected }) => {
                   maxLength="5"
                   value={cardDetails.expiryDate}
                   onChange={handleCardChange}
-                  className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-1/2 border border-gray-300 dark:border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                 />
                 <input
                   type="text"
@@ -141,16 +149,16 @@ const PaymentPage = ({ isProductSummarySelected }) => {
                   maxLength="3"
                   value={cardDetails.cvv}
                   onChange={handleCardChange}
-                  className="w-1/2 border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-1/2 border border-gray-300 dark:border-gray-600 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
                 />
               </div>
             </div>
           </div>
-        ) : null}
+        )}
 
         {/* Proceed Button */}
         <button
-          className="mt-8 w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 font-bold"
+          className="mt-8 w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700 font-bold"
           onClick={handlePayment}
         >
           Proceed to Order Summary

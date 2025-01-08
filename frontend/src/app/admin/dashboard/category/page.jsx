@@ -117,16 +117,18 @@ const CategoriesListPage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
+    <div className="min-h-screen">
+      <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
         Category List
       </h1>
       <div className="p-6 h-full">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Available Categories</h2>
+          <h2 className="text-xl font-bold dark:text-gray-300">
+            Available Categories
+          </h2>
           <button
             onClick={() => setAddCategoryModalOpen(true)}
-            className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            className="flex items-center bg-blue-500  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
           >
             Add Category
           </button>
@@ -137,7 +139,7 @@ const CategoriesListPage = () => {
             placeholder="Search categories..."
             value={searchQuery}
             onChange={handleSearch}
-            className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+            className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-md focus:outline-none focus:ring focus:ring-blue-300  dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
           />
           <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
         </div>
@@ -147,28 +149,36 @@ const CategoriesListPage = () => {
           <p className="text-red-500">{error}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-              <thead className="bg-gray-200">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
+              <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
                   <th
-                    className="p-4 text-left text-gray-600 cursor-pointer flex items-center"
+                    className="p-4 text-left text-gray-600 dark:text-gray-300 cursor-pointer flex items-center"
                     onClick={() => sortCategories("name")}
                   >
                     Name <span>{getSortIcon("name")} </span>
                   </th>
-                  <th className="p-4 text-left text-gray-600">Description</th>
-                  <th className="p-4 text-center text-gray-600">Actions</th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Description
+                  </th>
+                  <th className="p-4 text-center text-gray-600 dark:text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedCategories?.map((category) => (
                   <React.Fragment key={category._id}>
                     <tr
-                      className="border-t hover:bg-gray-50 cursor-pointer"
+                      className="border-t hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                       onClick={() => toggleExpandCategory(category._id)}
                     >
-                      <td className="p-4">{category.name}</td>
-                      <td className="p-4">{category.description}</td>
+                      <td className="p-4 text-gray-800 dark:text-gray-300">
+                        {category.name}
+                      </td>
+                      <td className="p-4 text-gray-800 dark:text-gray-300">
+                        {category.description}
+                      </td>
                       <td className="p-4 text-center flex justify-center space-x-4">
                         <button
                           onClick={(e) => {
@@ -192,7 +202,10 @@ const CategoriesListPage = () => {
                     </tr>
                     {expandedCategoryId === category._id && (
                       <tr>
-                        <td colSpan="3" className="p-4 bg-gray-100">
+                        <td
+                          colSpan="3"
+                          className="p-4 bg-gray-100 dark:bg-gray-700"
+                        >
                           <ul>
                             <li className="p-2">
                               <button
@@ -209,9 +222,9 @@ const CategoriesListPage = () => {
                               category.subcategories.map((subcategory) => (
                                 <li
                                   key={subcategory._id}
-                                  className="flex justify-between w-[300px] items-center p-2 border-b"
+                                  className="flex justify-between w-[300px] items-center p-2 border-b dark:border-gray-600"
                                 >
-                                  <span className="text-gray-700 font-semibold">
+                                  <span className="text-gray-700 font-semibold dark:text-gray-300">
                                     {subcategory.name}
                                   </span>
                                   <div className="flex space-x-4">
@@ -241,7 +254,7 @@ const CategoriesListPage = () => {
                               ))
                             ) : (
                               <div className="flex items-center justify-between">
-                                <p className="text-gray-700">
+                                <p className="text-gray-700 dark:text-gray-300">
                                   No Subcategories Available
                                 </p>
                                 <button
@@ -265,7 +278,8 @@ const CategoriesListPage = () => {
             </table>
           </div>
         )}
-        <div className="flex justify-end mt-4">
+
+        <div className="flex justify-end items-center mt-4">
           <Pagination
             count={Math.ceil(filteredCategories?.length / recordsPerPage)}
             page={currentPage}
@@ -273,6 +287,7 @@ const CategoriesListPage = () => {
             variant="outlined"
             shape="rounded"
             color="primary"
+            className="dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
           />
         </div>
         {addCategoryModalOpen && (

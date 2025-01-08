@@ -85,18 +85,20 @@ const UserList = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
+    <div className="min-h-screen">
+      <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
         User List
       </h1>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">User List</h2>
+          <h2 className="text-xl font-semibold dark:text-gray-300">
+            User List
+          </h2>
           <div className="relative w-80">
             <input
               type="text"
               placeholder="Search users..."
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -107,26 +109,41 @@ const UserList = () => {
           <p>Loading...</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-              <thead className="bg-gray-200">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
+              <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
-                  <th className="p-4 text-left text-gray-600">Full Name</th>
-                  <th className="p-4 text-left text-gray-600">Email</th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Full Name
+                  </th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Email
+                  </th>
                   <th
-                    className="p-4 text-left text-gray-600 cursor-pointer flex items-center"
+                    className="p-4 text-left text-gray-600 dark:text-gray-300 cursor-pointer flex items-center"
                     onClick={() => sortUsers("role")}
                   >
                     Role {getSortIcon("role")}
                   </th>
-                  <th className="p-4 text-center text-gray-600">Actions</th>
+                  <th className="p-4 text-center text-gray-600 dark:text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.map((user) => (
-                  <tr key={user._id} className="border-t hover:bg-gray-50">
-                    <td className="p-4">{user.fullname}</td>
-                    <td className="p-4">{user.email}</td>
-                    <td className="p-4">{user.role}</td>
+                  <tr
+                    key={user._id}
+                    className="border-t hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
+                    <td className="p-4 text-gray-800 dark:text-gray-300">
+                      {user.fullname}
+                    </td>
+                    <td className="p-4 text-gray-800 dark:text-gray-300">
+                      {user.email}
+                    </td>
+                    <td className="p-4 text-gray-800 dark:text-gray-300">
+                      {user.role}
+                    </td>
                     <td className="p-4 text-center flex justify-center space-x-4">
                       <button
                         onClick={() => handleEdit(user)}
@@ -147,6 +164,7 @@ const UserList = () => {
             </table>
           </div>
         )}
+
         <div className="flex justify-end items-center mt-4">
           <Pagination
             count={totalPages}
@@ -155,6 +173,7 @@ const UserList = () => {
             variant="outlined"
             shape="rounded"
             color="primary"
+            className="dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
           />
         </div>
       </div>

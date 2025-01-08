@@ -26,11 +26,11 @@ export default function LikedProducts() {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
       <div className="w-[90%] mx-auto py-6">
         <button
           onClick={() => router.back()}
-          className="mb-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+          className="mb-4 bg-blue-500 dark:bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
         >
           ← Back
         </button>

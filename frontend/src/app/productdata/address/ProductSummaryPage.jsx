@@ -44,7 +44,7 @@ const ProductSummaryPage = ({
   }, [isAddressSelected, handleSummarySelection]);
   return (
     <div
-      className={`min-h-auto  p-4 ${
+      className={`min-h-auto p-4 bg-gray-50 dark:bg-gray-900 ${
         isAddressSelected ? "opacity-100" : "opacity-50 pointer-events-none"
       }`}
     >
@@ -65,14 +65,14 @@ const ProductSummaryPage = ({
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky    md:mb-0 mb-20">
+            <div className="bg-white dark:bg-gray-800 rounded-lg h-fit shadow-md p-4 sticky md:mb-0 mb-20">
               <PriceDetails
                 totalData={calculateTotal()}
                 itemsCount={cartItems.length}
               />
               <div className="mt-6 flex justify-end">
                 <button
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg dark:bg-orange-600 dark:hover:bg-orange-700"
                   onClick={handleProceedToPayment}
                   disabled={!isAddressSelected}
                 >
@@ -81,8 +81,8 @@ const ProductSummaryPage = ({
               </div>
             </div>
             <div className="flex items-center space-x-3 mt-6">
-              <FaShieldAlt className="text-[#878787] text-[25px]" />
-              <h1 className="md:text-[16px] text-[14px] text-left text-[#878787] md:pr-10 font-medium">
+              <FaShieldAlt className="text-[#878787] dark:text-gray-400 text-[25px]" />
+              <h1 className="md:text-[16px] text-[14px] text-left text-[#878787] dark:text-gray-400 md:pr-10 font-medium">
                 Safe and Secure Payments. Easy returns. 100% Authentic products.
               </h1>
             </div>
@@ -90,7 +90,7 @@ const ProductSummaryPage = ({
         </div>
       ) : (
         <div className="flex h-80 justify-center items-center">
-          <h1 className="text-[30px]">
+          <h1 className="text-[30px] text-gray-800 dark:text-gray-200">
             No Products in the Summary.. Plz go Back
           </h1>
         </div>

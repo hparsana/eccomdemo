@@ -48,11 +48,13 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-[100vh] bg-gray-50 p-4">
+    <div className="min-h-[100vh] bg-gray-50 p-4 dark:bg-gray-900">
       {cartItems.length !== 0 ? (
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
           <div className="lg:col-span-2">
-            <h2 className="text-xl font-bold mb-4">Cart Items</h2>
+            <h2 className="text-xl font-bold mb-4 dark:text-gray-200">
+              Cart Items
+            </h2>
             <div className="space-y-4">
               {cartItems.map((item) => (
                 <CartProduct
@@ -69,14 +71,14 @@ const Cart = () => {
             </div>
           </div>
           <div>
-            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky top-3 md:mt-10 mt-4 md:mb-0 mb-20">
+            <div className="bg-white rounded-lg h-fit shadow-md p-4 sticky top-3 md:mt-10 mt-4 md:mb-0 mb-20 dark:bg-gray-800">
               <PriceDetails
                 totalData={calculateTotal()}
                 itemsCount={cartItems.length}
               />
               <div className="mt-6 flex justify-end">
                 <button
-                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg"
+                  className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg dark:bg-orange-600 dark:hover:bg-orange-700"
                   onClick={handlePlaceOrder}
                 >
                   PLACE ORDER
@@ -84,8 +86,8 @@ const Cart = () => {
               </div>
             </div>
             <div className="flex items-center space-x-3 mt-6">
-              <FaShieldAlt className="text-[#878787] text-[25px]" />
-              <h1 className="md:text-[16px] text-[14px] text-left text-[#878787] md:pr-10 font-medium">
+              <FaShieldAlt className="text-[#878787] text-[25px] dark:text-gray-400" />
+              <h1 className="md:text-[16px] text-[14px] text-left text-[#878787] md:pr-10 font-medium dark:text-gray-400">
                 Safe and Secure Payments. Easy returns. 100% Authentic products.
               </h1>
             </div>
@@ -93,7 +95,7 @@ const Cart = () => {
         </div>
       ) : (
         <div className="flex h-80 justify-center items-center">
-          <h1 className="text-[30px]">Cart is Empty..</h1>
+          <h1 className="text-[30px] dark:text-gray-200">Cart is Empty..</h1>
         </div>
       )}
     </div>

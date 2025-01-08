@@ -190,7 +190,7 @@ const RegisterPage = () => {
                       {...register("email", {
                         required: "Please enter your email",
                         pattern: {
-                          value: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                           message: "Please enter a valid email address",
                         },
                       })}
@@ -224,7 +224,7 @@ const RegisterPage = () => {
                             "Password must be at least 8 characters long",
                         },
                         validate: (value) =>
-                          /(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])/.test(
+                          /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(
                             value
                           ) ||
                           "Password must contain at least one uppercase, one lowercase, one number, and one special character",

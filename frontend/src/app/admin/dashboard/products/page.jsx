@@ -171,13 +171,15 @@ const ProductsListPage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold p-6 bg-slate-400 text-white">
+    <div className="min-h-screen">
+      <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
         Products List
       </h1>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Available Products</h2>
+          <h2 className="text-xl font-semibold dark:text-gray-300">
+            Available Products
+          </h2>
           <button
             onClick={() => setAddProductModalOpen(true)}
             className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
@@ -190,7 +192,7 @@ const ProductsListPage = () => {
             <select
               value={selectedCategory}
               onChange={handleCategoryChange}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             >
               <option value="">All Categories</option>
 
@@ -203,7 +205,7 @@ const ProductsListPage = () => {
             <select
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
               disabled={!selectedCategory} // Disable if no category is selected
             >
               <option value="">All Subcategories</option>
@@ -218,7 +220,7 @@ const ProductsListPage = () => {
             <select
               value={selectedBrand}
               onChange={handleBrandChange}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             >
               <option value="">All Brands</option>
               {[...new Set(products?.map((product) => product.brand))].map(
@@ -229,7 +231,10 @@ const ProductsListPage = () => {
                 )
               )}
             </select>
-            <button className=" text-blue-700" onClick={HandleResetData}>
+            <button
+              className=" text-blue-700 dark:text-green-400"
+              onClick={HandleResetData}
+            >
               Reset Filters
             </button>
           </div>
@@ -239,7 +244,7 @@ const ProductsListPage = () => {
               placeholder="Search products..."
               value={searchQuery}
               onChange={handleSearch}
-              className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-lg focus:outline-none focus:ring focus:ring-blue-300"
+              className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             />
             <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
           </div>
@@ -250,34 +255,50 @@ const ProductsListPage = () => {
           <p className="text-red-500">{error}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-              <thead className="bg-gray-200">
+            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
+              <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
-                  <th className="p-4 text-left text-gray-600">Name</th>
-                  <th className="p-4 text-left text-gray-600">Category</th>
-                  <th className="p-4 text-left text-gray-600">Brand</th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Name
+                  </th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Category
+                  </th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Brand
+                  </th>
                   <th
-                    className="p-4 text-left text-gray-600 cursor-pointer flex items-center"
+                    className="p-4 text-left text-gray-600 dark:text-gray-300 cursor-pointer flex items-center"
                     onClick={() => sortProducts("price")}
                   >
                     Price {getSortIcon("price")}
                   </th>
-                  <th className="p-4 text-left text-gray-600">Discount</th>
-                  <th className="p-4 text-center text-gray-600">Actions</th>
+                  <th className="p-4 text-left text-gray-600 dark:text-gray-300">
+                    Discount
+                  </th>
+                  <th className="p-4 text-center text-gray-600 dark:text-gray-300">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredProducts.map((product) => (
                   <React.Fragment key={product._id}>
                     <tr
-                      className="border-t hover:bg-gray-50 cursor-pointer"
+                      className="border-t hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700 cursor-pointer"
                       onClick={() => toggleExpandRow(product._id)}
                     >
-                      <td className="p-4">{product.name}</td>
-                      <td className="p-4">{product.category}</td>
-                      <td className="p-4">{product.brand}</td>
-                      <td className="p-4">₹{product.price}</td>
-                      <td className="p-4">
+                      <td className="p-4 dark:text-gray-200">{product.name}</td>
+                      <td className="p-4 dark:text-gray-200">
+                        {product.category}
+                      </td>
+                      <td className="p-4 dark:text-gray-200">
+                        {product.brand}
+                      </td>
+                      <td className="p-4 dark:text-gray-200">
+                        ₹{product.price}
+                      </td>
+                      <td className="p-4 dark:text-gray-200">
                         {product.discount?.isActive
                           ? `${product.discount.percentage}% off`
                           : "No Discount"}
@@ -306,13 +327,13 @@ const ProductsListPage = () => {
                     {expandedRow === product._id && (
                       <AnimatePresence>
                         <motion.tr
-                          className="border-t bg-gray-100"
+                          className="border-t bg-gray-100 dark:bg-gray-700 dark:border-gray-600"
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.5 }}
                         >
-                          <td colSpan="6" className="p-4">
+                          <td colSpan="6" className="p-4 dark:text-gray-300">
                             <div>
                               <p>
                                 <strong>Description:</strong>{" "}
@@ -360,6 +381,7 @@ const ProductsListPage = () => {
             variant="outlined"
             shape="rounded"
             color="primary"
+            className="dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
           />
         </div>
       </div>

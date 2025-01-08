@@ -11,6 +11,7 @@ import ProductSummaryPage from "./ProductSummaryPage";
 import PaymentPage from "./PaymentPage";
 import withAuth from "@/app/components/Auth/withAuth";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+
 // Styled Connector for Custom Colors
 const CustomConnector = styled(StepConnector)(({ theme }) => ({
   [`& .${stepConnectorClasses.line}`]: {
@@ -69,18 +70,25 @@ const TabBarLayout = () => {
   }, []);
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 min-h-[90vh] to-gray-200 flex justify-center px-4 py-10">
-      <div className="container mx-auto bg-white shadow-lg rounded-lg p-2 md:p-8">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900 min-h-[100vh] flex justify-center px-4 py-10">
+      <div className="container mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 md:p-8">
         {/* Material-UI Stepper */}
         <Stepper
           activeStep={currentStep}
           alternativeLabel
           connector={<CustomConnector />}
-          className=""
+          className="dark:text-gray-200"
         >
           {steps.map((label, index) => (
             <Step key={index}>
-              <CustomStepLabel>{label}</CustomStepLabel>
+              <CustomStepLabel>
+                <h4
+                  className={`dark:text-white ${currentStep < index ? "opacity-25" : null}`}
+                >
+                  {" "}
+                  {label}{" "}
+                </h4>{" "}
+              </CustomStepLabel>
             </Step>
           ))}
         </Stepper>
@@ -89,7 +97,7 @@ const TabBarLayout = () => {
         <div className="mt-8">
           {currentStep === 0 && (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
+              <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
                 Shipping Address
               </h2>
 
@@ -101,11 +109,11 @@ const TabBarLayout = () => {
           )}
           {currentStep === 1 && (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800">
+              <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
                 Product Summary
               </h2>
               <button
-                className="flex items-center text-gray-500 hover:text-gray-700"
+                className="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 onClick={() => setCurrentStep(0)}
               >
                 <MdOutlineArrowBackIosNew className="mr-1" /> Back
@@ -119,9 +127,11 @@ const TabBarLayout = () => {
           )}
           {currentStep === 2 && (
             <div>
-              <h2 className="text-xl font-bold mb-4 text-gray-800">Payment</h2>
+              <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+                Payment
+              </h2>
               <button
-                className=" flex items-center text-gray-500 hover:text-gray-700"
+                className="flex items-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
                 onClick={() => setCurrentStep(1)}
               >
                 <MdOutlineArrowBackIosNew className="mr-1" /> Back

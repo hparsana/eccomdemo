@@ -80,10 +80,10 @@ export default function ErrorLogsPage() {
         key={index}
         className={`p-4 rounded-lg min-h-[16vh] h-fit shadow-md border-l-4 ${getErrorColor(
           log.level
-        )} bg-white`}
+        )} bg-white dark:bg-gray-800`}
       >
         <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-800">
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
             {formatLogDate(log.timestamp)}{" "}
             {/* Display 'Latest' label if within the last hour */}
             {isLatest(log.timestamp) && (
@@ -92,26 +92,25 @@ export default function ErrorLogsPage() {
               </div>
             )}
           </h2>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             {new Date(log.timestamp).toLocaleTimeString()}
           </p>
         </div>
 
-        <p className="text-sm mt-2">
-          <span className="font-bold text-gray-700">Message:</span>{" "}
+        <p className="text-sm mt-2 text-gray-700 dark:text-gray-300">
+          <span className="font-bold ">Message: </span>
           {log.message}
         </p>
 
         {log.route && (
-          <p className="text-sm mt-1">
-            <span className="font-bold text-gray-700">Route:</span> {log.route}
+          <p className="text-sm mt-1 text-gray-700 dark:text-gray-300">
+            <span className="font-bold ">Route:</span> {log.route}
           </p>
         )}
 
         {log.method && (
-          <p className="text-sm mt-1">
-            <span className="font-bold text-gray-700">Method:</span>{" "}
-            {log.method}
+          <p className="text-sm mt-1 text-gray-700 dark:text-gray-300">
+            <span className="font-bold ">Method:</span> {log.method}
           </p>
         )}
 
@@ -119,12 +118,12 @@ export default function ErrorLogsPage() {
           <div className="mt-4">
             <button
               onClick={() => toggleStackTrace(index)}
-              className="text-blue-600 underline hover:text-blue-800 focus:outline-none"
+              className="text-blue-600 underline hover:text-blue-800 focus:outline-none dark:text-blue-400 dark:hover:text-blue-500"
             >
               {expandedLogs[index] ? "Hide Stack Trace" : "View Stack Trace"}
             </button>
             {expandedLogs[index] && (
-              <pre className="mt-2 p-2 bg-gray-100 rounded text-sm overflow-x-auto text-gray-700">
+              <pre className="mt-2 p-2 bg-gray-100 dark:bg-gray-700 rounded text-sm overflow-x-auto text-gray-700 dark:text-gray-300">
                 {log.stack}
               </pre>
             )}
@@ -138,10 +137,10 @@ export default function ErrorLogsPage() {
     <div className="container  min-h-screen mx-auto p-4">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Error Logs</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-300">Error Logs</h1>
         <button
           onClick={handleRefresh}
-          className="text-blue-600 hover:text-blue-800 text-center flex focus:outline-none"
+          className="text-blue-600 dark:text-gray-300 hover:text-blue-800 text-center flex focus:outline-none"
         >
           <FiRefreshCw size={24} />{" "}
           <span className="text-center ml-2">Refresh</span>
@@ -159,7 +158,7 @@ export default function ErrorLogsPage() {
           placeholder="Search logs..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200"
+          className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
         />
       </div>
 
