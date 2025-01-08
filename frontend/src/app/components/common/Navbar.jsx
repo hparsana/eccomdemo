@@ -16,15 +16,14 @@ import {
 import { FiBox } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
-import { useDarkMode } from "./DarkModeProvider";
 const Navbar = () => {
   const pathname = usePathname();
-  const { userLoggedIn, authUser } = useSelector((state) => state.userAuthData);
+  const { userLoggedIn, darkMode, authUser } = useSelector(
+    (state) => state.userAuthData
+  );
   const { savedProducts } = useSelector((state) => state.savedProductData);
   const { cartItems } = useSelector((state) => state.cartData);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { darkMode } = useDarkMode();
-  console.log("theme ise <<<<", darkMode);
 
   const dispatch = useDispatch();
   const router = useRouter();

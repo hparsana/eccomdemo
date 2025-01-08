@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Navbar from "./common/Navbar";
 import { getUserData } from "../store/Auth/authApi";
 import { useEffect, useState } from "react";
-import { DarkModeProvider } from "../components/common/DarkModeProvider";
+import DarkModeHandler from "./common/DarkModeHandler";
 
 const Layout = ({ children }) => {
   const { authUser, loading } = useSelector((state) => state?.userAuthData);
@@ -48,11 +48,9 @@ const Layout = ({ children }) => {
 
   return (
     <>
-      <DarkModeProvider>
-        {authUser?.role !== "ADMIN" ? <Navbar /> : null}
-
-        <main>{children}</main>
-      </DarkModeProvider>
+      {authUser?.role !== "ADMIN" ? <Navbar /> : null}
+      <DarkModeHandler />
+      <main>{children}</main>
     </>
   );
 };

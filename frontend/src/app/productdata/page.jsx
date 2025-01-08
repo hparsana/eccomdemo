@@ -14,7 +14,7 @@ import {
   unsaveProduct,
 } from "@/app/store/SaveProduct/savedProductApi";
 import { ResetProducts } from "../store/Product/product.slice";
-import { useDarkMode } from "../components/common/DarkModeProvider";
+import { toggleDarkMode } from "../store/Auth/auth.slice";
 
 export default function ProductData() {
   const [priceRange, setPriceRange] = useState([0, 250000]);
@@ -39,13 +39,12 @@ export default function ProductData() {
     loading,
     error,
   } = useSelector((state) => state.productData);
-  const { userLoggedIn } = useSelector((state) => state.userAuthData);
+  const { userLoggedIn, darkMode } = useSelector((state) => state.userAuthData);
 
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const recordsPerPage = 5;
   const lastCalled = useRef(0);
-  const { darkMode, toggleDarkMode } = useDarkMode();
   useEffect(() => {
     return () => {
       dispatch(ResetProducts());
@@ -237,7 +236,7 @@ export default function ProductData() {
                 Clear All
               </button>
               <button
-                onClick={toggleDarkMode}
+                onClick={() => dispatch(toggleDarkMode())}
                 className="p-2 bg-gray-200 dark:bg-gray-700 rounded"
               >
                 {darkMode ? "Dark" : "Light"}
