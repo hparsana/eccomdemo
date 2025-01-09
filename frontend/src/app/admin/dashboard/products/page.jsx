@@ -187,7 +187,7 @@ const ProductsListPage = () => {
             Add Product
           </button>
         </div>
-        <div className="flex justify-between space-x-4 mb-4">
+        <div className="flex flex-wrap justify-between space-x-4 mb-4">
           <div className="flex space-x-4">
             <select
               value={selectedCategory}
@@ -254,8 +254,8 @@ const ProductsListPage = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
+          <div className=" overflow-x-auto">
+            <table className="w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
               <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
                   <th className="p-4 text-left text-gray-600 dark:text-gray-300">

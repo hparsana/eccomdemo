@@ -115,12 +115,28 @@ const DashBoard = () => {
   };
 
   const barChartData = {
-    labels: ["Electronics", "Clothes", "Home", "Books", "Toys"],
+    labels: [
+      "Electronics",
+      "Clothes",
+      "Home",
+      "Books",
+      "Toys",
+      "Electronics",
+      "Clothes",
+      "Home",
+      "Books",
+      "Toys",
+    ],
     datasets: [
       {
         label: "Products Sold",
-        data: [500, 700, 300, 200, 400],
+        data: [500, 700, 300, 200, 400, 500, 700, 300, 200, 400],
         backgroundColor: [
+          "#4A90E2",
+          "#50E3C2",
+          "#F5A623",
+          "#BD10E0",
+          "#F8E71C",
           "#4A90E2",
           "#50E3C2",
           "#F5A623",
