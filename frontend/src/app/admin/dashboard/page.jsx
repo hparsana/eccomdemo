@@ -26,7 +26,10 @@ import {
 } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
 import { getOrdersStatitics } from "@/app/store/Order/orderApi";
-
+import { getUserActivity } from "@/app/store/User/userApi";
+import { formatDistanceToNow } from "date-fns";
+import { Pagination } from "@mui/material";
+import UserActivityFeed from "./components/UserActivityFeed";
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -46,7 +49,15 @@ const DashBoard = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getOrdersStatitics({}));
+    const fetchData = async () => {
+      try {
+        await Promise.all([dispatch(getOrdersStatitics({})).unwrap()]);
+      } catch (error) {
+        console.log("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const stats = [
@@ -81,25 +92,6 @@ const DashBoard = () => {
     { id: 2, message: "Order #1234 placed", timestamp: "10 mins ago" },
     { id: 3, message: "Product stock low", timestamp: "1 hour ago" },
     { id: 4, message: "Revenue goal achieved", timestamp: "2 hours ago" },
-  ];
-
-  const userActivities = [
-    {
-      id: 1,
-      activity: "John Doe updated his profile",
-      timestamp: "5 mins ago",
-    },
-    {
-      id: 2,
-      activity: "Jane Smith added a new product",
-      timestamp: "15 mins ago",
-    },
-    { id: 3, activity: "Order #12345 was delivered", timestamp: "30 mins ago" },
-    {
-      id: 4,
-      activity: "Mary Johnson posted a review",
-      timestamp: "1 hour ago",
-    },
   ];
 
   const tasks = [
@@ -313,33 +305,7 @@ const DashBoard = () => {
       {/* New Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {/* User Activity Feed */}
-        <motion.div
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
-            User Activity Feed
-          </h3>
-          <ul className="space-y-3">
-            {userActivities.map((activity) => (
-              <li
-                key={activity.id}
-                className="p-4 border rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition border-gray-300 dark:border-gray-700"
-              >
-                <p className="font-medium text-gray-700 dark:text-gray-300">
-                  {activity.activity}
-                </p>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {activity.timestamp}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </motion.div>
-
+        <UserActivityFeed />
         {/* Task Progress Tracker */}
         <motion.div
           className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"

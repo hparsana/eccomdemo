@@ -16,6 +16,7 @@ import {
   addAddress,
   updateAddress,
   deleteAddress,
+  getLogActivities,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { validate } from "../middlewares/validate.middleware.js";
@@ -42,6 +43,10 @@ routes.route("/refresh-token").post(refreshAccessToken);
 routes.route("/logout").get(authMiddleWare(["USER", "ADMIN"]), LogoutUser);
 
 routes.route("/getallusers").get(authMiddleWare(["ADMIN"]), getAllUsers);
+
+routes
+  .route("/getuseractivity")
+  .get(authMiddleWare(["ADMIN"]), getLogActivities);
 
 routes
   .route("/updateoneuser/:id")

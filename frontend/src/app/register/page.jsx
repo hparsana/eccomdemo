@@ -49,7 +49,7 @@ const RegisterPage = () => {
         const res = await axios.post(USERS.REGISTER_USER_API, data);
 
         if (res?.data?.success) {
-          toast.success("Registration Successful!");
+          toast.success("send Otp in Your Email!");
           localStorage.setItem("emailVerify", res?.data?.data?.email);
           setStep(2);
           setLoadingApi(false);

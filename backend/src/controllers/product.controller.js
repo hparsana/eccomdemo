@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Product } from "../models/product.model.js";
 import { Discount } from "../models/discount.model.js";
 import mongoose from "mongoose";
+import { addLogActivity } from "../controllers/user.controller.js";
 
 const AddProduct = asyncHandler(async (req, res) => {
   console.log("Incoming request body <<<<<<<<<", req.body);
@@ -131,6 +132,7 @@ const AddProduct = asyncHandler(async (req, res) => {
 
     await productDiscount.save();
   }
+  await addLogActivity(req?.user?._id, " Product added", {});
 
   return res
     .status(201)
@@ -326,6 +328,7 @@ const deleteProductById = asyncHandler(async (req, res) => {
 
   // Optionally delete associated discounts
   await Discount.deleteMany({ product: id });
+  await addLogActivity(req?.user?._id, " Product deleted", {});
 
   return res
     .status(200)
@@ -473,6 +476,7 @@ const updateProductById = asyncHandler(async (req, res) => {
       await productDiscount.save();
     }
   }
+  await addLogActivity(req?.user?._id, " Product updated", {});
 
   return res
     .status(200)
@@ -492,6 +496,7 @@ const deleteDiscount = asyncHandler(async (req, res) => {
   if (!discount) {
     throw new ApiError(404, "Discount not found.");
   }
+  await addLogActivity(req?.user?._id, " Discount deleted", {});
 
   return res
     .status(200)

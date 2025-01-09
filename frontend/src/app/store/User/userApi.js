@@ -33,6 +33,35 @@ export const getAllUsers = createAsyncThunk(
   }
 );
 
+export const getUserActivity = createAsyncThunk(
+  "users/getUserActivity",
+  async ({ page = 1, limit = 20, search = "" }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await axios.get(USERS.GET_USER_ACTIVITY, {
+        params: { page, limit, search },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        return response.data;
+      }
+
+      return rejectWithValue("Failed to fetch users.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 export const editUser = createAsyncThunk(
   "users/editUser",
   async ({ userId, userData }, { rejectWithValue }) => {

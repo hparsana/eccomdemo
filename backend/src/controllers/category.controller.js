@@ -3,6 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
+import { addLogActivity } from "../controllers/user.controller.js";
 
 // Add a new category
 export const addCategory = asyncHandler(async (req, res) => {
@@ -23,6 +24,7 @@ export const addCategory = asyncHandler(async (req, res) => {
     description: description?.trim(),
   });
   await category.save();
+  await addLogActivity(req?.user?._id, " new Category Added", {});
 
   res
     .status(201)
@@ -83,6 +85,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
   if (description) category.description = description.trim();
 
   await category.save();
+  await addLogActivity(req?.user?._id, "  Category updated", {});
 
   res
     .status(200)
@@ -101,6 +104,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   if (!category) {
     throw new ApiError(404, "Category not found");
   }
+  await addLogActivity(req?.user?._id, "  Category deleted", {});
 
   res
     .status(200)
@@ -137,6 +141,7 @@ export const addSubcategory = asyncHandler(async (req, res) => {
     description: description?.trim(),
   });
   await category.save();
+  await addLogActivity(req?.user?._id, " new Subcategory added", {});
 
   res
     .status(201)
@@ -177,6 +182,7 @@ export const updateSubcategory = asyncHandler(async (req, res) => {
   if (description) subcategory.description = description.trim();
 
   await category.save();
+  await addLogActivity(req?.user?._id, "  Subcategory updated", {});
 
   res
     .status(200)
@@ -213,6 +219,7 @@ export const deleteSubcategory = asyncHandler(async (req, res) => {
 
   // Save the updated category
   await category.save();
+  await addLogActivity(req?.user?._id, "  Subcategory deleted", {});
 
   res
     .status(200)

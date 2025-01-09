@@ -6,6 +6,7 @@ import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
 import { sendOrderStatusEmail } from "../utils/mailer.js";
 import { User } from "../models/user.model.js";
+import { addLogActivity } from "../controllers/user.controller.js";
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
@@ -92,6 +93,7 @@ const createOrder = asyncHandler(async (req, res) => {
   });
 
   await order.save();
+  await addLogActivity(req?.user?._id, " new Order created", {});
 
   return res
     .status(201)
@@ -186,6 +188,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
       orderStatus
     );
   }
+  await addLogActivity(req?.user?._id, "Order status updated", {});
 
   return res
     .status(200)
@@ -222,6 +225,7 @@ const cancelOrder = asyncHandler(async (req, res) => {
   order.isCancelled = true;
   order.cancelledAt = new Date();
   await order.save();
+  await addLogActivity(req?.user?._id, "Order cancelled", {});
 
   return res
     .status(200)
@@ -259,6 +263,7 @@ const deleteOrder = asyncHandler(async (req, res) => {
   if (!order) {
     throw new ApiError(404, "Order not found.");
   }
+  await addLogActivity(req?.user?._id, "Order deleted", {});
 
   return res
     .status(200)
@@ -359,6 +364,7 @@ const updateOrderAddress = asyncHandler(async (req, res) => {
   };
 
   await order.save();
+  await addLogActivity(req?.user?._id, "Shipping address updated", {});
 
   return res
     .status(200)

@@ -13,6 +13,7 @@ import {
   randomInt,
   sendForgotPasswordEmail,
 } from "../utils/mailer.js";
+import { ActivityLog } from "../models/activity.model.js";
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -75,7 +76,7 @@ const Register = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, createdUser, "Register Successfully.."));
+    .json(new ApiResponse(200, createdUser, "send Otp in Your Email."));
 });
 
 const UserOtpVerify = asyncHandler(async (req, res) => {
@@ -103,6 +104,7 @@ const UserOtpVerify = asyncHandler(async (req, res) => {
   user.isEmailVerified = true;
   user.resetToken = resetToken;
   await user.save(); // Save the changes to the database
+  await addLogActivity(user?._id, "Sign-Up", {});
 
   return res
     .status(200)
@@ -150,7 +152,7 @@ const LoginUser = asyncHandler(async (req, res) => {
   const loggedInUser = await User.findById(userCheck?._id).select(
     "-password -refreshToken"
   );
-
+  await addLogActivity(loggedInUser?._id, "Login", {});
   return res
     .status(200)
     .cookie("accessToken", accessToken, cookieOptions)
@@ -181,6 +183,7 @@ const LogoutUser = asyncHandler(async (req, res) => {
         new: true,
       }
     );
+    await addLogActivity(req.user?._id, "Logout", {});
 
     return res
       .status(200)
@@ -429,6 +432,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
   // Return updated user details
   const updatedUser = await User.findById(id).select("-password -refreshToken");
+  await addLogActivity(updatedUser?._id, "Profile updated", {});
 
   return res
     .status(200)
@@ -473,6 +477,7 @@ const addAddress = asyncHandler(async (req, res) => {
     isDefault,
   });
   await user.save();
+  await addLogActivity(user?._id, "new Address added", {});
 
   return res
     .status(201)
@@ -536,6 +541,7 @@ const updateAddress = asyncHandler(async (req, res) => {
     isDefault,
   });
   await user.save();
+  await addLogActivity(user?._id, " Address updated", {});
 
   return res
     .status(200)
@@ -579,6 +585,43 @@ const deleteAddress = asyncHandler(async (req, res) => {
     );
 });
 
+const addLogActivity = async (userId, action, additionalInfo = {}) => {
+  try {
+    await ActivityLog.create({
+      user: userId,
+      action,
+      additionalInfo,
+    });
+  } catch (error) {
+    console.error("Error logging activity:", error);
+  }
+};
+
+const getLogActivities = asyncHandler(async (req, res) => {
+  const { userId, page = 1, limit = 5 } = req.query; // Optional userId to filter by a specific user
+
+  const query = userId ? { user: userId } : {}; // Filter logs by userId if provided
+
+  // Calculate total logs
+  const totalLogs = await ActivityLog.countDocuments(query);
+  const totalPages = Math.ceil(totalLogs / limit);
+
+  // Fetch logs for the current page
+  const logs = await ActivityLog.find(query)
+    .populate("user", "fullname email") // Populate user details (if needed)
+    .sort({ timestamp: -1 }) // Sort by latest first
+    .skip((page - 1) * limit) // Skip logs for previous pages
+    .limit(limit); // Limit to the logs for the current page
+
+  return res.status(200).json({
+    success: true,
+    data: logs,
+    totalPages,
+    currentPage: Number(page),
+    message: "Activity logs fetched successfully.",
+  });
+});
+
 export {
   Register,
   LoginUser,
@@ -596,4 +639,6 @@ export {
   getAllAddresses,
   updateAddress,
   deleteAddress,
+  addLogActivity,
+  getLogActivities,
 };

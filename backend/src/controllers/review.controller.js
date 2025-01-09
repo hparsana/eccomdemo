@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Product } from "../models/product.model.js";
 import { Discount } from "../models/discount.model.js";
 import mongoose from "mongoose";
-
+import { addLogActivity } from "../controllers/user.controller.js";
 const addReview = asyncHandler(async (req, res) => {
   const { productId } = req.params;
   const { rating, comment } = req.body;
@@ -50,6 +50,7 @@ const addReview = asyncHandler(async (req, res) => {
     product.reviews.length;
 
   await product.save();
+  await addLogActivity(userId, " Review added", {});
 
   return res
     .status(201)
@@ -147,6 +148,7 @@ const updateReview = asyncHandler(async (req, res) => {
     product.reviews.length;
 
   await product.save();
+  await addLogActivity(userId, " Review updated", {});
 
   return res
     .status(200)
@@ -189,6 +191,7 @@ const deleteReview = asyncHandler(async (req, res) => {
       : 0;
 
   await product.save();
+  await addLogActivity(userId, " Review deleted", {});
 
   return res
     .status(200)

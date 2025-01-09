@@ -46,8 +46,14 @@ const AddCategoryModal = ({ open, category, onClose }) => {
   if (!open) return null;
 
   return (
-    <Modal open={open} onClose={onClose} aria-labelledby="add-category-modal">
-      <div className="flex items-center justify-center min-h-screen">
+    // <Modal open={open} onClose={onClose} aria-labelledby="add-category-modal">
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="user-profile-modal"
+      className="flex items-center justify-center "
+    >
+      <div className="flex items-center justify-center min-h-screen sm:min-w-[400px]">
         <div className="bg-white dark:bg-gray-800 w-full max-w-md rounded-lg shadow-lg relative p-6">
           <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
             {category ? "Edit Category" : "Add Category"}
