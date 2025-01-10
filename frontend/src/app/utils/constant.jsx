@@ -52,6 +52,7 @@ export const ORDERS = {
   DELETE_ORDER: `${LOCAL_PATH}/order/deleteorder`,
   UPDATE_ORDER_STATUS: `${LOCAL_PATH}/order/updateorderstatus`,
   GET_DASHBOARD_STATITICS: `${LOCAL_PATH}/order/orderstats`,
+  GET_DASHBOARD_PRODUCTSOLD: `${LOCAL_PATH}/order/productsold`,
 };
 
 export const SAVEDPRODUCT = {

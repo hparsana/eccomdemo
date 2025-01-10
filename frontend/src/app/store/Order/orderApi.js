@@ -72,6 +72,33 @@ export const getOrdersStatitics = createAsyncThunk(
     }
   }
 );
+export const getProductSold = createAsyncThunk(
+  "orders/getProductSold",
+  async ({}, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found");
+      }
+
+      const response = await axios.get(ORDERS.GET_DASHBOARD_PRODUCTSOLD, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        return response.data.data; // Ensure your API returns the expected response structure
+      }
+
+      return rejectWithValue("Failed to fetch orders.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 // Add Order
 export const addOrder = createAsyncThunk(
   "orders/addOrder",

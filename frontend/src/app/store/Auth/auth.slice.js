@@ -12,10 +12,19 @@ const getInitialDarkMode = () => {
 
 const applyDarkModeClass = (darkMode) => {
   if (typeof window !== "undefined") {
+    const root = document.documentElement;
+
+    // Add transition effect
+    root.style.transition = "background-color 1s ease, color 1s ease";
+
     if (darkMode) {
-      document.documentElement.classList.add("dark");
+      // Apply dark mode colors
+      root.style.backgroundColor = "#121212"; // Dark background
+      root.style.color = "#ffffff"; // Dark text
     } else {
-      document.documentElement.classList.remove("dark");
+      // Apply light mode colors
+      root.style.backgroundColor = "#ffffff"; // Light background
+      root.style.color = "#000000"; // Light text
     }
   }
 };

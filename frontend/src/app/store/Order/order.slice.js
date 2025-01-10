@@ -6,6 +6,7 @@ import {
   deleteOrder,
   UpdateOrder,
   getOrdersStatitics,
+  getProductSold,
 } from "./orderApi";
 
 const OrderSlice = createSlice({
@@ -13,6 +14,7 @@ const OrderSlice = createSlice({
   initialState: {
     orderList: [],
     statitics: {},
+    productSold: [],
     totalOrders: 0,
     totalPages: 0,
     currentPage: 1,
@@ -60,6 +62,18 @@ const OrderSlice = createSlice({
       .addCase(getOrdersStatitics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch statitics.";
+      })
+      .addCase(getProductSold.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProductSold.fulfilled, (state, action) => {
+        state.productSold = action.payload;
+        state.loading = false;
+      })
+      .addCase(getProductSold.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch soldProduct.";
       })
       // Add Order
       .addCase(addOrder.pending, (state) => {

@@ -24,7 +24,7 @@ const OrdersDashboard = () => {
     loading,
     error,
   } = useSelector((state) => state.orderData);
-
+  const { darkMode } = useSelector((state) => state.userAuthData);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -324,6 +324,25 @@ const OrdersDashboard = () => {
           variant="outlined"
           shape="rounded"
           color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: darkMode ? "white" : "black", // Default text color
+              borderColor: darkMode ? "#6b7280" : "#d1d5db", // Default border color
+              backgroundColor: darkMode ? "#1f2937" : "#ffffff", // Default background color
+              "&:hover": {
+                backgroundColor: darkMode ? "#374151" : "#f3f4f6", // Hover background color
+              },
+            },
+            "& .Mui-selected": {
+              color: darkMode ? "#ffffff" : "#ffffff", // Active text color
+              borderColor: darkMode ? "#10b981" : "#2563eb", // Active border color
+              backgroundColor: darkMode ? "#10b981" : "#2563eb", // Active background color
+              fontWeight: "bold", // Active font weight
+              "&:hover": {
+                backgroundColor: darkMode ? "#059669" : "#1d4ed8", // Hover effect on active item
+              },
+            },
+          }}
         />
       </div>
 

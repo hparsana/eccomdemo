@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import { sendOrderStatusEmail } from "../utils/mailer.js";
 import { User } from "../models/user.model.js";
 import { addLogActivity } from "../controllers/user.controller.js";
+import { Category } from "../models/category.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
@@ -271,58 +272,48 @@ const deleteOrder = asyncHandler(async (req, res) => {
 });
 
 const getOrderStats = asyncHandler(async (req, res) => {
-  const [
-    totalOrders,
-    totalRevenue,
-    totalUsers,
-    totalProducts,
-    // mostSoldProducts,
-  ] = await Promise.all([
-    // Total orders count
-    Order.countDocuments(),
+  const [totalOrders, totalDeliveredRevenue, totalUsers, totalProducts] =
+    await Promise.all([
+      // Total orders count
+      Order.countDocuments(),
 
-    // Total revenue calculation
-    Order.aggregate([
-      { $group: { _id: null, revenue: { $sum: "$totalAmount" } } },
-    ]),
+      // Total revenue for delivered orders
+      Order.aggregate([
+        {
+          $match: {
+            isDelivered: true, // Only include delivered orders
+            orderStatus: "Delivered",
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            revenue: { $sum: "$totalAmount" }, // Sum totalAmount for delivered orders
+          },
+        },
+      ]),
 
-    // Total users count
-    User.countDocuments(),
+      // Total users count
+      User.countDocuments(),
 
-    // Total products count
-    Product.countDocuments(),
+      // Total products count
+      Product.countDocuments(),
+    ]);
 
-    // Most sold products
-    // Order.aggregate([
-    //   { $unwind: "$items" },
-    //   {
-    //     $group: {
-    //       _id: "$items.product",
-    //       totalSold: { $sum: "$items.quantity" },
-    //     },
-    //   },
-    //   { $sort: { totalSold: -1 } },
-    //   { $limit: 5 },
-    //   {
-    //     $lookup: {
-    //       from: "products",
-    //       localField: "_id",
-    //       foreignField: "_id",
-    //       as: "product",
-    //     },
-    //   },
-    //   { $unwind: "$product" },
-    // ]),
-  ]);
+  // Extract revenue from aggregation result
+  const totalRevenue = totalDeliveredRevenue[0]?.revenue || 0;
 
   return res.status(200).json(
-    new ApiResponse(200, {
-      totalOrders,
-      totalRevenue: totalRevenue[0]?.revenue || 0,
-      totalUsers,
-      totalProducts,
-      // mostSoldProducts,
-    })
+    new ApiResponse(
+      200,
+      {
+        totalOrders,
+        totalRevenue,
+        totalUsers,
+        totalProducts,
+      },
+      "Order stats fetched successfully."
+    )
   );
 });
 
@@ -372,6 +363,67 @@ const updateOrderAddress = asyncHandler(async (req, res) => {
       new ApiResponse(200, order, "Shipping address updated successfully.")
     );
 });
+const getProductSoldData = asyncHandler(async (req, res) => {
+  try {
+    const { limit = 15, sort = -1 } = req.query;
+
+    // Step 1: Fetch all categories
+    const categories = await Category.find().lean();
+
+    // Step 2: Fetch all orders
+    const orders = await Order.find()
+      .populate("items.product") // Populate product details in order items
+      .lean();
+
+    // Step 3: Calculate total sold for each category
+    const categorySoldData = categories.map((category) => {
+      // Initialize total sold for this category
+      let totalSold = 0;
+
+      // Iterate over orders to calculate sold quantities
+      orders.forEach((order) => {
+        order.items.forEach((item) => {
+          if (
+            item.product &&
+            item.product.category.toString() === category?.name.toString() &&
+            order?.isDelivered === true &&
+            order?.orderStatus === "Delivered"
+          ) {
+            totalSold += item.quantity;
+          }
+        });
+      });
+
+      return {
+        _id: category._id,
+        name: category.name,
+        totalSold,
+      };
+    });
+
+    // Step 4: Sort and limit the result
+    const sortedData = categorySoldData
+      .sort((a, b) =>
+        sort === -1 ? b.totalSold - a.totalSold : a.totalSold - b.totalSold
+      )
+      .slice(0, parseInt(limit, 10));
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          sortedData,
+          "Product sold data fetched successfully."
+        )
+      );
+  } catch (error) {
+    console.error("Error fetching product sold data:", error);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, null, "Failed to fetch product sold data."));
+  }
+});
 
 export {
   createOrder,
@@ -383,4 +435,5 @@ export {
   deleteOrder,
   getOrderStats,
   updateOrderAddress,
+  getProductSoldData,
 };

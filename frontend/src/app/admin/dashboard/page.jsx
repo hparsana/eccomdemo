@@ -25,7 +25,7 @@ import {
   Legend,
 } from "chart.js";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrdersStatitics } from "@/app/store/Order/orderApi";
+import { getOrdersStatitics, getProductSold } from "@/app/store/Order/orderApi";
 import { getUserActivity } from "@/app/store/User/userApi";
 import { formatDistanceToNow } from "date-fns";
 import { Pagination } from "@mui/material";
@@ -46,12 +46,17 @@ const DashBoard = () => {
   const { currentPage, statitics, loading, error } = useSelector(
     (state) => state.orderData
   );
+
+  const { productSold } = useSelector((state) => state.orderData);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await Promise.all([dispatch(getOrdersStatitics({})).unwrap()]);
+        await Promise.all([
+          dispatch(getOrdersStatitics({})).unwrap(),
+          dispatch(getProductSold({})).unwrap(),
+        ]);
       } catch (error) {
         console.log("Error fetching data:", error);
       }
@@ -115,31 +120,19 @@ const DashBoard = () => {
   };
 
   const barChartData = {
-    labels: [
-      "Electronics",
-      "Clothes",
-      "Home",
-      "Books",
-      "Toys",
-      "Electronics",
-      "Clothes",
-      "Home",
-      "Books",
-      "Toys",
-    ],
+    labels: productSold?.map((dt) => dt.name),
     datasets: [
       {
         label: "Products Sold",
-        data: [500, 700, 300, 200, 400, 500, 700, 300, 200, 400],
+        data: productSold?.map((dt) => dt.totalSold),
         backgroundColor: [
-          "#4A90E2",
-          "#50E3C2",
           "#F5A623",
           "#BD10E0",
+          "#4A90E2",
+          "#F5A623",
           "#F8E71C",
           "#4A90E2",
           "#50E3C2",
-          "#F5A623",
           "#BD10E0",
           "#F8E71C",
         ],
@@ -276,7 +269,7 @@ const DashBoard = () => {
         </motion.div>
         {/* Bar Chart */}
         <motion.div
-          className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+          className="bg-white dark:bg-gray-800 p-6  rounded-lg shadow-md"
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

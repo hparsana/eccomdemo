@@ -17,6 +17,7 @@ import {
   getOrdersByUser,
   getOrderStats,
   updateOrderAddress,
+  getProductSoldData,
 } from "../controllers/order.controller.js";
 
 const routes = express.Router();
@@ -63,6 +64,7 @@ routes.route("/deleteorder/:id").delete(authMiddleWare(["ADMIN"]), deleteOrder);
 // Get order statistics (e.g., total orders, revenue, etc.)
 routes.route("/orderstats").get(authMiddleWare(["ADMIN"]), getOrderStats); // Only admins can view statistics
 
+routes.route("/productsold").get(authMiddleWare(["ADMIN"]), getProductSoldData);
 routes
   .route("/updateaddress/:id")
   .put(

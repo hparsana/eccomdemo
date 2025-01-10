@@ -11,6 +11,7 @@ const UserActivityFeed = () => {
   const { userActivity, userActivityTotalPages } = useSelector(
     (state) => state.userData
   );
+  const { darkMode } = useSelector((state) => state.userAuthData);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const UserActivityFeed = () => {
       </ul>
 
       {/* Pagination */}
-      <div className="flex justify-end items-center mt-4">
+      <div className="flex justify-end items-center mt-4 text-white">
         <Pagination
           count={userActivityTotalPages} // Total number of pages
           page={currentPage} // Current active page
@@ -60,7 +61,25 @@ const UserActivityFeed = () => {
           variant="outlined"
           shape="rounded"
           color="primary"
-          className="dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: darkMode ? "white" : "black", // Default text color
+              borderColor: darkMode ? "#6b7280" : "#d1d5db", // Default border color
+              backgroundColor: darkMode ? "#1f2937" : "#ffffff", // Default background color
+              "&:hover": {
+                backgroundColor: darkMode ? "#374151" : "#f3f4f6", // Hover background color
+              },
+            },
+            "& .Mui-selected": {
+              color: darkMode ? "#ffffff" : "#ffffff", // Active text color
+              borderColor: darkMode ? "#10b981" : "#2563eb", // Active border color
+              backgroundColor: darkMode ? "#10b981" : "#2563eb", // Active background color
+              fontWeight: "bold", // Active font weight
+              "&:hover": {
+                backgroundColor: darkMode ? "#059669" : "#1d4ed8", // Hover effect on active item
+              },
+            },
+          }}
         />
       </div>
     </motion.div>
