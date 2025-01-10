@@ -99,6 +99,7 @@ const AddProductModal = ({ open, product, onClose }) => {
   });
 
   const selectedCategory = watch("category");
+  const selectedSubcategory = watch("subcategory");
 
   useEffect(() => {
     if (product) {
@@ -336,7 +337,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     </label>
                     <select
                       {...field}
-                      className="w-full px-4 py-2 border rounded-md"
+                      className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                        error ? "border-red-500" : "border-gray-300"
+                      }`}
                       disabled={!!product} // Disable if editing
                     >
                       <option value="">Select a category</option>
@@ -409,6 +412,1251 @@ const AddProductModal = ({ open, product, onClose }) => {
                 )}
               />
             </div>
+            {selectedSubcategory?.toLowerCase() === "mobile phones" && (
+              <div>
+                <h1 className="dark:text-white text-[20px] pb-2 font-medium">
+                  General
+                </h1>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Controller
+                    name="InTheBox"
+                    control={control}
+                    rules={{ required: "InTheBox is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          In The Box
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Handset, Sim Ejection Pin, USB Cable, Manual"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />{" "}
+                  <Controller
+                    name="ModelNumber"
+                    control={control}
+                    rules={{ required: "Product Model Number is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Model Number
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Model Number"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />{" "}
+                  <Controller
+                    name="ModelName"
+                    control={control}
+                    rules={{ required: "Product Model Name is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Model Name
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Model Name"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />{" "}
+                  <Controller
+                    name="SIMType"
+                    control={control}
+                    rules={{ required: "Product SIM Type is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          SIM Type
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter SIM Type"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <div className="grid md:grid-cols-4 mt-6 gap-4">
+                  <Controller
+                    name="HybridSimSlot"
+                    control={control}
+                    defaultValue="Yes" // Automatically select "Yes" by default
+                    rules={{
+                      required: "Please select if Hybrid SIM Slot is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Hybrid SIM Slot
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          {/* Yes Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"} // Bind the selected value
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+
+                          {/* No Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"} // Bind the selected value
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="Touchscreen"
+                    control={control}
+                    defaultValue="Yes" // Automatically select "Yes"
+                    rules={{
+                      required: "Please select if Touchscreen is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Touchscreen
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          {/* Yes Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+
+                          {/* No Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  {/* OTG Compatible Field */}
+                  <Controller
+                    name="OTGCompatible"
+                    control={control}
+                    defaultValue="Yes" // Auto-select "Yes"
+                    rules={{
+                      required: "Please select if OTG Compatible is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          OTG Compatible
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  {/* Quick Charging Field */}
+                  <Controller
+                    name="QuickCharging"
+                    control={control}
+                    defaultValue="Yes" // Auto-select "Yes"
+                    rules={{
+                      required: "Please select if Quick Charging is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Quick Charging
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <h1 className="dark:text-white text-[20px] mt-4 py-2 font-medium">
+                  Display Features
+                </h1>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Display Size Field */}
+                  <Controller
+                    name="DisplaySize"
+                    control={control}
+                    rules={{ required: "Display Size is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Display Size
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Display Size (e.g., 15.49 cm (6.1 inch))"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  {/* Resolution Field */}
+                  <Controller
+                    name="Resolution"
+                    control={control}
+                    rules={{ required: "Resolution is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Resolution
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Resolution (e.g., 2340 x 1080 Pixels)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  {/* Resolution Type Field */}
+                  <Controller
+                    name="ResolutionType"
+                    control={control}
+                    rules={{ required: "Resolution Type is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Resolution Type
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Resolution Type (e.g., Full HD+)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  {/* GPU Field */}
+                  <Controller
+                    name="GPU"
+                    control={control}
+                    rules={{ required: "GPU is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          GPU
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter GPU (e.g., Qualcomm Adreno 740)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="OtherDisplayFeatures"
+                    control={control}
+                    rules={{ required: "Other Display Features are required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Other Display Features
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Other Display Features (e.g., Adaptive Refresh Rate: 48 Hz - 120 Hz)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="DisplayType"
+                    control={control}
+                    rules={{ required: "Display Type is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Display Type
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Display Type (e.g., Full HD+ Dynamic AMOLED 2X)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="HDGameSupport"
+                    control={control}
+                    defaultValue="Yes" // Automatically select "Yes" by default
+                    rules={{
+                      required: "Please select if HD Game Support is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          HD Game Support
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          {/* Yes Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"} // Bind the selected value
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+
+                          {/* No Option */}
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"} // Bind the selected value
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <h1 className="dark:text-white text-[20px] mt-4 py-2 font-medium">
+                  Os & Processor Features
+                </h1>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Operating System Field */}
+                  <Controller
+                    name="OperatingSystem"
+                    control={control}
+                    rules={{ required: "Operating System is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Operating System
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Operating System (e.g., Android 13)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  {/* Processor Brand Field */}
+                  <Controller
+                    name="ProcessorBrand"
+                    control={control}
+                    rules={{ required: "Processor Brand is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Processor Brand
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Processor Brand (e.g., Snapdragon)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+
+                  {/* Processor Type Field */}
+                  <Controller
+                    name="ProcessorType"
+                    control={control}
+                    rules={{ required: "Processor Type is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Processor Type
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Processor Type (e.g., Qualcomm Snapdragon 8 Gen 2)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="ProcessorCore"
+                    control={control}
+                    rules={{ required: "Processor Core is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Processor Core
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Processor Core (e.g., Octa Core)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="PrimaryClockSpeed"
+                    control={control}
+                    rules={{ required: "Primary Clock Speed is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div className="mt-4">
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Primary Clock Speed
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Primary Clock Speed (e.g., 3.36 GHz)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="SecondaryClockSpeed"
+                    control={control}
+                    rules={{ required: "Secondary Clock Speed is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Secondary Clock Speed
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Secondary Clock Speed (e.g., 3.36 GHz)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="OperatingFrequency"
+                    control={control}
+                    rules={{ required: "Operating Frequency is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Operating Frequency
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Operating Frequency (e.g., 2G GSM: 850/900/1800/1900 MHz)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <h1 className="dark:text-white text-[20px] mt-4 py-2 font-medium">
+                  Memory & Storage Features
+                </h1>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Controller
+                    name="InternalStorage"
+                    control={control}
+                    rules={{ required: "Internal Storage is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Internal Storage
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Internal Storage (e.g., 256 GB)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="RAM"
+                    control={control}
+                    rules={{ required: "RAM is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          RAM
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter RAM (e.g., 8 GB)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="TotalMemory"
+                    control={control}
+                    rules={{ required: "Total Memory is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Total Memory
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Total Memory (e.g., 256 GB)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <h1 className="dark:text-white text-[20px] mt-4 py-2 font-medium">
+                  Camera Features
+                </h1>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <Controller
+                    name="PrimaryCamera"
+                    control={control}
+                    rules={{ required: "Primary Camera is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Primary Camera
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Primary Camera (e.g., 50MP + 10MP + 12MP)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="PrimaryCameraFeatures"
+                    control={control}
+                    rules={{ required: "Primary Camera Features are required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Primary Camera Features
+                        </label>
+                        <textarea
+                          {...field}
+                          rows="4"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Primary Camera Features (e.g., AR Zone, Bixby Vision, Director's View, Food, Hyperlapse, Night, etc.)"
+                        ></textarea>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="SecondaryCamera"
+                    control={control}
+                    rules={{ required: "Secondary Camera is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Secondary Camera
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Secondary Camera (e.g., 12MP Front Camera)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="VideoRecordingResolution"
+                    control={control}
+                    rules={{
+                      required: "Video Recording Resolution is required",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Video Recording Resolution
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Video Recording Resolution (e.g., 7680 x 4320 pixel)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="DigitalZoom"
+                    control={control}
+                    rules={{ required: "Digital Zoom is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Digital Zoom
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Digital Zoom (e.g., Upto 30x)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="FrameRate"
+                    control={control}
+                    rules={{ required: "Frame Rate is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Frame Rate
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Frame Rate (e.g., 30 fps)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="DualCameraLens"
+                    control={control}
+                    rules={{ required: "Dual Camera Lens is required" }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Dual Camera Lens
+                        </label>
+                        <input
+                          {...field}
+                          type="text"
+                          className={`w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-500 focus:outline-none dark:bg-gray-700 text-gray-800 dark:text-gray-200 ${
+                            error ? "border-red-500" : "border-gray-300"
+                          }`}
+                          placeholder="Enter Dual Camera Lens (e.g., Primary Camera)"
+                        />
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+                <div className="grid md:grid-cols-4 mt-5 gap-8">
+                  <Controller
+                    name="OpticalZoom"
+                    control={control}
+                    defaultValue="Yes" // Automatically select "Yes" by default
+                    rules={{
+                      required: "Please select if Optical Zoom is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Optical Zoom
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="SecondaryCameraAvailable"
+                    control={control}
+                    defaultValue="Yes"
+                    rules={{
+                      required:
+                        "Please select if Secondary Camera is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Secondary Camera Available
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="Flash"
+                    control={control}
+                    defaultValue="Yes"
+                    rules={{
+                      required: "Please select if Flash is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Flash
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="HDRecording"
+                    control={control}
+                    defaultValue="Yes"
+                    rules={{
+                      required: "Please select if HD Recording is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          HD Recording
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="FullHDRecording"
+                    control={control}
+                    defaultValue="Yes"
+                    rules={{
+                      required:
+                        "Please select if Full HD Recording is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Full HD Recording
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                  <Controller
+                    name="VideoRecording"
+                    control={control}
+                    defaultValue="Yes"
+                    rules={{
+                      required: "Please select if Video Recording is available",
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <div>
+                        <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                          Video Recording
+                        </label>
+                        <div className="flex space-x-4 mt-2">
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="Yes"
+                              checked={field.value === "Yes"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              Yes
+                            </span>
+                          </label>
+                          <label className="flex items-center space-x-2">
+                            <input
+                              {...field}
+                              type="radio"
+                              value="No"
+                              checked={field.value === "No"}
+                              className="form-radio h-5 w-5 text-blue-600 focus:ring focus:ring-blue-500"
+                            />
+                            <span className="text-sm dark:text-gray-300 text-gray-700">
+                              No
+                            </span>
+                          </label>
+                        </div>
+                        {error && (
+                          <span className="text-red-500 text-sm">
+                            {error.message}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Conditionally Render Fields Based on Category */}
             {selectedCategory?.toLowerCase() === "electronics" && (
               <>
