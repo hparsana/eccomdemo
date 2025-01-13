@@ -93,3 +93,9 @@
 .css-1eqxcs7-MuiStep-root {
   padding: 0px !important;
 }
+
+.smooth-transition {
+  transition:
+    background-color 0.5s ease-in-out,
+    color 0.5s ease-in-out;
+}

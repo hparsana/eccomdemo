@@ -15,7 +15,7 @@ const applyDarkModeClass = (darkMode) => {
     const root = document.documentElement;
 
     // Add transition effect
-    root.style.transition = "background-color 1s ease, color 1s ease";
+    root.style.transition = "background-color 1s ease, color 5s ease";
 
     if (darkMode) {
       // Apply dark mode colors

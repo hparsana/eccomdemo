@@ -38,6 +38,44 @@ const AddProduct = asyncHandler(async (req, res) => {
     shippingDetails = {},
     discount = {}, // Optional discount details
     generalSpecifications = [], // Add generalSpecifications here
+    InTheBox,
+    ModelNumber,
+    ModelName,
+    SIMType,
+    HybridSimSlot = "Yes",
+    Touchscreen = "Yes",
+    OTGCompatible = "Yes",
+    QuickCharging = "Yes",
+    DisplaySize,
+    Resolution: displayResolution, // Alias to avoid conflict
+    ResolutionType,
+    GPU,
+    OtherDisplayFeatures,
+    DisplayType,
+    HDGameSupport = "Yes",
+    OperatingSystem,
+    ProcessorBrand,
+    ProcessorType,
+    ProcessorCore,
+    PrimaryClockSpeed,
+    SecondaryClockSpeed,
+    OperatingFrequency,
+    InternalStorage,
+    RAM: ramCapacity, // Alias for clarity
+    TotalMemory,
+    PrimaryCamera,
+    PrimaryCameraFeatures,
+    SecondaryCamera,
+    VideoRecordingResolution,
+    DigitalZoom,
+    FrameRate,
+    DualCameraLens,
+    OpticalZoom = "Yes",
+    SecondaryCameraAvailable = "Yes",
+    Flash = "Yes",
+    HDRecording = "Yes",
+    FullHDRecording = "Yes",
+    VideoRecording = "Yes",
   } = req.body;
 
   // Validate required fields
@@ -115,6 +153,43 @@ const AddProduct = asyncHandler(async (req, res) => {
     vendor,
     shippingDetails,
     generalSpecifications, // Add this field to the product
+    InTheBox,
+    ModelNumber,
+    ModelName,
+    SIMType,
+    HybridSimSlot,
+    Touchscreen,
+    OTGCompatible,
+    QuickCharging,
+    DisplaySize,
+    Resolution: displayResolution,
+    ResolutionType,
+    GPU,
+    OtherDisplayFeatures,
+    DisplayType,
+    HDGameSupport,
+    OperatingSystem,
+    ProcessorBrand,
+    ProcessorType,
+    ProcessorCore,
+    PrimaryClockSpeed,
+    SecondaryClockSpeed,
+    OperatingFrequency,
+    InternalStorage,
+    TotalMemory,
+    PrimaryCamera,
+    PrimaryCameraFeatures,
+    SecondaryCamera,
+    VideoRecordingResolution,
+    DigitalZoom,
+    FrameRate,
+    DualCameraLens,
+    OpticalZoom,
+    SecondaryCameraAvailable,
+    Flash,
+    HDRecording,
+    FullHDRecording,
+    VideoRecording,
   });
 
   await product.save();
@@ -366,6 +441,44 @@ const updateProductById = asyncHandler(async (req, res) => {
     shippingDetails = {},
     discount,
     generalSpecifications = [], // Added generalSpecifications here
+    InTheBox,
+    ModelNumber,
+    ModelName,
+    SIMType,
+    HybridSimSlot = "Yes",
+    Touchscreen = "Yes",
+    OTGCompatible = "Yes",
+    QuickCharging = "Yes",
+    DisplaySize,
+    Resolution: displayResolution, // Alias to avoid conflict
+    ResolutionType,
+    GPU,
+    OtherDisplayFeatures,
+    DisplayType,
+    HDGameSupport = "Yes",
+    OperatingSystem,
+    ProcessorBrand,
+    ProcessorType,
+    ProcessorCore,
+    PrimaryClockSpeed,
+    SecondaryClockSpeed,
+    OperatingFrequency,
+    InternalStorage,
+    RAM: ramCapacity, // Alias for clarity
+    TotalMemory,
+    PrimaryCamera,
+    PrimaryCameraFeatures,
+    SecondaryCamera,
+    VideoRecordingResolution,
+    DigitalZoom,
+    FrameRate,
+    DualCameraLens,
+    OpticalZoom = "Yes",
+    SecondaryCameraAvailable = "Yes",
+    Flash = "Yes",
+    HDRecording = "Yes",
+    FullHDRecording = "Yes",
+    VideoRecording = "Yes",
   } = req.body;
 
   // Validate the ID format
@@ -422,6 +535,48 @@ const updateProductById = asyncHandler(async (req, res) => {
     }
     product.generalSpecifications = generalSpecifications;
   }
+  // Update additional fields
+  if (InTheBox) product.InTheBox = InTheBox;
+  if (ModelNumber) product.ModelNumber = ModelNumber;
+  if (ModelName) product.ModelName = ModelName;
+  if (SIMType) product.SIMType = SIMType;
+  if (HybridSimSlot) product.HybridSimSlot = HybridSimSlot;
+  if (Touchscreen) product.Touchscreen = Touchscreen;
+  if (OTGCompatible) product.OTGCompatible = OTGCompatible;
+  if (QuickCharging) product.QuickCharging = QuickCharging;
+  if (DisplaySize) product.DisplaySize = DisplaySize;
+  if (displayResolution) product.Resolution = displayResolution;
+  if (ResolutionType) product.ResolutionType = ResolutionType;
+  if (GPU) product.GPU = GPU;
+  if (OtherDisplayFeatures) product.OtherDisplayFeatures = OtherDisplayFeatures;
+  if (DisplayType) product.DisplayType = DisplayType;
+  if (HDGameSupport) product.HDGameSupport = HDGameSupport;
+  if (OperatingSystem) product.OperatingSystem = OperatingSystem;
+  if (ProcessorBrand) product.ProcessorBrand = ProcessorBrand;
+  if (ProcessorType) product.ProcessorType = ProcessorType;
+  if (ProcessorCore) product.ProcessorCore = ProcessorCore;
+  if (PrimaryClockSpeed) product.PrimaryClockSpeed = PrimaryClockSpeed;
+  if (SecondaryClockSpeed) product.SecondaryClockSpeed = SecondaryClockSpeed;
+  if (OperatingFrequency) product.OperatingFrequency = OperatingFrequency;
+  if (InternalStorage) product.InternalStorage = InternalStorage;
+  if (ramCapacity) product.RAM = ramCapacity;
+  if (TotalMemory) product.TotalMemory = TotalMemory;
+  if (PrimaryCamera) product.PrimaryCamera = PrimaryCamera;
+  if (PrimaryCameraFeatures)
+    product.PrimaryCameraFeatures = PrimaryCameraFeatures;
+  if (SecondaryCamera) product.SecondaryCamera = SecondaryCamera;
+  if (VideoRecordingResolution)
+    product.VideoRecordingResolution = VideoRecordingResolution;
+  if (DigitalZoom) product.DigitalZoom = DigitalZoom;
+  if (FrameRate) product.FrameRate = FrameRate;
+  if (DualCameraLens) product.DualCameraLens = DualCameraLens;
+  if (OpticalZoom) product.OpticalZoom = OpticalZoom;
+  if (SecondaryCameraAvailable)
+    product.SecondaryCameraAvailable = SecondaryCameraAvailable;
+  if (Flash) product.Flash = Flash;
+  if (HDRecording) product.HDRecording = HDRecording;
+  if (FullHDRecording) product.FullHDRecording = FullHDRecording;
+  if (VideoRecording) product.VideoRecording = VideoRecording;
 
   // Save the updated product
   await product.save();

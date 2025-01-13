@@ -141,7 +141,7 @@ const DashBoard = () => {
   };
 
   return (
-    <div className="p-6 space-y-6 dark:bg-gray-900">
+    <div className="p-6 space-y-6 dark:bg-gray-900 ">
       {/* Header */}
       <div className="flex justify-between items-center mb-6 relative">
         <motion.h1

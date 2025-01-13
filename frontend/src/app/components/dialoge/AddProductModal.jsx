@@ -46,6 +46,44 @@ const AddProductModal = ({ open, product, onClose }) => {
           ? new Date(product.discount?.endDate).toISOString().split("T")[0]
           : "", // Convert date or initialize as empty string
       },
+      InTheBox: "", // Initialize as empty string
+      ModelNumber: "", // Initialize as empty string
+      ModelName: "", // Initialize as empty string
+      SIMType: "", // Initialize as empty string
+      HybridSimSlot: "Yes", // Default value
+      Touchscreen: "Yes", // Default value
+      OTGCompatible: "Yes", // Default value
+      QuickCharging: "Yes", // Default value
+      DisplaySize: "", // Initialize as empty string
+      Resolution: "", // Initialize as empty string
+      ResolutionType: "", // Initialize as empty string
+      GPU: "", // Initialize as empty string
+      OtherDisplayFeatures: "", // Initialize as empty string
+      DisplayType: "", // Initialize as empty string
+      HDGameSupport: "Yes", // Default value
+      OperatingSystem: "", // Initialize as empty string
+      ProcessorBrand: "", // Initialize as empty string
+      ProcessorType: "", // Initialize as empty string
+      ProcessorCore: "", // Initialize as empty string
+      PrimaryClockSpeed: "", // Initialize as empty string
+      SecondaryClockSpeed: "", // Initialize as empty string
+      OperatingFrequency: "", // Initialize as empty string
+      InternalStorage: "", // Initialize as empty string
+      RAM: "", // Initialize as empty string
+      TotalMemory: "", // Initialize as empty string
+      PrimaryCamera: "", // Initialize as empty string
+      PrimaryCameraFeatures: "", // Initialize as empty string
+      SecondaryCamera: "", // Initialize as empty string
+      VideoRecordingResolution: "", // Initialize as empty string
+      DigitalZoom: "", // Initialize as empty string
+      FrameRate: "", // Initialize as empty string
+      DualCameraLens: "", // Initialize as empty string
+      OpticalZoom: "Yes", // Default value
+      SecondaryCameraAvailable: "Yes", // Default value
+      Flash: "Yes", // Default value
+      HDRecording: "Yes", // Default value
+      FullHDRecording: "Yes", // Default value
+      VideoRecording: "Yes", // Default value
     },
   });
 
@@ -421,7 +459,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="InTheBox"
                     control={control}
-                    rules={{ required: "InTheBox is required" }}
+                    // rules={{ required: "InTheBox is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -446,7 +484,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ModelNumber"
                     control={control}
-                    rules={{ required: "Product Model Number is required" }}
+                    // rules={{ required: "Product Model Number is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -471,7 +509,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ModelName"
                     control={control}
-                    rules={{ required: "Product Model Name is required" }}
+                    // rules={{ required: "Product Model Name is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -496,7 +534,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="SIMType"
                     control={control}
-                    rules={{ required: "Product SIM Type is required" }}
+                    // rules={{ required: "Product SIM Type is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -524,9 +562,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="HybridSimSlot"
                     control={control}
                     defaultValue="Yes" // Automatically select "Yes" by default
-                    rules={{
-                      required: "Please select if Hybrid SIM Slot is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Hybrid SIM Slot is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -574,9 +612,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="Touchscreen"
                     control={control}
                     defaultValue="Yes" // Automatically select "Yes"
-                    rules={{
-                      required: "Please select if Touchscreen is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Touchscreen is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -625,9 +663,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="OTGCompatible"
                     control={control}
                     defaultValue="Yes" // Auto-select "Yes"
-                    rules={{
-                      required: "Please select if OTG Compatible is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if OTG Compatible is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -673,9 +711,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="QuickCharging"
                     control={control}
                     defaultValue="Yes" // Auto-select "Yes"
-                    rules={{
-                      required: "Please select if Quick Charging is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Quick Charging is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -724,7 +762,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="DisplaySize"
                     control={control}
-                    rules={{ required: "Display Size is required" }}
+                    // rules={{ required: "Display Size is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -751,7 +789,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="Resolution"
                     control={control}
-                    rules={{ required: "Resolution is required" }}
+                    // rules={{ required: "Resolution is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -777,7 +815,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ResolutionType"
                     control={control}
-                    rules={{ required: "Resolution Type is required" }}
+                    // rules={{ required: "Resolution Type is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -804,7 +842,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="GPU"
                     control={control}
-                    rules={{ required: "GPU is required" }}
+                    // rules={{ required: "GPU is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -829,7 +867,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="OtherDisplayFeatures"
                     control={control}
-                    rules={{ required: "Other Display Features are required" }}
+                    // rules={{ required: "Other Display Features are required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -854,7 +892,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="DisplayType"
                     control={control}
-                    rules={{ required: "Display Type is required" }}
+                    // rules={{ required: "Display Type is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -880,9 +918,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="HDGameSupport"
                     control={control}
                     defaultValue="Yes" // Automatically select "Yes" by default
-                    rules={{
-                      required: "Please select if HD Game Support is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if HD Game Support is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -935,7 +973,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="OperatingSystem"
                     control={control}
-                    rules={{ required: "Operating System is required" }}
+                    // rules={{ required: "Operating System is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -962,7 +1000,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ProcessorBrand"
                     control={control}
-                    rules={{ required: "Processor Brand is required" }}
+                    // rules={{ required: "Processor Brand is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -989,7 +1027,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ProcessorType"
                     control={control}
-                    rules={{ required: "Processor Type is required" }}
+                    // rules={{ required: "Processor Type is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1014,7 +1052,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="ProcessorCore"
                     control={control}
-                    rules={{ required: "Processor Core is required" }}
+                    // rules={{ required: "Processor Core is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1039,7 +1077,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="PrimaryClockSpeed"
                     control={control}
-                    rules={{ required: "Primary Clock Speed is required" }}
+                    // rules={{ required: "Primary Clock Speed is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div className="mt-4">
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1064,7 +1102,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="SecondaryClockSpeed"
                     control={control}
-                    rules={{ required: "Secondary Clock Speed is required" }}
+                    // rules={{ required: "Secondary Clock Speed is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1089,7 +1127,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="OperatingFrequency"
                     control={control}
-                    rules={{ required: "Operating Frequency is required" }}
+                    // rules={{ required: "Operating Frequency is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1119,7 +1157,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="InternalStorage"
                     control={control}
-                    rules={{ required: "Internal Storage is required" }}
+                    // rules={{ required: "Internal Storage is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1144,7 +1182,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="RAM"
                     control={control}
-                    rules={{ required: "RAM is required" }}
+                    // rules={{ required: "RAM is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1169,7 +1207,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="TotalMemory"
                     control={control}
-                    rules={{ required: "Total Memory is required" }}
+                    // rules={{ required: "Total Memory is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1199,7 +1237,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="PrimaryCamera"
                     control={control}
-                    rules={{ required: "Primary Camera is required" }}
+                    // rules={{ required: "Primary Camera is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1224,7 +1262,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="PrimaryCameraFeatures"
                     control={control}
-                    rules={{ required: "Primary Camera Features are required" }}
+                    // rules={{ required: "Primary Camera Features are required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1249,7 +1287,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="SecondaryCamera"
                     control={control}
-                    rules={{ required: "Secondary Camera is required" }}
+                    // rules={{ required: "Secondary Camera is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1274,9 +1312,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="VideoRecordingResolution"
                     control={control}
-                    rules={{
-                      required: "Video Recording Resolution is required",
-                    }}
+                    // rules={{
+                    //   required: "Video Recording Resolution is required",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1301,7 +1339,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="DigitalZoom"
                     control={control}
-                    rules={{ required: "Digital Zoom is required" }}
+                    // rules={{ required: "Digital Zoom is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1326,7 +1364,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="FrameRate"
                     control={control}
-                    rules={{ required: "Frame Rate is required" }}
+                    // rules={{ required: "Frame Rate is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1351,7 +1389,7 @@ const AddProductModal = ({ open, product, onClose }) => {
                   <Controller
                     name="DualCameraLens"
                     control={control}
-                    rules={{ required: "Dual Camera Lens is required" }}
+                    // rules={{ required: "Dual Camera Lens is required" }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1379,9 +1417,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="OpticalZoom"
                     control={control}
                     defaultValue="Yes" // Automatically select "Yes" by default
-                    rules={{
-                      required: "Please select if Optical Zoom is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Optical Zoom is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1425,10 +1463,10 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="SecondaryCameraAvailable"
                     control={control}
                     defaultValue="Yes"
-                    rules={{
-                      required:
-                        "Please select if Secondary Camera is available",
-                    }}
+                    // rules={{
+                    //   required:
+                    //     "Please select if Secondary Camera is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1472,9 +1510,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="Flash"
                     control={control}
                     defaultValue="Yes"
-                    rules={{
-                      required: "Please select if Flash is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Flash is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1518,9 +1556,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="HDRecording"
                     control={control}
                     defaultValue="Yes"
-                    rules={{
-                      required: "Please select if HD Recording is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if HD Recording is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1564,10 +1602,10 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="FullHDRecording"
                     control={control}
                     defaultValue="Yes"
-                    rules={{
-                      required:
-                        "Please select if Full HD Recording is available",
-                    }}
+                    // rules={{
+                    //   required:
+                    //     "Please select if Full HD Recording is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
@@ -1611,9 +1649,9 @@ const AddProductModal = ({ open, product, onClose }) => {
                     name="VideoRecording"
                     control={control}
                     defaultValue="Yes"
-                    rules={{
-                      required: "Please select if Video Recording is available",
-                    }}
+                    // rules={{
+                    //   required: "Please select if Video Recording is available",
+                    // }}
                     render={({ field, fieldState: { error } }) => (
                       <div>
                         <label className="block text-sm dark:text-gray-300 font-medium text-gray-700">

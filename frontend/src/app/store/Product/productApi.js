@@ -85,6 +85,7 @@ export const updateProduct = createAsyncThunk(
       if (!token) {
         throw new Error("No token found");
       }
+      console.log("productData<<<<<<<<", productData);
 
       const response = await axios.put(
         `${PRODUCTS.UPDATE_PRODUCT}/${id}`, // API endpoint for updating a product

@@ -18,7 +18,7 @@ function SubcategoryLink({ category, subcategory }) {
   return (
     <div
       onClick={handleClick}
-      className="cursor-pointer text-gray-600 hover:text-blue-600 dark:hover:text-blue-600 transition-colors duration-200"
+      className="cursor-pointer text-gray-600  hover:text-blue-600 dark:hover:text-blue-600 transition-colors duration-200"
     >
       <h3 className="font-semibold text-gray-900 dark:text-white hover:text-blue-500 dark:hover:text-blue-300">
         {subcategory}

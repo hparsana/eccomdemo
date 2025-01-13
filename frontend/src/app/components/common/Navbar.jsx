@@ -74,7 +74,7 @@ const Navbar = () => {
     { path: "/profile", icon: <AiOutlineUser size={28} />, name: "Profile" },
   ];
   return (
-    <nav className="bg-[#EAE8E2] shadow-md dark:bg-gray-800">
+    <nav className="bg-[#EAE8E2] shadow-md dark:bg-gray-800 smooth-transition">
       {/* Main Navbar */}
       <div className="md:w-[92%] w-full mx-auto flex items-center justify-between py-4 md:px-6 px-3">
         {/* Logo */}

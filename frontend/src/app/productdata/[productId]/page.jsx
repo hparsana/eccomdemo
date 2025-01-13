@@ -22,6 +22,7 @@ import { addItemToCart } from "@/app/store/Cart/cart.slice";
 import RecentlyViewed from "./RecentlyViewed";
 import RatingsAndReviews from "./RattingBar";
 import ProductImageSlider from "./ProductImageSlider";
+import GeneralInfo from "./generalInfo";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -221,7 +222,6 @@ const ProductDetail = () => {
             <p className="text-gray-600 sm:text-lg text-sm leading-relaxed dark:text-gray-400">
               {product.description}
             </p>
-
             {/* Price Section */}
             <div className="flex items-center gap-4 sm:text-2xl text-xl">
               <span className="text-blue-600 font-bold dark:text-blue-400">
@@ -234,7 +234,6 @@ const ProductDetail = () => {
                 {product.discount?.percentage}% off
               </span>
             </div>
-
             {/* Rating */}
             <div className="flex items-center gap-2">
               {/* Rating Badge */}
@@ -248,7 +247,6 @@ const ProductDetail = () => {
                 {`${product.reviews.length} Ratings & ${product.reviews.length || 0} Reviews`}
               </span>
             </div>
-
             {/* Features */}
             {product?.isFeatured && product?.features?.length !== 0 && (
               <div>
@@ -262,7 +260,6 @@ const ProductDetail = () => {
                 </ul>
               </div>
             )}
-
             {/* Sizes */}
             {product.size?.length !== 0 && (
               <div>
@@ -286,7 +283,6 @@ const ProductDetail = () => {
                 </div>
               </div>
             )}
-
             {/* Color Options */}
             {product.color?.length !== 0 && product.images?.length !== 0 && (
               <div>
@@ -322,7 +318,6 @@ const ProductDetail = () => {
                 </div>
               </div>
             )}
-
             {/* Additional Fields for Electronics */}
             {product.category === "electronics" && (
               <div className="bg-gray-100 p-4 rounded-lg shadow-md dark:bg-gray-700">
@@ -366,7 +361,6 @@ const ProductDetail = () => {
                 </ul>
               </div>
             )}
-
             {/* Additional Fields for Apparel */}
             {product.category === "apparel" && (
               <div className="bg-gray-100 p-4 rounded-lg shadow-md dark:bg-gray-700">
@@ -413,7 +407,10 @@ const ProductDetail = () => {
                 </ul>
               </div>
             )}
-
+            {/* General Info */}
+            {product?.subcategory === "Mobile Phones" && (
+              <GeneralInfo product={product} />
+            )}
             {/* Shipping Info */}
             <div className="bg-gray-100 p-4 rounded-lg shadow-md dark:bg-gray-700">
               <h3 className="text-lg font-semibold text-purple-700 mb-3 flex items-center dark:text-purple-400">
@@ -439,7 +436,6 @@ const ProductDetail = () => {
                 </li>
               </ul>
             </div>
-
             {/* Delivery Info */}
             <div className="flex items-center gap-4 mt-4 text-green-600 font-semibold dark:text-green-400">
               <FaTruck className="w-5 h-5" />

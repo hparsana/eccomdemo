@@ -202,7 +202,7 @@ export default function ProductData() {
   };
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen smooth-transition">
       <div className="md:block hidden">
         <NavbarDemo />
       </div>
@@ -219,7 +219,7 @@ export default function ProductData() {
 
         {/* Sidebar */}
         <aside
-          className={`fixed md:relative bg-white dark:bg-gray-800 shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-[100vh] md:min-h-[100vh] md:overflow-hidden overflow-y-scroll lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px] transform ${
+          className={`fixed md:relative bg-white dark:bg-gray-800 smooth-transition shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-[100vh] md:min-h-[100vh] md:overflow-hidden overflow-y-scroll lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px] transform ${
             showSidebar ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 transition-transform duration-300 ease-in-out`}
         >
@@ -260,11 +260,11 @@ export default function ProductData() {
               placeholder="Search product..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border rounded-md p-2 focus:outline-blue-500 dark:focus:outline-blue-400 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full border rounded-md p-2 focus:outline-blue-500 dark:focus:outline-blue-400 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
             />
           </div>
           <div className="mb-6">
-            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label className="block font-medium text-gray-700  dark:text-gray-300 mb-2">
               Category
             </label>
             <select
@@ -275,7 +275,7 @@ export default function ProductData() {
                 setSelectedColor("");
                 setSelectedSize("");
               }}
-              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
             >
               <option value="">All</option>
               {facets?.categories.map((category) => (
@@ -292,7 +292,7 @@ export default function ProductData() {
             <select
               value={selectedBrand}
               onChange={(e) => setSelectedBrand(e.target.value)}
-              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
             >
               <option value="">All</option>
               {facets?.brands.map((brand) => (
@@ -311,7 +311,7 @@ export default function ProductData() {
                 <select
                   value={selectedSize}
                   onChange={(e) => setSelectedSize(e.target.value)}
-                  className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
                 >
                   <option value="">All</option>
                   {Array.from(
@@ -333,7 +333,7 @@ export default function ProductData() {
                 <select
                   value={selectedColor}
                   onChange={(e) => setSelectedColor(e.target.value)}
-                  className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
                 >
                   <option value="">All</option>
                   {Array.from(
@@ -376,7 +376,7 @@ export default function ProductData() {
             <select
               value={selectedDiscount}
               onChange={(e) => setSelectedDiscount(e.target.value)}
-              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
             >
               <option value="">All</option>
               <option value="10">10% or more</option>
@@ -392,7 +392,7 @@ export default function ProductData() {
             <select
               value={selectedRating}
               onChange={(e) => setSelectedRating(e.target.value)}
-              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 smooth-transition text-gray-900 dark:text-gray-100"
             >
               <option value="">All</option>
               <option value="1">1 Star & above</option>
@@ -484,7 +484,7 @@ export function ProductCard({ product, onRemove }) {
   return (
     <motion.div
       ref={ref}
-      className="relative bg-white dark:bg-gray-800 shadow-md rounded-lg mt-5  h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="relative bg-white dark:bg-gray-800 smooth-transition shadow-md rounded-lg mt-5  h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: 0.1 }}
@@ -499,7 +499,7 @@ export function ProductCard({ product, onRemove }) {
           />
           <div className="absolute top-2 right-2">
             <FaHeart
-              className={`w-6 h-6 ${like ? "text-red-500" : "text-gray-300 dark:text-gray-500"} cursor-pointer`}
+              className={`w-6 h-6 ${like ? "text-red-500" : "text-gray-300 smooth-transition dark:text-gray-500 "} cursor-pointer`}
               onClick={handleLike}
             />
           </div>

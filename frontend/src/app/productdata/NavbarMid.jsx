@@ -56,7 +56,7 @@ function Navbar() {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-gray-800 shadow-md z-50">
+    <div className="w-full bg-white dark:bg-gray-800 smooth-transition shadow-md z-50">
       <nav className="container mx-auto flex items-center justify-around px-6 py-4">
         {/* Show loading state */}
         {loading && (
