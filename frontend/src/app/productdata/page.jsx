@@ -497,6 +497,11 @@ export function ProductCard({ product, onRemove }) {
             className="w-full h-52 object-cover"
             onClick={handleCardClick}
           />
+          {product.stock < 10 && (
+            <p className="text-sm absolute top-2 left-2  bg-red-700 text-gray-200 dark:text-gray-200 py-1 px-2 rounded-lg mt-1 font-semibold">
+              Only few left
+            </p>
+          )}
           <div className="absolute top-2 right-2">
             <FaHeart
               className={`w-6 h-6 ${like ? "text-red-500" : "text-gray-300 smooth-transition dark:text-gray-500 "} cursor-pointer`}
@@ -542,11 +547,6 @@ export function ProductCard({ product, onRemove }) {
                 Storage: {product.storage}
               </p>
             </div>
-          )}
-          {product.stock < 10 && (
-            <p className="text-sm text-red-600 dark:text-red-400 mt-1 font-semibold">
-              Only few left
-            </p>
           )}
         </div>
       </div>

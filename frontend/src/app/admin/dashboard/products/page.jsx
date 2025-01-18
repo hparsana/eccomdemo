@@ -16,7 +16,7 @@ import { deleteProduct, getAllProducts } from "@/app/store/Product/productApi";
 import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllCategories } from "@/app/store/Category/categoryApi";
-
+import { downloadProductPDF } from "./DownloadProductPDF";
 const ProductsListPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
@@ -185,12 +185,20 @@ const ProductsListPage = () => {
           <h2 className="text-xl font-semibold dark:text-gray-300">
             Available Products
           </h2>
-          <button
-            onClick={() => setAddProductModalOpen(true)}
-            className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            Add Product
-          </button>
+          <div className="flex gap-x-2">
+            <button
+              onClick={() => downloadProductPDF(filteredProducts)}
+              className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+            >
+              Download PDF
+            </button>
+            <button
+              onClick={() => setAddProductModalOpen(true)}
+              className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            >
+              Add Product
+            </button>
+          </div>
         </div>
         <div className="flex flex-wrap justify-between space-x-4 mb-4">
           <div className="flex space-x-4">

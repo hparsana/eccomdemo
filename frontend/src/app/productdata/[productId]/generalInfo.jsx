@@ -6,6 +6,7 @@ export default function GeneralInfo({ product }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const generalInfoItems = [
+    { label: "General", value: "General" },
     { label: "In The Box", value: product.InTheBox },
     { label: "Model Number", value: product.ModelNumber },
     { label: "Model Name", value: product.ModelName },
@@ -14,6 +15,8 @@ export default function GeneralInfo({ product }) {
     { label: "Touchscreen", value: product.Touchscreen },
     { label: "OTG Compatible", value: product.OTGCompatible },
     { label: "Quick Charging", value: product.QuickCharging },
+    { label: "Display Features", value: "Display Features" },
+
     { label: "Display Size", value: product.DisplaySize },
     { label: "Resolution", value: product.Resolution },
     { label: "Resolution Type", value: product.ResolutionType },
@@ -21,6 +24,8 @@ export default function GeneralInfo({ product }) {
     { label: "Other Display Features", value: product.OtherDisplayFeatures },
     { label: "Display Type", value: product.DisplayType },
     { label: "HD Game Support", value: product.HDGameSupport },
+    { label: "Os & Processor Features", value: "Os & Processor Features" },
+
     { label: "Operating System", value: product.OperatingSystem },
     { label: "Processor Brand", value: product.ProcessorBrand },
     { label: "Processor Type", value: product.ProcessorType },
@@ -28,9 +33,13 @@ export default function GeneralInfo({ product }) {
     { label: "Primary Clock Speed", value: product.PrimaryClockSpeed },
     { label: "Secondary Clock Speed", value: product.SecondaryClockSpeed },
     { label: "Operating Frequency", value: product.OperatingFrequency },
+    { label: "Memory & Storage Features", value: "Memory & Storage Features" },
+
     { label: "Internal Storage", value: product.InternalStorage },
     { label: "RAM", value: product.RAM },
     { label: "Total Memory", value: product.TotalMemory },
+    { label: "Camera Features", value: "Camera Features" },
+
     { label: "Primary Camera", value: product.PrimaryCamera },
     { label: "Primary Camera Features", value: product.PrimaryCameraFeatures },
     { label: "Secondary Camera", value: product.SecondaryCamera },
@@ -54,7 +63,7 @@ export default function GeneralInfo({ product }) {
 
   const visibleItems = isExpanded
     ? generalInfoItems
-    : generalInfoItems.slice(0, 4);
+    : generalInfoItems.slice(0, 5);
 
   return (
     <div className="bg-gray-50 p-4 rounded-lg shadow-md dark:bg-gray-700">
@@ -66,25 +75,33 @@ export default function GeneralInfo({ product }) {
       </h3>
       <ul
         className={`grid grid-cols-1 gap-4 text-gray-600 dark:text-gray-400 overflow-hidden transition-all duration-700 ease-in-out ${
-          isExpanded ? "max-h-[1000px]" : "max-h-0"
+          isExpanded ? null : "max-h-0"
         }`}
         style={{
-          maxHeight: isExpanded ? `${generalInfoItems.length * 40}px` : "160px",
+          maxHeight: isExpanded ? `${generalInfoItems.length * 50}px` : "190px",
         }}
       >
-        {generalInfoItems.map((item, index) => (
-          <li
-            key={index}
-            className={`flex items-center ${
-              index >= visibleItems.length - 1 ? "opacity-60" : "opacity-100"
-            } ${index >= visibleItems.length - 2 ? "opacity-80" : "opacity-100"}`}
-          >
-            <strong className="text-gray-800 mr-2 dark:text-gray-300">
-              {item.label}:
-            </strong>
-            <span>{item.value}</span>
-          </li>
-        ))}
+        {generalInfoItems.map((item, index) =>
+          item?.label === "General" ||
+          item?.label === "Display Features" ||
+          item?.label === "Os & Processor Features" ||
+          item?.label === "Memory & Storage Features" ||
+          item?.label === "Camera Features" ? (
+            <li
+              key={index}
+              className={`dark:text-gray-300  text-black font-thin ${index !== 0 ? "mt-4 mb-2" : null}`}
+            >
+              {item?.value}
+            </li>
+          ) : (
+            <li key={index} className={`flex items-center `}>
+              <strong className="text-gray-800 mr-2 dark:text-gray-300">
+                {item.label}:
+              </strong>
+              <span>{item.value}</span>
+            </li>
+          )
+        )}
       </ul>
 
       {generalInfoItems.length > 4 && (

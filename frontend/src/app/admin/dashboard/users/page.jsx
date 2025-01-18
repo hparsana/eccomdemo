@@ -16,6 +16,9 @@ import EditUserModal from "@/app/components/dialoge/EditUserModal";
 import { getAllUsers } from "@/app/store/User/userApi";
 import useAxios from "@/app/utils/commonAxios";
 import { toast } from "react-toastify";
+import { downloadUserPDF } from "./DownloadUserPDF";
+import axios from "axios";
+import { USERS } from "@/app/utils/constant";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -78,7 +81,27 @@ const UserList = () => {
 
     setFilteredUsers(sorted);
   };
+  const fetchAllUsersForPDF = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
 
+      const response = await axios.get(USERS.GET_ALL_USERS, {
+        params: { limit: 100000 },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.data.success) {
+        downloadUserPDF(response?.data?.data?.users); // Generate PDF with all users
+      } else {
+        console.error("Failed to fetch all users for PDF.");
+      }
+    } catch (error) {
+      console.error("Error fetching all users for PDF:", error);
+    }
+  };
   const getSortIcon = (column) => {
     if (sortColumn !== column) return <FaSort />;
     return sortOrder === "asc" ? <FaSortUp /> : <FaSortDown />;
@@ -94,15 +117,25 @@ const UserList = () => {
           <h2 className="text-xl font-semibold dark:text-gray-300">
             User List
           </h2>
-          <div className="relative w-80">
-            <input
-              type="text"
-              placeholder="Search users..."
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <div className="flex gap-x-5">
+            <button
+              onClick={() => {
+                fetchAllUsersForPDF();
+              }}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            >
+              Download User List
+            </button>
+            <div className="relative w-80">
+              <input
+                type="text"
+                placeholder="Search users..."
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
           </div>
         </div>
         {loading ? (

@@ -125,7 +125,7 @@ const ImageZoom = ({ mainImage, product }) => {
       {/* Zoom Popup */}
       {zoomVisible && (
         <div
-          className="absolute border ml-2 w-full h-[750px] top-0 left-[105%] border-gray-300 rounded-lg bg-white overflow-hidden lg:block hidden"
+          className="absolute border ml-2  w-full h-[750px] top-0 left-[105%] border-gray-300 rounded-lg bg-white overflow-hidden lg:block hidden"
           style={zoomStyle}
         ></div>
       )}
