@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAllCategories } from "@/app/store/Category/categoryApi";
 import { downloadProductPDF } from "./DownloadProductPDF";
+import { PRODUCTS } from "@/app/utils/constant";
 const ProductsListPage = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
@@ -174,7 +175,27 @@ const ProductsListPage = () => {
       })
     );
   };
+  const fetchAllUsersForPDF = async () => {
+    try {
+      const response = await axios.post(
+        PRODUCTS.GET_ALL_PRODUCTS,
+        {},
+        {
+          params: {
+            limit: 100000,
+          },
+        }
+      );
 
+      if (response.data.success) {
+        downloadProductPDF(response?.data?.data?.products); // Generate PDF with all users
+      } else {
+        console.error("Failed to fetch all users for PDF.");
+      }
+    } catch (error) {
+      console.error("Error fetching all users for PDF:", error);
+    }
+  };
   return (
     <div className="min-h-screen">
       <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
@@ -187,7 +208,7 @@ const ProductsListPage = () => {
           </h2>
           <div className="flex gap-x-2">
             <button
-              onClick={() => downloadProductPDF(filteredProducts)}
+              onClick={() => fetchAllUsersForPDF()}
               className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
             >
               Download PDF

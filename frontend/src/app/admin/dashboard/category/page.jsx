@@ -19,6 +19,9 @@ import {
 import AddCategoryModal from "@/app/components/dialoge/AddCategoryModal";
 import { Pagination } from "@mui/material";
 import EditSubcategoryModal from "@/app/components/dialoge/EditSubcategoryModal ";
+import { downloadCategoryPDF } from "./downloadCategoryPDF";
+import axios from "axios";
+import { CATEGORIES } from "@/app/utils/constant";
 
 const CategoriesListPage = () => {
   const [sortColumn, setSortColumn] = useState(null);
@@ -115,7 +118,21 @@ const CategoriesListPage = () => {
       console.error("Failed to delete subcategory:", error);
     }
   };
+  const fetchAllCategoriesForPDF = async () => {
+    try {
+      const response = await axios.get(CATEGORIES.GET_ALL_CATEGORIES, {
+        params: { limit: 100000 }, // Fetch all categories
+      });
 
+      if (response.data.success) {
+        downloadCategoryPDF(response?.data?.data);
+      } else {
+        console.error("Failed to fetch categories for PDF.");
+      }
+    } catch (error) {
+      console.error("Error fetching categories for PDF:", error);
+    }
+  };
   return (
     <div className="min-h-screen">
       <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
@@ -126,6 +143,13 @@ const CategoriesListPage = () => {
           <h2 className="text-xl font-bold dark:text-gray-300">
             Available Categories
           </h2>
+          <button
+            onClick={() => fetchAllCategoriesForPDF()}
+            className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+          >
+            Download Category PDF
+          </button>
+          ;
           <button
             onClick={() => setAddCategoryModalOpen(true)}
             className="flex items-center bg-blue-500  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
