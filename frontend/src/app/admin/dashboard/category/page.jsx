@@ -143,19 +143,21 @@ const CategoriesListPage = () => {
           <h2 className="text-xl font-bold dark:text-gray-300">
             Available Categories
           </h2>
-          <button
-            onClick={() => fetchAllCategoriesForPDF()}
-            className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
-          >
-            Download Category PDF
-          </button>
-          ;
-          <button
-            onClick={() => setAddCategoryModalOpen(true)}
-            className="flex items-center bg-blue-500  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            Add Category
-          </button>
+          <div className="flex gap-x-5">
+            <button
+              onClick={() => fetchAllCategoriesForPDF()}
+              className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+            >
+              Download Category PDF
+            </button>
+
+            <button
+              onClick={() => setAddCategoryModalOpen(true)}
+              className="flex items-center bg-blue-500  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+            >
+              Add Category
+            </button>
+          </div>
         </div>
         <div className="relative w-80 mb-4">
           <input

@@ -16,7 +16,9 @@ export const downloadCategoryPDF = async (categories) => {
   // Set title font
   doc.setFont("helvetica", "bold");
   doc.setFontSize(22);
-  doc.text("Category & Subcategory List", 14, 15);
+  doc.text("Category & Subcategory List", doc.internal.pageSize.width / 2, 15, {
+    align: "center",
+  });
 
   // Define table headers
   const headers = [["Category Name", "Description", "Subcategories"]];
@@ -28,9 +30,14 @@ export const downloadCategoryPDF = async (categories) => {
     category.subcategories.length > 0
       ? category.subcategories
           .map((sub, subIndex) => `[${subIndex + 1}] ${sub.name}`)
-          .join(", ")
+          .join("\n")
       : "No Subcategories",
   ]);
+
+  // Calculate table width and center it
+  const pageWidth = doc.internal.pageSize.width; // Get page width
+  const tableWidth = 230; // Approximate table width based on column widths
+  const marginLeft = (pageWidth - tableWidth) / 2; // Calculate left margin for centering
 
   // Generate High-Quality PDF Table
   doc.autoTable({
@@ -52,16 +59,20 @@ export const downloadCategoryPDF = async (categories) => {
     },
     columnStyles: {
       0: { cellWidth: 60 }, // Category Name
-      1: { cellWidth: 80 }, // Description
-      2: { cellWidth: 100 }, // Subcategories
+      1: { cellWidth: 110 }, // Description
+      2: { cellWidth: 60 }, // Subcategories
     },
-    margin: { top: 20 },
+    margin: { top: 20, left: marginLeft, right: marginLeft }, // Set left & right margin to center table
     pageBreak: "auto",
     rowPageBreak: "avoid",
     didDrawPage: function () {
       doc.setFontSize(30);
       doc.setTextColor(200, 200, 200);
-      doc.text("Category Report", 90, 100, { angle: 45, opacity: 0.1 });
+      doc.text("Category Report", doc.internal.pageSize.width / 2, 100, {
+        align: "center",
+        angle: 45,
+        opacity: 0.1,
+      });
     },
   });
 

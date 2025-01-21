@@ -13,6 +13,8 @@ import Cart from "./Cart/cart.slice"; // Import Cart reducer
 import Category from "./Category/category.slice";
 import Address from "./Address/address.slice";
 import ErrorLog from "./ErrorLog/errorLog.slice";
+import CompareProduct from "./CompareProduct/compareProduct.slice";
+
 const rootReducer = combineReducers({
   userAuthData: Auth,
   userData: User,
@@ -23,6 +25,7 @@ const rootReducer = combineReducers({
   categoryData: Category, // Add Category reducer
   addressData: Address,
   errorLogData: ErrorLog, // Add ErrorLog reducer
+  compareData: CompareProduct, // Add Compare reducer
 });
 
 export const store = configureStore(

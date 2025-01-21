@@ -23,6 +23,11 @@ import RecentlyViewed from "./RecentlyViewed";
 import RatingsAndReviews from "./RattingBar";
 import ProductImageSlider from "./ProductImageSlider";
 import GeneralInfo from "./generalInfo";
+import {
+  addToCompare,
+  removeFromCompare,
+} from "@/app/store/CompareProduct/compareProduct.slice";
+import CompareButton from "./CompareProduct/CompareButton";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -34,6 +39,7 @@ const ProductDetail = () => {
   } = useSelector((state) => state.productData);
   const { userLoggedIn, authUser } = useSelector((data) => data?.userAuthData);
   const cartItems = useSelector((state) => state.cartData.cartItems);
+  const compareItems = useSelector((state) => state.compareData.compareItems);
 
   const [mainImage, setMainImage] = useState(null);
   const [selectedReview, setSelectedReview] = useState(null);
@@ -154,6 +160,44 @@ const ProductDetail = () => {
   const handleInterestedClick = (id) => {
     redirect(`/productdata/${id}`);
   };
+  const isInCompare = compareItems.some((item) => item.id === product?._id);
+
+  const handleCompareToggle = () => {
+    if (!product) return;
+
+    // Get the first product's subcategory if the compare list is not empty
+    const firstProductSubcategory =
+      compareItems.length > 0 ? compareItems[0].subcategory : null;
+
+    // Check if the new product's subcategory matches the existing ones
+    if (
+      firstProductSubcategory &&
+      firstProductSubcategory !== product.subcategory
+    ) {
+      console.log(
+        " firstProductSubcategory !== product.subcategory",
+        firstProductSubcategory,
+        product.subcategory
+      );
+
+      toast.error("You can only compare similar products.");
+      return;
+    }
+
+    if (isInCompare) {
+      dispatch(removeFromCompare(product._id));
+    } else {
+      dispatch(
+        addToCompare({
+          ...product,
+          id: product._id,
+          images: null,
+          image: product.images[0]?.url || "",
+          subcategory: product.subcategory, // Store subcategory for validation
+        })
+      );
+    }
+  };
 
   return (
     <div className="bg-gray-100 min-h-screen md:mb-0 mb-16 dark:bg-gray-900">
@@ -216,9 +260,28 @@ const ProductDetail = () => {
 
           {/* Product Details */}
           <div className="flex flex-col gap-6">
-            <h1 className="sm:text-3xl text-xl font-bold text-gray-800 dark:text-gray-200">
-              {product.name}
-            </h1>
+            <CompareButton />
+            <div className="flex justify-between">
+              <h1 className="sm:text-3xl text-xl font-bold text-gray-800 dark:text-gray-200">
+                {product.name}
+              </h1>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="compareCheckbox"
+                  checked={isInCompare}
+                  onChange={handleCompareToggle}
+                  className="mr-2 w-4 h-4 cursor-pointer"
+                />
+                <label
+                  htmlFor="compareCheckbox"
+                  className="text-gray-700 dark:text-gray-300"
+                >
+                  Compare
+                </label>
+              </div>
+            </div>
+
             <p className="text-gray-600 sm:text-lg text-sm leading-relaxed dark:text-gray-400">
               {product.description}
             </p>
