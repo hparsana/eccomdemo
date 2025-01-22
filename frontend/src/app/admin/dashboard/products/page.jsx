@@ -52,11 +52,11 @@ const ProductsListPage = () => {
   useEffect(() => {
     dispatch(
       getAllProducts({
-        page: currentPage,
+        page: 1,
         limit: recordsPerPage,
       })
     );
-  }, [dispatch, currentPage]);
+  }, [dispatch]);
   useEffect(() => {
     const applyFilters = () => {
       let filtered = products;
@@ -140,7 +140,7 @@ const ProductsListPage = () => {
   const handlePageChange = (event, page) => {
     dispatch(
       getAllProducts({
-        page: currentPage,
+        page,
         limit: recordsPerPage,
       })
     );
@@ -409,7 +409,7 @@ const ProductsListPage = () => {
         )}
         <div className="flex justify-end items-center mt-4">
           <Pagination
-            count={Math.ceil(filteredProducts.length / recordsPerPage)}
+            count={totalPages}
             page={currentPage}
             onChange={handlePageChange}
             variant="outlined"

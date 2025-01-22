@@ -5,6 +5,9 @@ import Navbar from "./common/Navbar";
 import { getUserData } from "../store/Auth/authApi";
 import { useEffect, useState } from "react";
 import DarkModeHandler from "./common/DarkModeHandler";
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const Layout = ({ children }) => {
   const { authUser, loading } = useSelector((state) => state?.userAuthData);
@@ -50,7 +53,7 @@ const Layout = ({ children }) => {
     <>
       {authUser?.role !== "ADMIN" ? <Navbar /> : null}
       <DarkModeHandler />
-      <main>{children}</main>
+      <main className={inter.className}>{children}</main>
     </>
   );
 };

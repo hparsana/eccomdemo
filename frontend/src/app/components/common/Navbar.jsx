@@ -213,7 +213,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
           <Link href="/">
             <Image
-              src="/images/header_logo.png"
+              src={
+                darkMode
+                  ? "/images/header_logo_dark.png"
+                  : "/images/header_logo.png"
+              }
               alt="Logo"
               width={100}
               height={40}

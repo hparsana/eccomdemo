@@ -165,6 +165,9 @@ const ProductDetail = () => {
   const handleCompareToggle = () => {
     if (!product) return;
 
+    // Maximum products allowed in compare list
+    const MAX_COMPARE_ITEMS = 2;
+
     // Get the first product's subcategory if the compare list is not empty
     const firstProductSubcategory =
       compareItems.length > 0 ? compareItems[0].subcategory : null;
@@ -174,18 +177,19 @@ const ProductDetail = () => {
       firstProductSubcategory &&
       firstProductSubcategory !== product.subcategory
     ) {
-      console.log(
-        " firstProductSubcategory !== product.subcategory",
-        firstProductSubcategory,
-        product.subcategory
-      );
-
       toast.error("You can only compare similar products.");
+      return;
+    }
+
+    // Check if maximum limit of 2 products is reached
+    if (!isInCompare && compareItems.length >= MAX_COMPARE_ITEMS) {
+      toast.error("You can only compare up to 2 products.");
       return;
     }
 
     if (isInCompare) {
       dispatch(removeFromCompare(product._id));
+      toast.info("Product removed from compare list.");
     } else {
       dispatch(
         addToCompare({
@@ -196,6 +200,7 @@ const ProductDetail = () => {
           subcategory: product.subcategory, // Store subcategory for validation
         })
       );
+      toast.success("Product added to compare list.");
     }
   };
 
@@ -271,7 +276,7 @@ const ProductDetail = () => {
                   id="compareCheckbox"
                   checked={isInCompare}
                   onChange={handleCompareToggle}
-                  className="mr-2 w-4 h-4 cursor-pointer"
+                  className="mr-2 w-5 h-5 cursor-pointer"
                 />
                 <label
                   htmlFor="compareCheckbox"

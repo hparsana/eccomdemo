@@ -43,7 +43,7 @@ export default function ProductData() {
 
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
-  const recordsPerPage = 5;
+  const recordsPerPage = 8;
   const lastCalled = useRef(0);
   useEffect(() => {
     return () => {
