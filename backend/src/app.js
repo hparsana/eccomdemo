@@ -13,6 +13,7 @@ import orderRoutes from "./routes/order.route.js";
 import saveProductRoutes from "./routes/savedProduct.route.js";
 import categoryRoutes from "./routes/category.route.js";
 import errorRoutes from "./routes/errorLog.route.js";
+import paymentRoutes from "./routes/payment.route.js";
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/savedproduct", saveProductRoutes);
 app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/errorlogs", errorRoutes);
+app.use("/api/v1/payment", paymentRoutes);
 
 // Catch-All for Undefined Routes
 app.use((req, res, next) => {

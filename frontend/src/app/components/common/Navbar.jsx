@@ -105,7 +105,7 @@ const Navbar = () => {
               <Link
                 href={item.path}
                 onClick={item.path === "/logout" ? handleLogout : null}
-                className={`font-semibold text-[18px] px-3 py-1 rounded transition duration-300 ${
+                className={`font-semibold text-[18px] px-3 py-1 rounded  ${
                   isActive(item.path)
                     ? "bg-[#C7C1C2] text-white dark:bg-gray-700"
                     : "hover:bg-[#C7C1C2] hover:text-white dark:hover:bg-gray-700 dark:text-gray-300"

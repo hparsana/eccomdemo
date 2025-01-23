@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaFilter, FaTimes } from "react-icons/fa";
 import { motion, useInView } from "framer-motion";
-import { Slider } from "@mui/material";
+import { Pagination, Slider } from "@mui/material";
 import { redirect, useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "../store/Product/productApi";
@@ -65,7 +65,7 @@ export default function ProductData() {
     // dispatch(ResetProducts());
     const handler = setTimeout(() => {
       const queryParams = {
-        page: currentPage,
+        page: 1,
         limit: recordsPerPage,
         ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
         ...(selectedCategory && { category: selectedCategory }),
@@ -85,7 +85,6 @@ export default function ProductData() {
     priceRange,
     selectedCategory,
     selectedBrand,
-    currentPage,
     dispatch,
   ]);
 
@@ -200,12 +199,17 @@ export default function ProductData() {
   const handlePriceChange = (event, newValue) => {
     setPriceRange(newValue);
   };
-
+  const handlePageChange = (event, page) => {
+    dispatch(
+      getAllProducts({
+        page,
+        limit: recordsPerPage,
+      })
+    );
+  };
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen smooth-transition">
-      <div className="md:block hidden">
-        <NavbarDemo />
-      </div>
+      <div className="md:block hidden">{/* <NavbarDemo /> */}</div>
       <div className="lg:w-[90%] md:w-[95%] w-full mx-auto min-h-[80vh] flex flex-col md:flex-row gap-6 mt-6">
         {/* Sidebar Toggle Button (Small Screens) */}
         <div className="flex justify-between items-center md:hidden px-4">
@@ -446,6 +450,35 @@ export default function ProductData() {
             </p>
           )}
         </div>
+      </div>
+      <div className="flex justify-end px-24 -mt-12 pb-2">
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+          shape="rounded"
+          color="primary"
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: darkMode ? "white" : "black", // Default text color
+              borderColor: darkMode ? "#6b7280" : "#d1d5db", // Default border color
+              backgroundColor: darkMode ? "#1f2937" : "#ffffff", // Default background color
+              "&:hover": {
+                backgroundColor: darkMode ? "#374151" : "#f3f4f6", // Hover background color
+              },
+            },
+            "& .Mui-selected": {
+              color: darkMode ? "#ffffff" : "#ffffff", // Active text color
+              borderColor: darkMode ? "#10b981" : "#2563eb", // Active border color
+              backgroundColor: darkMode ? "#10b981" : "#2563eb", // Active background color
+              fontWeight: "bold", // Active font weight
+              "&:hover": {
+                backgroundColor: darkMode ? "#059669" : "#1d4ed8", // Hover effect on active item
+              },
+            },
+          }}
+        />
       </div>
     </div>
   );
