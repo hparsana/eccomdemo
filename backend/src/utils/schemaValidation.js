@@ -442,6 +442,7 @@ export const createOrderSchemaValidation = z.object({
           .number({ required_error: "Quantity is required" })
           .int({ message: "Quantity must be an integer" })
           .min(1, { message: "Quantity must be at least 1" }),
+        color: z.string().trim().optional(),
       })
     )
     .nonempty({ message: "Order must contain at least one item" }),
@@ -470,7 +471,7 @@ export const createOrderSchemaValidation = z.object({
   }),
 
   paymentDetails: z.object({
-    method: z.enum(["Credit Card", "PayPal", "Cash on Delivery"], {
+    method: z.enum(["Credit Card", "PayPal", "Cash on Delivery", "card"], {
       required_error: "Payment method is required",
     }),
     status: z.enum(["Pending", "Paid", "Failed", "Refunded"]).optional(),

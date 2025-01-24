@@ -10,14 +10,19 @@ const AddressSlice = createSlice({
   name: "addresses",
   initialState: {
     addressList: [],
+    selectedAddress: null, // Store selected address
     loading: false,
     error: null,
   },
   reducers: {
     resetAddresses: (state) => {
       state.addressList = [];
+      state.selectedAddress = null;
       state.loading = false;
       state.error = null;
+    },
+    setSelectedAddress: (state, action) => {
+      state.selectedAddress = action.payload; // Set the selected address
     },
   },
   extraReducers: (builder) => {
@@ -54,5 +59,5 @@ const AddressSlice = createSlice({
 });
 
 const { actions, reducer } = AddressSlice;
-export const { resetAddresses } = actions;
+export const { resetAddresses, setSelectedAddress } = actions; // Export setSelectedAddress action
 export default reducer;

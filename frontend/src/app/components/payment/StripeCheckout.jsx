@@ -32,7 +32,7 @@ const StripeCheckout = ({ onPaymentSuccess }) => {
       setError(error.message);
       setLoading(false);
     } else {
-      onPaymentSuccess();
+      onPaymentSuccess(paymentIntent);
     }
     setLoading(false);
   };

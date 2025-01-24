@@ -12,6 +12,7 @@ import {
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
 import { toast } from "react-toastify";
+import { setSelectedAddress } from "@/app/store/Address/address.slice";
 
 const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -22,7 +23,7 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const dispatch = useDispatch();
 
   // Fetch saved addresses and address state from Redux
-  const { addressList, loading, error } = useSelector(
+  const { addressList, selectedAddress, loading, error } = useSelector(
     (state) => state.addressData
   );
 
@@ -32,6 +33,7 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
     formState: { errors },
     reset,
   } = useForm();
+  console.log("get selected adderss<<<", selectedAddress);
 
   // Fetch addresses on mount
   useEffect(() => {
@@ -75,10 +77,11 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
 
   const handleSelectSavedAddress = (address) => {
     setSelectedSavedAddress(address); // Store the selected address
-    // setShowPaymentButton(true); // Show the payment button
+    dispatch(setSelectedAddress(address)); // Save selected address in store
     handleAddressSelection(!!address);
     setShowPaymentButton(true);
   };
+
   useEffect(() => {
     // Reset selection state when component loads
     if (addressList.length === 0 || !selectedSavedAddress) {

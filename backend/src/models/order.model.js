@@ -24,6 +24,10 @@ const orderSchema = new mongoose.Schema(
           required: [true, "Price is required"],
           min: [0, "Price must be a positive value"],
         },
+        color: {
+          type: String,
+          // required: [true, "color is required"],
+        },
       },
     ],
     shippingDetails: {
@@ -51,7 +55,7 @@ const orderSchema = new mongoose.Schema(
     paymentDetails: {
       method: {
         type: String,
-        enum: ["Credit Card", "PayPal", "Cash on Delivery"], // Add other payment methods as needed
+        enum: ["Credit Card", "PayPal", "Cash on Delivery", "card"], // Add other payment methods as needed
         required: [true, "Payment method is required"],
       },
       status: {

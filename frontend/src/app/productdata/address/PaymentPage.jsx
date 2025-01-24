@@ -6,6 +6,8 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import StripeCheckout from "@/app/components/payment/StripeCheckout";
 import { LOCAL_PATH } from "@/app/utils/constant";
+import { useSelector, useDispatch } from "react-redux";
+import { addOrder } from "@/app/store/Order/orderApi";
 
 const stripePromise = loadStripe(
   "pk_test_51QkOJCBTZwDIXAx1sodxkOsyiEkIJIr3UJs2Pbp0LLz0kdSUKhY6PX7bpkw0pWaM8GDtn8NfG2pqijY5hgzA73EP00RLlhTzHA"
@@ -13,18 +15,90 @@ const stripePromise = loadStripe(
 
 const PaymentPage = () => {
   const [clientSecret, setClientSecret] = useState("");
+  const { cartItems } = useSelector((state) => state.cartData);
+  const { selectedAddress } = useSelector((state) => state.addressData);
+  const dispatch = useDispatch();
   const router = useRouter();
 
+  const calculateTotal = () => {
+    const totalPrice = cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const totalOriginalPrice = cartItems.reduce(
+      (total, item) => total + item.originalPrice * item.quantity,
+      0
+    );
+    const discount = totalOriginalPrice - totalPrice;
+
+    return {
+      totalPrice,
+      discount,
+      deliveryCharge: totalPrice > 5000 ? 0 : 99,
+      totalAmount: totalPrice + (totalPrice > 5000 ? 0 : 99),
+    };
+  };
+
   useEffect(() => {
-    // Fetch clientSecret from backend when page loads
+    const totalInfo = calculateTotal(); // Calculate total before making request
+
     fetch(`${LOCAL_PATH}/payment/create-payment-intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: 1000, currency: "usd" }), // Modify as needed
+      body: JSON.stringify({ amount: totalInfo.totalAmount, currency: "inr" }), // Use totalAmount
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
+      .then((data) => setClientSecret(data.clientSecret))
+      .catch((error) => console.error("Error fetching payment intent:", error));
   }, []);
+
+  const totalInfo = calculateTotal();
+  console.log("cardi itemssssssssssss<<<<<,", cartItems);
+
+  const onPaymentSuccess = async (data) => {
+    console.log("Payment succeeded:", data);
+
+    // Create order data for API
+    const orderData = {
+      items: cartItems?.map((item) => ({
+        product: item.id, // Product ID
+        quantity: item.quantity,
+        price: item.price,
+        color: item.color,
+      })),
+      shippingDetails: {
+        address: `Name: ${selectedAddress?.fullName} \n ${selectedAddress?.addressLine1} \n ${selectedAddress?.addressLine2} \n phone-No:${selectedAddress?.phone}`,
+        city: `${selectedAddress?.city}`,
+        state: `${selectedAddress?.state}`,
+        postalCode: `${selectedAddress?.postalCode}`,
+        country: `${selectedAddress?.country}`,
+      },
+      paymentDetails: {
+        method: data?.payment_method_types?.[0] || "Unknown",
+        status: "Paid",
+        transactionId: data?.id || "N/A", // Payment Intent ID from Stripe
+      },
+      discount: {
+        percentage: totalInfo.totalOriginalPrice
+          ? parseFloat(
+              (
+                (totalInfo.discount / totalInfo.totalOriginalPrice) *
+                100
+              ).toFixed(2)
+            ) || 0
+          : 0,
+        amount: parseFloat(totalInfo.discount) || 0,
+      },
+    };
+
+    try {
+      const response = await dispatch(addOrder(orderData)).unwrap();
+      console.log("Order created successfully:", response);
+      alert("order created success");
+    } catch (error) {
+      console.error("Order creation failed:", error);
+    }
+  };
 
   return (
     <div className="p-6 h-auto flex items-center justify-center bg-gray-50 dark:bg-gray-800">
@@ -32,10 +106,10 @@ const PaymentPage = () => {
         <h2 className="text-2xl font-bold mb-6 dark:text-white">Payment</h2>
         {clientSecret ? (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <StripeCheckout />
+            <StripeCheckout onPaymentSuccess={onPaymentSuccess} />
           </Elements>
         ) : (
-          <p className="dark:text-white ">Loading payment details...</p>
+          <p className="dark:text-white">Loading payment details...</p>
         )}
       </div>
     </div>

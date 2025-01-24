@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
-import { sendOrderStatusEmail } from "../utils/mailer.js";
+import { sendNewOrderEmail, sendOrderStatusEmail } from "../utils/mailer.js";
 import { User } from "../models/user.model.js";
 import { addLogActivity } from "../controllers/user.controller.js";
 import { Category } from "../models/category.model.js";
@@ -51,10 +51,12 @@ const createOrder = asyncHandler(async (req, res) => {
     // Calculate total amount
     const itemTotal = item.quantity * product.price;
     totalAmount += itemTotal;
+    console.log("see clolors<<<<<<<<<<<", item);
 
     return {
       product: product._id,
       quantity: item.quantity,
+      color: item.color,
       price: product.price,
     };
   });
@@ -87,7 +89,8 @@ const createOrder = asyncHandler(async (req, res) => {
     shippingDetails,
     paymentDetails: {
       method: paymentDetails.method,
-      status: "Pending",
+      status: paymentDetails.status || "Pending",
+      transactionId: paymentDetails.transactionId,
     },
     totalAmount,
     discount: discount || {},
@@ -95,7 +98,11 @@ const createOrder = asyncHandler(async (req, res) => {
 
   await order.save();
   await addLogActivity(req?.user?._id, " new Order created", {});
+  const populatedOrder = await Order.findById(order._id).populate(
+    "items.product"
+  );
 
+  await sendNewOrderEmail(req?.user.email, req?.user.fullname, populatedOrder);
   return res
     .status(201)
     .json(new ApiResponse(201, order, "Order created successfully."));

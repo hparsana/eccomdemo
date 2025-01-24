@@ -363,10 +363,82 @@ const sendOrderStatusEmail = async (email, userName, status) => {
     throw new ApiError(500, "Failed to send status email.");
   }
 };
+const sendNewOrderEmail = async (email, userName, order) => {
+  try {
+    await transporter.sendMail({
+      from: `"Ecomm Demo" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: `Order Confirmation - Order #${order._id}`,
+      html: `
+        <html>
+          <body style="font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px;">
+            <div style="max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px;">
+              <h2 style="color: #4caf50;">Thank You for Your Order, ${userName}!</h2>
+              <p>Your order has been placed successfully.</p>
+              <h3>Order Details:</h3>
+              <p><strong>Order ID:</strong> ${order._id}</p>
+              <p><strong>Total Amount:</strong> $${order.totalAmount.toFixed(2)}</p>
+              <p><strong>Payment Status:</strong> ${order.paymentDetails.status}</p>
+
+            <h3 style="margin-bottom: 10px; font-size: 18px; color: #333;">Order Items:</h3>
+<table style="width: 100%; border-collapse: collapse; margin-top: 10px; border: 1px solid #ddd;">
+  <thead>
+    <tr style="background: #f4f4f4; text-align: left; font-size: 16px;">
+      <th style="padding: 10px; border: 1px solid #ddd;">Product</th>
+      <th style="padding: 10px; border: 1px solid #ddd;">Image</th>
+      <th style="padding: 10px; border: 1px solid #ddd;">Color</th>
+      <th style="padding: 10px; border: 1px solid #ddd;">Quantity</th>
+      <th style="padding: 10px; border: 1px solid #ddd;">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${order.items
+      .map((item) => {
+        const product = item.product || {}; // Ensure product exists
+
+        return `
+        <tr style="border-bottom: 1px solid #ddd; font-size: 14px;">
+          <td style="padding: 10px; border: 1px solid #ddd;">${product?.name || "Unknown Product"}</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
+            <img src="${product?.images[0]?.url || "https://via.placeholder.com/50"}" 
+                 alt="${product?.name || "No Image"}" 
+                 width="50" height="50" 
+                 style="border-radius: 5px;">
+          </td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${item.color || "N/A"}</td>
+          <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${item.quantity}</td>
+          <td style="padding: 10px; border: 1px solid #ddd;">$${item.price.toFixed(2)}</td>
+        </tr>
+      `;
+      })
+      .join("")}
+  </tbody>
+</table>
+
+
+
+              <h3>Shipping Address:</h3>
+              <p>${order.shippingDetails.address}, ${order.shippingDetails.city}, ${order.shippingDetails.state}, ${order.shippingDetails.country} - ${order.shippingDetails.postalCode}</p>
+              
+              <p style="margin-top: 20px;">Thank you for shopping with us!</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`Order confirmation email sent to: ${email}`);
+    return true;
+  } catch (error) {
+    console.error("Error sending order confirmation email:", error);
+    throw new Error("Failed to send order confirmation email.");
+  }
+};
 
 export {
   sendOtpEmail,
   randomInt,
   sendForgotPasswordEmail,
   sendOrderStatusEmail,
+  sendNewOrderEmail,
 };
