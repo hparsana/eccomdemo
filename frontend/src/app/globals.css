@@ -99,3 +99,11 @@
     background-color 0.5s ease-in-out,
     color 0.5s ease-in-out;
 }
+.css-j5q8rb-MuiStepConnector-root .MuiStepConnector-line {
+  width: 2px !important;
+  height: 36px !important;
+  margin-left: 8px !important;
+}
+.css-1deaddp-MuiStepConnector-line {
+  min-height: 0px;
+}

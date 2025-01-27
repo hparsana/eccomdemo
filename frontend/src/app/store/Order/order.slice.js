@@ -7,6 +7,8 @@ import {
   UpdateOrder,
   getOrdersStatitics,
   getProductSold,
+  getLastOrderByUserId,
+  getLastOrdersByUserId,
 } from "./orderApi";
 
 const OrderSlice = createSlice({
@@ -15,6 +17,8 @@ const OrderSlice = createSlice({
     orderList: [],
     statitics: {},
     productSold: [],
+    lastOrders: [], // ✅ Store last 10 orders
+    lastOrder: null, // Add field for last order
     totalOrders: 0,
     totalPages: 0,
     currentPage: 1,
@@ -27,6 +31,8 @@ const OrderSlice = createSlice({
       state.totalOrders = 0;
       state.totalPages = 0;
       state.currentPage = 1;
+      state.lastOrders = []; // ✅ Reset last 10 orders
+      state.lastOrder = null; // Reset last order
       state.loading = false;
       state.error = null;
     },
@@ -87,6 +93,37 @@ const OrderSlice = createSlice({
       .addCase(addOrder.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to add order.";
+      }) // Fetch Last Order by User
+      .addCase(getLastOrderByUserId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getLastOrderByUserId.fulfilled, (state, action) => {
+        console.log("come in order apis<<<<<<,", action.payload);
+
+        state.lastOrder = action.payload; // Store the last order
+        state.loading = false;
+      })
+      .addCase(getLastOrderByUserId.rejected, (state, action) => {
+        state.lastOrder = null; // Clear last order on failure
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch last order.";
+      }) // ✅ Fetch Last 10 Orders with Pagination
+      .addCase(getLastOrdersByUserId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getLastOrdersByUserId.fulfilled, (state, action) => {
+        state.lastOrders = action.payload.orders; // ✅ Store last 10 orders
+        state.totalOrders = action.payload.totalOrders;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.loading = false;
+      })
+      .addCase(getLastOrdersByUserId.rejected, (state, action) => {
+        state.lastOrders = [];
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch last orders.";
       });
   },
 });

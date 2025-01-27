@@ -1,4 +1,8 @@
 import Stripe from "stripe";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export const PaymentController = {
@@ -7,6 +11,10 @@ export const PaymentController = {
     try {
       const { amount, currency } = req.body; // Amount in smallest unit (₹10 = 1000)
 
+      if (!amount || amount < 100) {
+        // Ensure amount is valid
+        return res.status(400).json({ error: "Invalid payment amount" });
+      }
       // Create a PaymentIntent (required for clientSecret)
       const paymentIntent = await stripe.paymentIntents.create({
         amount, // Amount in cents
@@ -61,3 +69,39 @@ export const PaymentController = {
     }
   },
 };
+
+export const getPaymentInfo = asyncHandler(async (req, res) => {
+  const { transactionId } = req.params;
+
+  if (!transactionId) {
+    throw new ApiError(400, "Transaction ID is required.");
+  }
+
+  try {
+    // Retrieve payment intent details from Stripe
+    const paymentIntent = await stripe.paymentIntents.retrieve(transactionId);
+
+    if (!paymentIntent) {
+      throw new ApiError(404, "Payment details not found.");
+    }
+
+    // Securely return payment details
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          id: paymentIntent.id,
+          amount: paymentIntent.amount / 100, // Convert from cents
+          currency: paymentIntent.currency,
+          status: paymentIntent.status,
+          payment_method_types: paymentIntent.payment_method_types,
+          created_at: new Date(paymentIntent.created * 1000), // Convert Unix timestamp
+        },
+        "Payment details fetched successfully."
+      )
+    );
+  } catch (error) {
+    console.error("Error fetching payment details:", error);
+    throw new ApiError(500, "Failed to retrieve payment details.");
+  }
+});

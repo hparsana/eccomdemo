@@ -5,15 +5,14 @@ import {
 } from "@stripe/react-stripe-js";
 import { useState } from "react";
 
-const StripeCheckout = ({ onPaymentSuccess }) => {
+const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true);
+    chnageLoadingStatus(true);
     setError(null);
 
     if (!stripe || !elements) {
@@ -29,12 +28,14 @@ const StripeCheckout = ({ onPaymentSuccess }) => {
     });
 
     if (error) {
-      setError(error.message);
-      setLoading(false);
+      console.error("Payment failed:", error);
+      setError(
+        "Payment could not be processed. Please try again or contact support."
+      );
+      chnageLoadingStatus(false);
     } else {
       onPaymentSuccess(paymentIntent);
     }
-    setLoading(false);
   };
 
   return (

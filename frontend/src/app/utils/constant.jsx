@@ -53,6 +53,8 @@ export const ORDERS = {
   UPDATE_ORDER_STATUS: `${LOCAL_PATH}/order/updateorderstatus`,
   GET_DASHBOARD_STATITICS: `${LOCAL_PATH}/order/orderstats`,
   GET_DASHBOARD_PRODUCTSOLD: `${LOCAL_PATH}/order/productsold`,
+  GET_LAST_ORDER: `${LOCAL_PATH}/order/getlastorderbyuserid`, // Replace with your API endpoint
+  GET_LAST_ORDERS: `${LOCAL_PATH}/order/getlast10ordersbyuser`,
 };
 
 export const SAVEDPRODUCT = {

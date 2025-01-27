@@ -196,3 +196,62 @@ export const deleteOrder = createAsyncThunk(
     }
   }
 );
+
+export const getLastOrderByUserId = createAsyncThunk(
+  "orders/getLastOrderByUserId",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+
+      const response = await axios.get(`${ORDERS.GET_LAST_ORDER}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
+      if (response.data) {
+        return response.data.data; // Return last order details
+      }
+
+      return rejectWithValue("Failed to fetch last order.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const getLastOrdersByUserId = createAsyncThunk(
+  "orders/getLastOrdersByUserId",
+  async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please log in.");
+      }
+
+      const response = await axios.get(
+        `${ORDERS.GET_LAST_ORDERS}?page=${page}&limit=${limit}`, // API URL
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data) {
+        return response.data.data; // Return order details with pagination
+      }
+
+      return rejectWithValue("Failed to fetch last orders.");
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);

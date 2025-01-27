@@ -14,7 +14,7 @@ import {
   AiOutlineUser,
 } from "react-icons/ai";
 import { FiBox } from "react-icons/fi";
-import { FaHeart } from "react-icons/fa";
+import { FaBoxOpen, FaHeart } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 const Navbar = () => {
   const pathname = usePathname();
@@ -54,6 +54,8 @@ const Navbar = () => {
       : [
           { path: "/", name: "Home" },
           { path: "/productdata", name: "Products" },
+          { path: "/orders", name: "Orders" },
+
           // { path: "/logout", name: "Logout" },
         ]
     : [
@@ -71,6 +73,8 @@ const Navbar = () => {
       name: "Cart",
       badge: cartItems?.length || 0, // Attach cart count to cart item
     },
+    { path: "/orders", icon: <FaBoxOpen size={28} />, name: "Orders" },
+
     { path: "/profile", icon: <AiOutlineUser size={28} />, name: "Profile" },
   ];
   return (
@@ -280,9 +284,7 @@ const Navbar = () => {
                 >
                   <div
                     className={`h-6 w-6 flex items-center justify-center rounded-full ${
-                      isActive(item.path)
-                        ? "bg-blue-100 dark:bg-blue-500"
-                        : "bg-transparent"
+                      isActive(item.path) ? "bg-blue-100 p-1" : "bg-transparent"
                     } transition-all duration-300`}
                   >
                     {item.icon}

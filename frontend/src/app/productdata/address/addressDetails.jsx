@@ -13,6 +13,7 @@ import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
 import { toast } from "react-toastify";
 import { setSelectedAddress } from "@/app/store/Address/address.slice";
+import { loadStripe } from "@stripe/stripe-js";
 
 const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const [selectedAddressId, setSelectedAddressId] = useState(null);
@@ -33,7 +34,6 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
     formState: { errors },
     reset,
   } = useForm();
-  console.log("get selected adderss<<<", selectedAddress);
 
   // Fetch addresses on mount
   useEffect(() => {
@@ -73,6 +73,9 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
     setShowForm(true); // Show the form for adding
     setSelectedAddressId(null); // Ensure no address is pre-filled
     setShowPaymentButton(false); // Hide the payment button while adding
+    // if (selectedSavedAddress) {
+    setSelectedSavedAddress(null);
+    // }
   };
 
   const handleSelectSavedAddress = (address) => {
@@ -92,6 +95,7 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const onSubmit = async (data) => {
     if (selectedAddressId) {
       // Update address
+
       dispatch(
         updateAddress({ addressId: selectedAddressId, updatedData: data })
       );

@@ -1,13 +1,16 @@
 import express from "express";
 import { authMiddleWare } from "../middlewares/auth.middleware.js";
-import { PaymentController } from "../controllers/payment.controller.js";
+import {
+  getPaymentInfo,
+  PaymentController,
+} from "../controllers/payment.controller.js";
 
 const router = express.Router();
 
 // ✅ Create a Payment Intent (Generates `clientSecret` for frontend)
 router.post(
   "/create-payment-intent",
-  // authMiddleWare(["USER", "ADMIN"]),
+  authMiddleWare(["USER", "ADMIN"]),
   PaymentController.createPaymentIntent
 );
 
@@ -23,6 +26,12 @@ router.post(
   "/webhook",
   express.raw({ type: "application/json" }), // Required for Stripe webhook
   PaymentController.handleStripeWebhook
+);
+
+router.get(
+  "/getpaymentInfo/:transactionId",
+  // authMiddleWare(["USER", "ADMIN"]),
+  getPaymentInfo
 );
 
 export default router;

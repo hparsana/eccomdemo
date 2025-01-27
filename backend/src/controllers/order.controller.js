@@ -4,26 +4,37 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
+import Stripe from "stripe";
 import { sendNewOrderEmail, sendOrderStatusEmail } from "../utils/mailer.js";
 import { User } from "../models/user.model.js";
 import { addLogActivity } from "../controllers/user.controller.js";
 import { Category } from "../models/category.model.js";
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Using import method
+
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
 
-  // Validate required fields
   if (!items || items.length === 0) {
     throw new ApiError(400, "Order must contain at least one item.");
   }
   if (!shippingDetails) {
     throw new ApiError(400, "Shipping details are required.");
   }
-  if (!paymentDetails || !paymentDetails.method) {
-    throw new ApiError(400, "Payment details are required.");
+  if (!paymentDetails || !paymentDetails.transactionId) {
+    throw new ApiError(400, "Valid payment transaction ID is required.");
   }
 
-  // Fetch product details for validation and price calculation
+  // Verify payment intent with Stripe
+  const paymentIntent = await stripe.paymentIntents.retrieve(
+    paymentDetails.transactionId
+  );
+
+  if (!paymentIntent || paymentIntent.status !== "succeeded") {
+    throw new ApiError(400, "Payment verification failed.");
+  }
+
+  // Fetch product details securely
   const productIds = items.map((item) => item.product);
   const products = await Product.find({ _id: { $in: productIds } });
 
@@ -32,7 +43,9 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 
   let totalAmount = 0;
-  const validatedItems = items.map((item) => {
+  const validatedItems = [];
+
+  for (const item of items) {
     const product = products.find(
       (p) => p._id.toString() === item.product.toString()
     );
@@ -40,7 +53,6 @@ const createOrder = asyncHandler(async (req, res) => {
     if (!product) {
       throw new ApiError(404, `Product with ID ${item.product} not found.`);
     }
-
     if (product.stock < item.quantity) {
       throw new ApiError(
         400,
@@ -48,20 +60,18 @@ const createOrder = asyncHandler(async (req, res) => {
       );
     }
 
-    // Calculate total amount
     const itemTotal = item.quantity * product.price;
     totalAmount += itemTotal;
-    console.log("see clolors<<<<<<<<<<<", item);
 
-    return {
+    validatedItems.push({
       product: product._id,
       quantity: item.quantity,
       color: item.color,
       price: product.price,
-    };
-  });
+    });
+  }
 
-  // Apply discount if provided
+  // Apply discount securely
   if (discount) {
     if (discount.percentage) {
       totalAmount -= (totalAmount * discount.percentage) / 100;
@@ -70,26 +80,24 @@ const createOrder = asyncHandler(async (req, res) => {
     }
   }
 
-  // Ensure totalAmount is not negative
   totalAmount = Math.max(totalAmount, 0);
 
-  // Deduct stock temporarily (reservation)
+  // Deduct stock securely
   for (const item of validatedItems) {
-    const product = products.find(
-      (p) => p._id.toString() === item.product.toString()
+    await Product.updateOne(
+      { _id: item.product },
+      { $inc: { stock: -item.quantity } }
     );
-    product.stock -= item.quantity;
-    await product.save();
   }
 
-  // Create order
+  // Create and save order
   const order = new Order({
     user: req.user._id,
     items: validatedItems,
     shippingDetails,
     paymentDetails: {
       method: paymentDetails.method,
-      status: paymentDetails.status || "Pending",
+      status: "Paid",
       transactionId: paymentDetails.transactionId,
     },
     totalAmount,
@@ -97,12 +105,14 @@ const createOrder = asyncHandler(async (req, res) => {
   });
 
   await order.save();
-  await addLogActivity(req?.user?._id, " new Order created", {});
+  await addLogActivity(req.user._id, "New Order Created", {});
   const populatedOrder = await Order.findById(order._id).populate(
     "items.product"
   );
 
-  await sendNewOrderEmail(req?.user.email, req?.user.fullname, populatedOrder);
+  // Send confirmation email
+  await sendNewOrderEmail(req.user.email, req.user.fullname, populatedOrder);
+
   return res
     .status(201)
     .json(new ApiResponse(201, order, "Order created successfully."));
@@ -431,6 +441,64 @@ const getProductSoldData = asyncHandler(async (req, res) => {
       .json(new ApiResponse(500, null, "Failed to fetch product sold data."));
   }
 });
+const getLastOrderByUser = asyncHandler(async (req, res) => {
+  // Find the most recent order for the user
+  const lastOrder = await Order.findOne({ user: req?.user?._id })
+    .sort({ createdAt: -1 }) // Sort in descending order (newest first)
+    .populate("user", "fullname email") // Fetch user details
+    .populate("items.product", "name price category brand") // Fetch product details
+    .lean();
+
+  if (!lastOrder) {
+    throw new ApiError(404, "No orders found for this user.");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        lastOrder,
+        `Last order for user ${req?.user?._id} fetched successfully.`
+      )
+    );
+});
+// ✅ Get last 10 orders of a user with pagination
+const getOrdersByUserFor10 = asyncHandler(async (req, res) => {
+  const userId = req.user._id; // Extract user ID from auth middleware
+  let { page = 1, limit = 10 } = req.query;
+
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  // Count total orders
+  const totalOrders = await Order.countDocuments({ user: userId });
+
+  // Fetch orders sorted by latest
+  const orders = await Order.find({ user: userId })
+    .sort({ createdAt: -1 }) // Sort by newest first
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .populate("user", "fullname email") // Fetch user details
+    .populate("items.product", "name price category brand images") // Fetch product details
+    .lean();
+
+  if (!orders || orders.length === 0) {
+    throw new ApiError(404, "No orders found for this user.");
+  }
+
+  const totalPages = Math.ceil(totalOrders / limit);
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { orders, totalOrders, totalPages, currentPage: page },
+        `Last ${limit} orders for user ${userId} fetched successfully.`
+      )
+    );
+});
 
 export {
   createOrder,
@@ -443,4 +511,6 @@ export {
   getOrderStats,
   updateOrderAddress,
   getProductSoldData,
+  getLastOrderByUser,
+  getOrdersByUserFor10,
 };

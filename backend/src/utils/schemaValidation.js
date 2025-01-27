@@ -437,12 +437,18 @@ export const createOrderSchemaValidation = z.object({
         product: z
           .string({ required_error: "Product ID is required" })
           .trim()
-          .min(1, { message: "Product ID cannot be empty" }),
+          .min(1, { message: "Product ID cannot be empty" })
+          .regex(/^[a-fA-F0-9]{24}$/, { message: "Invalid product ID format" }), // MongoDB ObjectId format
         quantity: z
           .number({ required_error: "Quantity is required" })
           .int({ message: "Quantity must be an integer" })
-          .min(1, { message: "Quantity must be at least 1" }),
-        color: z.string().trim().optional(),
+          .min(1, { message: "Quantity must be at least 1" })
+          .max(100, { message: "Quantity cannot exceed 100 per item" }),
+        color: z
+          .string()
+          .trim()
+          // .regex(/^#?[a-fA-F0-9]{3,6}$/, { message: "Invalid color format" })
+          .optional(),
       })
     )
     .nonempty({ message: "Order must contain at least one item" }),
@@ -451,32 +457,71 @@ export const createOrderSchemaValidation = z.object({
     address: z
       .string({ required_error: "Shipping address is required" })
       .trim()
-      .min(5, { message: "Shipping address must be at least 5 characters" }),
+      .min(5, { message: "Shipping address must be at least 5 characters" })
+      .max(255, { message: "Shipping address cannot exceed 255 characters" }),
     city: z
       .string({ required_error: "City is required" })
       .trim()
-      .min(2, { message: "City must be at least 2 characters" }),
+      .min(2, { message: "City must be at least 2 characters" })
+      .max(100, { message: "City cannot exceed 100 characters" }),
     state: z
       .string({ required_error: "State is required" })
       .trim()
-      .min(2, { message: "State must be at least 2 characters" }),
+      .min(2, { message: "State must be at least 2 characters" })
+      .max(100, { message: "State cannot exceed 100 characters" }),
     postalCode: z
       .string({ required_error: "Postal code is required" })
       .trim()
-      .regex(/^\d{4,6}$/, { message: "Postal code must be 4 to 6 digits" }),
+      .regex(/^[a-zA-Z0-9\- ]{4,10}$/, {
+        message:
+          "Postal code must be 4 to 10 characters (letters, numbers, dashes allowed)",
+      }),
     country: z
       .string({ required_error: "Country is required" })
       .trim()
-      .min(2, { message: "Country must be at least 2 characters" }),
+      .min(2, { message: "Country must be at least 2 characters" })
+      .max(100, { message: "Country cannot exceed 100 characters" }),
   }),
 
-  paymentDetails: z.object({
-    method: z.enum(["Credit Card", "PayPal", "Cash on Delivery", "card"], {
-      required_error: "Payment method is required",
+  paymentDetails: z
+    .object({
+      method: z.enum(["Credit Card", "PayPal", "Cash on Delivery", "card"], {
+        required_error: "Payment method is required",
+      }),
+      status: z
+        .enum(["Pending", "Paid", "Failed", "Refunded"])
+        .default("Pending"),
+      transactionId: z
+        .string()
+        .trim()
+        .min(8, { message: "Transaction ID must be at least 8 characters" })
+        .max(50, { message: "Transaction ID cannot exceed 50 characters" })
+        .regex(/^[a-zA-Z0-9\-_]+$/, {
+          message:
+            "Transaction ID can only contain letters, numbers, dashes, and underscores",
+        })
+        .optional(),
+    })
+    .superRefine((data, ctx) => {
+      // Ensure transaction ID is required for non-Cash on Delivery methods
+      if (data.method !== "Cash on Delivery" && !data.transactionId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Transaction ID is required for non-Cash on Delivery payments",
+          path: ["transactionId"],
+        });
+      }
+
+      // Prevent Cash on Delivery from having a transaction ID
+      if (data.method === "Cash on Delivery" && data.transactionId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Cash on Delivery should not have a transaction ID",
+          path: ["transactionId"],
+        });
+      }
     }),
-    status: z.enum(["Pending", "Paid", "Failed", "Refunded"]).optional(),
-    transactionId: z.string().optional(),
-  }),
 
   discount: z
     .object({
@@ -490,7 +535,16 @@ export const createOrderSchemaValidation = z.object({
         .min(0, { message: "Discount amount cannot be less than 0" })
         .optional(),
     })
-    .optional(),
+    .optional()
+    .superRefine((discount, ctx) => {
+      if (discount?.percentage && discount?.amount) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "Provide either discount percentage or discount amount, not both",
+        });
+      }
+    }),
 });
 
 export const updateOrderSchemaValidation = z.object({
