@@ -50,8 +50,8 @@ const SuccessPage = () => {
             No Recent Orders Found
           </h1>
           <p className="text-gray-600 dark:text-gray-400 mt-2">
-            It looks like you haven't placed any orders yet. Start shopping now
-            and get your first order!
+            It looks like you haven&lsquo;t placed any orders yet. Start
+            shopping now and get your first order!
           </p>
           <div className="mt-6">
             <button
