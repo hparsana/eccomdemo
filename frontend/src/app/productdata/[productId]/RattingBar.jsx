@@ -94,11 +94,11 @@ const RatingsAndReviews = ({ category, reviews }) => {
   ];
 
   return (
-    <div className="p-5 bg-white w-full rounded-md md:max-w-[1400px] mx-auto dark:bg-gray-800">
+    <div className="p-5  bg-white w-full rounded-md md:max-w-[1400px] mx-auto dark:bg-gray-800">
       <div className="flex flex-wrap justify-between items-center">
         {/* Overall Rating */}
-        <div className="md:flex justify-start items-center flex-wrap md:flex-nowrap">
-          <div className="text-center md:min-w-[150px] mb-5 md:mb-0">
+        <div className="md:flex justify-start mx-auto items-center flex-wrap md:flex-nowrap">
+          <div className="text-center md:min-w-[150px]  mb-5 md:mb-0">
             <div className="flex justify-center items-center">
               <h3 className="text-4xl font-bold text-blue-600 dark:text-blue-400">
                 {averageRating}
@@ -137,7 +137,7 @@ const RatingsAndReviews = ({ category, reviews }) => {
         </div>
 
         {/* Features Ratings */}
-        <div className="mt-5 md:mt-0 w-full flex justify-around md:max-w-[700px] md:gap-x-0 gap-x-3 items-start">
+        <div className="mt-5 lg:mt-0 w-full flex justify-around md:max-w-[700px] mx-auto md:gap-x-0 gap-x-3 items-start">
           {currentCategory.features.map((feature, index) => (
             <div key={index} className="flex flex-col items-center">
               <div className="relative w-14 h-14">
@@ -168,7 +168,9 @@ const RatingsAndReviews = ({ category, reviews }) => {
                   {feature.rating}
                 </div>
               </div>
-              <p className={`mt-2 text-sm ${feature.color} dark:text-gray-300`}>
+              <p
+                className={`mt-2 text-sm ${feature.color} text-center dark:text-gray-300`}
+              >
                 {feature.label}
               </p>
             </div>

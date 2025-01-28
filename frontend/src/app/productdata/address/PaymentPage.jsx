@@ -17,7 +17,6 @@ const PaymentPage = () => {
   const [clientSecret, setClientSecret] = useState("");
   const { cartItems } = useSelector((state) => state.cartData);
   const { selectedAddress } = useSelector((state) => state.addressData);
-  const { lastOrder } = useSelector((state) => state.orderData);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter(); // ✅ Use Next.js router for navigation
@@ -40,9 +39,7 @@ const PaymentPage = () => {
       totalAmount: totalPrice + (totalPrice > 5000 ? 0 : 99),
     };
   };
-  useEffect(() => {
-    dispatch(getLastOrderByUserId());
-  }, []);
+
   useEffect(() => {
     const totalInfo = calculateTotal(); // Calculate total before making request
     const userToken = localStorage.getItem("accessToken");
@@ -69,7 +66,13 @@ const PaymentPage = () => {
   };
   const onPaymentSuccess = async (data) => {
     console.log("Payment succeeded:", data);
-
+    localStorage.setItem(
+      "paymentSuccess",
+      JSON.stringify({
+        transactionId: data?.id,
+        timestamp: new Date().toISOString(),
+      })
+    );
     // Create order data for API
     const orderData = {
       items: cartItems?.map((item) => ({
@@ -113,15 +116,9 @@ const PaymentPage = () => {
           response?.createdAt &&
           response?.orderStatus === "Pending"
       );
-      if (
-        response?.user &&
-        response?.totalAmount &&
-        response?.createdAt &&
-        response?.orderStatus === "Pending"
-      ) {
-        console.log("jenish coem here<<<<<<<<");
-
+      if (response?.user && response?.orderStatus === "Pending") {
         chnageLoadingStatus(false);
+        localStorage.removeItem("paymentSuccess"); // Clear storage on success
         router.push("/productdata/order-success"); //
       }
     } catch (error) {

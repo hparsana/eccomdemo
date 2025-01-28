@@ -43,11 +43,11 @@ export default function RecentlyViewed({ recentViews }) {
           VIEW ALL
         </button>
       </div>
-      <Slider {...settings} className="recently-viewed-slider ">
+      <Slider {...settings} className="recently-viewed-slider  ">
         {recentViews.map((item, index) => (
           <div
             key={index}
-            className="min-w-[250px] max-w-[200px] bg-white rounded-lg shadow-sm border border-gray-200 dark:bg-gray-700 dark:border-gray-600"
+            className="min-w-[250px] max-w-[200px]   bg-white rounded-lg shadow-sm border border-gray-200 dark:bg-gray-700 dark:border-gray-600"
           >
             {/* Product Image */}
             <div className="relative w-full h-[150px]">

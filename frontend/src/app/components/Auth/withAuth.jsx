@@ -30,14 +30,21 @@ const withAuth = (
     useEffect(() => {
       const checkAuth = () => {
         if (typeof window === "undefined") return; // Avoid SSR issues
+        console.log("enter first");
 
         if (authentication && !userLoggedIn) {
+          console.log("enter second");
+
           redirect("/login");
         } else if (!authentication && userLoggedIn) {
+          console.log("enter third");
+
           const redirectPath = roleRedirectMap[authUser?.role] || "/";
           const userAtivepath = localStorage.getItem("currentActivePage");
 
           if (userAtivepath && userAtivepath !== null) {
+            console.log("enter four");
+
             redirect("/productdata/address");
           } else {
             redirect(redirectPath);
@@ -47,8 +54,12 @@ const withAuth = (
           !allowedRoles.includes(authUser?.role)
         ) {
           // User's role is not allowed for this page
+          console.log("enter five");
+
           redirect("/admin/dashboard"); // Redirect to an unauthorized page or home
         } else {
+          console.log("enter six");
+
           setLoading(false);
         }
       };

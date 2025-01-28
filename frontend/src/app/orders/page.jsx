@@ -132,20 +132,30 @@ const OrdersPage = () => {
                   }
                 >
                   <div>
-                    <p className="text-lg font-semibold">
-                      Order ID: {order._id}
+                    <p className="sm:text-lg text-sm font-semibold">
+                      Order ID:{" "}
+                      <span className="hidden sm:inline">{order._id}</span>{" "}
+                      {/* Full on sm+ screens */}
+                      <span className="sm:hidden">
+                        {order._id.slice(0, 22)}...
+                      </span>{" "}
+                      {/* Truncate on sm screens */}
                     </p>
-                    <p className="text-gray-500 dark:text-gray-400">
+
+                    <p className="text-gray-500 sm:text-lg text-sm dark:text-gray-400">
                       Total: ₹{order.totalAmount}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className=" text-gray-500 sm:text-lg text-sm dark:text-gray-400">
                       Ordered on{" "}
                       {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  <span className="text-xl">
-                    {StatusIcons[order.orderStatus]()}
-                  </span>
+                  <div className="text-center flex flex-col justify-center items-center ">
+                    <span className="text-xl">
+                      {StatusIcons[order.orderStatus]()}
+                    </span>
+                    <p className="mt-5">{order.orderStatus}</p>
+                  </div>
                 </div>
 
                 {/* Accordion - Order Details */}

@@ -126,8 +126,6 @@ export default function ProductData() {
   const filteredProducts = loading
     ? []
     : products.filter((product) => {
-        console.log(product);
-
         // Color Filter
         const matchesColor =
           selectedColor === "" ||

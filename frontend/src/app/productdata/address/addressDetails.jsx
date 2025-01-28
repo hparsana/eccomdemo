@@ -103,7 +103,9 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
     } else {
       // Add new address
       dispatch(addAddress(data));
-      dispatch(getAllAddresses());
+      setTimeout(() => {
+        dispatch(getAllAddresses());
+      }, 1500);
     }
     reset(); // Clear the form
     setShowForm(false); // Hide the form after submission

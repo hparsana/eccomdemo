@@ -20,6 +20,7 @@ import {
   getProductSoldData,
   getLastOrderByUser,
   getOrdersByUserFor10,
+  SendEmailForPortfolio,
 } from "../controllers/order.controller.js";
 
 const routes = express.Router();
@@ -82,5 +83,6 @@ routes
     validate(updateAddressSchemaValidation),
     updateOrderAddress
   );
+routes.route("/sendemailforportfolio").post(SendEmailForPortfolio);
 
 export default routes;

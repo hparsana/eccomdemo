@@ -107,3 +107,7 @@
 .css-1deaddp-MuiStepConnector-line {
   min-height: 0px;
 }
+.recently-viewed-slider .slick-slide {
+  display: flex !important;
+  justify-content: center !important;
+}

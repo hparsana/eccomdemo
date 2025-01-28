@@ -64,10 +64,20 @@ const TabBarLayout = () => {
       alert("Please complete the product summary first.");
     }
   };
-
+  useEffect(() => {
+    // Retrieve last step from localStorage on page reload
+    const savedStep = localStorage.getItem("currentActivePage");
+    if (savedStep) {
+      setCurrentStep(parseInt(savedStep, 10));
+    }
+  }, []);
   useEffect(() => {
     localStorage.removeItem("currentActivePage");
   }, []);
+  const handleStepChange = (step) => {
+    setCurrentStep(step);
+    localStorage.setItem("currentActivePage", step); // Save step to localStorage
+  };
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900 min-h-[100vh] flex justify-center px-4 py-10">
@@ -104,6 +114,7 @@ const TabBarLayout = () => {
               <AddressPage
                 handleAddressSelection={handleAddressSelection}
                 handleChnageTab={handleProceedToProductSummary}
+                onProceed={() => handleStepChange(1)}
               />
             </div>
           )}
@@ -122,6 +133,7 @@ const TabBarLayout = () => {
                 handleProceedToPayment={handleProceedToPayment}
                 isAddressSelected={isAddressSelected}
                 handleSummarySelection={handleSummarySelection}
+                onProceed={() => handleStepChange(2)}
               />
             </div>
           )}

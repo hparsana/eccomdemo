@@ -98,12 +98,13 @@ const Navbar = () => {
               width={134}
               height={57}
               className="cursor-pointer"
+              priority
             />
           </Link>
         </motion.div>
 
         {/* Centered Routes */}
-        <ul className="hidden lg:flex gap-8">
+        <ul className="hidden lg:flex gap-8 smooth-transition">
           {navLinks.map((item) => (
             <li key={item.path}>
               <Link
@@ -225,6 +226,7 @@ const Navbar = () => {
               alt="Logo"
               width={100}
               height={40}
+              priority
             />
           </Link>
           <button onClick={toggleSidebar} className="focus:outline-none">

@@ -18,7 +18,6 @@ export const getUserData = createAsyncThunk("auth/setDatas", async () => {
       },
       withCredentials: true, // Add this line
     });
-    console.log("come here fopr");
     if (response?.data?.success) {
       return response?.data;
     }

@@ -524,7 +524,7 @@ const ProductDetail = () => {
         </div>
 
         {/* Ratings and Reviews */}
-        <div className="bg-white rounded-lg shadow-md p-6 mt-8 dark:bg-gray-700">
+        <div className="bg-white rounded-lg shadow-md md:p-6 p-2 mt-8 dark:bg-gray-700">
           <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
             Ratings & Reviews
           </h2>
@@ -536,7 +536,7 @@ const ProductDetail = () => {
             reviews={product?.reviews}
           />
           {/* Ratings and Reviews */}
-          <div className="bg-white rounded-lg shadow-md p-6 mt-8 dark:bg-gray-700">
+          <div className="bg-white rounded-lg shadow-md lg:p-6  mt-8 dark:bg-gray-700">
             {/* <h2 className="text-2xl font-bold mb-4">Ratings & Reviews</h2> */}
 
             {/* User Reviews */}
@@ -552,7 +552,7 @@ const ProductDetail = () => {
                       className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300 hover:text-gray-900 transition dark:bg-gray-600 dark:text-gray-300 dark:hover:bg-gray-500 dark:hover:text-gray-100"
                       onClick={() => handleEditReview(review)}
                     >
-                      <FaEdit className="w-6 h-6" />
+                      <FaEdit className="w-6 h-6 p-1" />
                     </button>
                   )}
                   {/* Reviewer Name and Rating */}
@@ -591,7 +591,7 @@ const ProductDetail = () => {
               <Pagination
                 count={Math.ceil(product.reviews.length / reviewsPerPage)}
                 page={currentPage}
-                onChange={(e, page) => setCurrentPage(page)}
+                // onChange={(e, page) => setCurrentPage(page)}
                 color="primary"
               />
             </div>
@@ -648,7 +648,7 @@ const ProductDetail = () => {
             </div>
           </div>
           {/* Questions & Answers */}
-          <div className="bg-white rounded-lg shadow-md p-6 mt-8 dark:bg-gray-700">
+          <div className="bg-white rounded-lg shadow-md md:p-6 p-2 mt-8 dark:bg-gray-700">
             <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
               Questions & Answers
             </h2>

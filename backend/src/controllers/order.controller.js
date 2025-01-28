@@ -5,7 +5,11 @@ import { Order } from "../models/order.model.js";
 import { Product } from "../models/product.model.js";
 import mongoose from "mongoose";
 import Stripe from "stripe";
-import { sendNewOrderEmail, sendOrderStatusEmail } from "../utils/mailer.js";
+import {
+  sendContactEmail,
+  sendNewOrderEmail,
+  sendOrderStatusEmail,
+} from "../utils/mailer.js";
 import { User } from "../models/user.model.js";
 import { addLogActivity } from "../controllers/user.controller.js";
 import { Category } from "../models/category.model.js";
@@ -500,6 +504,12 @@ const getOrdersByUserFor10 = asyncHandler(async (req, res) => {
     );
 });
 
+const SendEmailForPortfolio = asyncHandler(async (req, res) => {
+  let { name, email, subject, message } = req.body;
+  await sendContactEmail(name, email, subject, message);
+  return res.status(200).json(new ApiResponse(200, "Email Send Successfully."));
+});
+
 export {
   createOrder,
   getOrders,
@@ -513,4 +523,5 @@ export {
   getProductSoldData,
   getLastOrderByUser,
   getOrdersByUserFor10,
+  SendEmailForPortfolio,
 };

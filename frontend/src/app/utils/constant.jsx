@@ -86,3 +86,7 @@ export const ADDRESSES = {
 export const ERROR_LOGS = {
   GET_ERROR_LOGS: `${LOCAL_PATH}/errorlogs/error-filelogs`, // Endpoint to fetch logs
 };
+
+export const PAYMENTROUTES = {
+  CHECK_VERIFY_PAYMENT: `${LOCAL_PATH}/payment/verifypaymentinfo`, // Replace with your API endpoint
+};

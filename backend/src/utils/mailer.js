@@ -434,6 +434,42 @@ const sendNewOrderEmail = async (email, userName, order) => {
     throw new Error("Failed to send order confirmation email.");
   }
 };
+const sendContactEmail = async (name, email, subject, message) => {
+  try {
+    await transporter.sendMail({
+      from: `"Portfolio Contact Form" <${process.env.EMAIL_USER}>`, // Your SMTP email
+      to: process.env.EMAIL_USER, // Your own email to receive inquiries
+      replyTo: email, // User's email (so when you reply, it goes to them)
+      subject: `New Contact Form Submission: ${subject}`,
+      text: `
+        Name: ${name}
+        Email: ${email}
+        Subject: ${subject}
+        Message: ${message}
+      `,
+      html: `
+        <html>
+          <body>
+            <h3>New Contact Form Submission</h3>
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Subject:</strong> ${subject}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+            <hr>
+            <p><strong>Reply-To:</strong> <a href="mailto:${email}">${email}</a></p>
+          </body>
+        </html>
+      `,
+    });
+
+    console.log(`Contact form email sent successfully.`);
+    return true;
+  } catch (error) {
+    console.error("Failed to send contact form email:", error);
+    throw new Error("Failed to send email. Please try again later.");
+  }
+};
 
 export {
   sendOtpEmail,
@@ -441,4 +477,5 @@ export {
   sendForgotPasswordEmail,
   sendOrderStatusEmail,
   sendNewOrderEmail,
+  sendContactEmail,
 };
