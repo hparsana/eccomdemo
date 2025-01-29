@@ -257,7 +257,10 @@ const ProductDetail = () => {
                   Add to Cart
                 </button>
               )}
-              <button className="bg-[#fb641b] text-white text-lg py-3 w-full md:px-6 px-5 rounded-lg hover:bg-orange-600 transition">
+              <button
+                className="bg-[#fb641b] text-white text-lg py-3 w-full md:px-6 px-5 rounded-lg hover:bg-orange-600 transition"
+                onClick={() => alert("this service currenty pending")}
+              >
                 Buy Now
               </button>
             </div>
