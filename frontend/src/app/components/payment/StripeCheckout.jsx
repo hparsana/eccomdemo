@@ -53,23 +53,32 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
       return;
     }
 
-    const { error, paymentIntent } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/order-summary`,
-      },
-      redirect: "if_required",
-    });
+    try {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/order-summary`,
+        },
+        redirect: "if_required",
+      });
 
-    if (error) {
-      console.error("Payment failed:", error);
-      setError(
-        "Payment could not be processed. Please try again or contact support."
-      );
+      if (error) {
+        console.error("Payment failed:", error);
+        setError(
+          "Payment could not be processed. Please try again or contact support."
+        );
+        chnageLoadingStatus(false);
+      } else {
+        onPaymentSuccess(paymentIntent);
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      setError("An unexpected error occurred. Please try again.");
       chnageLoadingStatus(false);
-    } else {
-      onPaymentSuccess(paymentIntent);
     }
+    // finally {
+    //   chnageLoadingStatus(false);
+    // }
   };
 
   return (

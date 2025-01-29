@@ -19,6 +19,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Using import method
 const createOrder = asyncHandler(async (req, res) => {
   const { items, shippingDetails, paymentDetails, discount } = req.body;
 
+  // Validate input
   if (!items || items.length === 0) {
     throw new ApiError(400, "Order must contain at least one item.");
   }
@@ -30,9 +31,15 @@ const createOrder = asyncHandler(async (req, res) => {
   }
 
   // Verify payment intent with Stripe
-  const paymentIntent = await stripe.paymentIntents.retrieve(
-    paymentDetails.transactionId
-  );
+  let paymentIntent;
+  try {
+    paymentIntent = await stripe.paymentIntents.retrieve(
+      paymentDetails.transactionId
+    );
+  } catch (error) {
+    console.error("Stripe payment intent retrieval failed:", error);
+    throw new ApiError(400, "Payment verification failed.");
+  }
 
   if (!paymentIntent || paymentIntent.status !== "succeeded") {
     throw new ApiError(400, "Payment verification failed.");
@@ -86,40 +93,57 @@ const createOrder = asyncHandler(async (req, res) => {
 
   totalAmount = Math.max(totalAmount, 0);
 
-  // Deduct stock securely
-  for (const item of validatedItems) {
-    await Product.updateOne(
-      { _id: item.product },
-      { $inc: { stock: -item.quantity } }
+  // Use a database transaction for atomicity
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Deduct stock securely
+    for (const item of validatedItems) {
+      await Product.updateOne(
+        { _id: item.product },
+        { $inc: { stock: -item.quantity } },
+        { session }
+      );
+    }
+
+    // Create and save order
+    const order = new Order({
+      user: req.user._id,
+      items: validatedItems,
+      shippingDetails,
+      paymentDetails: {
+        method: paymentDetails.method,
+        status: "Paid",
+        transactionId: paymentDetails.transactionId,
+      },
+      totalAmount,
+      discount: discount || {},
+    });
+
+    await order.save({ session });
+    await addLogActivity(req.user._id, "New Order Created", {});
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    // Send confirmation email
+    const populatedOrder = await Order.findById(order._id).populate(
+      "items.product"
     );
+    await sendNewOrderEmail(req.user.email, req.user.fullname, populatedOrder);
+
+    return res
+      .status(201)
+      .json(new ApiResponse(201, order, "Order created successfully."));
+  } catch (error) {
+    // Rollback the transaction on error
+    await session.abortTransaction();
+    session.endSession();
+    console.error("Order creation failed:", error);
+    throw new ApiError(500, "Order creation failed. Please try again.");
   }
-
-  // Create and save order
-  const order = new Order({
-    user: req.user._id,
-    items: validatedItems,
-    shippingDetails,
-    paymentDetails: {
-      method: paymentDetails.method,
-      status: "Paid",
-      transactionId: paymentDetails.transactionId,
-    },
-    totalAmount,
-    discount: discount || {},
-  });
-
-  await order.save();
-  await addLogActivity(req.user._id, "New Order Created", {});
-  const populatedOrder = await Order.findById(order._id).populate(
-    "items.product"
-  );
-
-  // Send confirmation email
-  await sendNewOrderEmail(req.user.email, req.user.fullname, populatedOrder);
-
-  return res
-    .status(201)
-    .json(new ApiResponse(201, order, "Order created successfully."));
 });
 
 const getOrders = asyncHandler(async (req, res) => {
@@ -450,7 +474,7 @@ const getLastOrderByUser = asyncHandler(async (req, res) => {
   const lastOrder = await Order.findOne({ user: req?.user?._id })
     .sort({ createdAt: -1 }) // Sort in descending order (newest first)
     .populate("user", "fullname email") // Fetch user details
-    .populate("items.product", "name price category brand") // Fetch product details
+    .populate("items.product", "name price category brand images") // Fetch product details
     .lean();
 
   if (!lastOrder) {

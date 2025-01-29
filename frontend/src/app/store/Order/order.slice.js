@@ -99,8 +99,6 @@ const OrderSlice = createSlice({
         state.error = null;
       })
       .addCase(getLastOrderByUserId.fulfilled, (state, action) => {
-        console.log("come in order apis<<<<<<,", action.payload);
-
         state.lastOrder = action.payload; // Store the last order
         state.loading = false;
       })

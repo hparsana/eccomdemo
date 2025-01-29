@@ -30,6 +30,13 @@ const SuccessPage = () => {
       second: "2-digit",
     });
   };
+  const formatAddress = (address) => {
+    return address.split("\n").map((line, index) => (
+      <p key={index} className="text-gray-700 dark:text-gray-400">
+        {line}
+      </p>
+    ));
+  };
 
   if (loading) {
     return (
@@ -130,9 +137,7 @@ const SuccessPage = () => {
               >
                 <div className="flex items-center">
                   <img
-                    src={
-                      item.product?.image || "https://via.placeholder.com/50"
-                    }
+                    src={item.product?.images?.[0].url}
                     alt={item.product?.name}
                     className="w-14 h-14 rounded-lg object-cover mr-3"
                   />
@@ -162,13 +167,13 @@ const SuccessPage = () => {
         </div>
 
         {/* Shipping Details */}
-        <div className="mt-6 border-t border-gray-300 dark:border-gray-700 pt-4">
+        <div className="mt-6  border-gray-300 dark:border-gray-700 pt-4">
           <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-300">
             Shipping Address
           </h2>
-          <p className="text-gray-700 dark:text-gray-400">
-            {lastOrder.shippingDetails.address}
-          </p>
+          <div className="mt-1 border-gray-300 dark:border-gray-700 pt-4">
+            {formatAddress(lastOrder.shippingDetails.address)}
+          </div>
           <p className="text-gray-700 dark:text-gray-400">
             {lastOrder.shippingDetails.city}, {lastOrder.shippingDetails.state},{" "}
             {lastOrder.shippingDetails.country}

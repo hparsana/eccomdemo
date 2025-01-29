@@ -111,3 +111,11 @@
   display: flex !important;
   justify-content: center !important;
 }
+
+/* Sticky Image Effect */
+.sticky1 {
+  position: sticky !important;
+  top: 0 !important;
+  height: 70vh;
+  z-index: 1 !important;
+}

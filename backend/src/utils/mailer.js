@@ -400,7 +400,7 @@ const sendNewOrderEmail = async (email, userName, order) => {
         <tr style="border-bottom: 1px solid #ddd; font-size: 14px;">
           <td style="padding: 10px; border: 1px solid #ddd;">${product?.name || "Unknown Product"}</td>
           <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">
-            <img src="${product?.images[0]?.url || "https://via.placeholder.com/50"}" 
+            <img src="${product?.images[0]?.url}" 
                  alt="${product?.name || "No Image"}" 
                  width="50" height="50" 
                  style="border-radius: 5px;">

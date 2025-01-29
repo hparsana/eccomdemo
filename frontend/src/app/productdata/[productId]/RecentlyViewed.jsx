@@ -34,7 +34,7 @@ const handleInterestedClick = (id) => {
 };
 export default function RecentlyViewed({ recentViews }) {
   return (
-    <div className="bg-gray-50 p-6 rounded-lg shadow-md mt-8 dark:bg-gray-800">
+    <div className="bg-gray-50 p-6 rounded-lg shadow-md  dark:bg-gray-800 ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
           Recently Viewed
