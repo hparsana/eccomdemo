@@ -57,6 +57,11 @@ const nextConfig = {
         hostname: "assets.aceternity.com",
         pathname: "**", // Allows all paths under this domain
       },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+        pathname: "**", // Allows all paths under this domain
+      },
     ],
   },
 };

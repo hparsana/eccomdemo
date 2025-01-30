@@ -15,6 +15,7 @@ import {
 } from "@/app/store/SaveProduct/savedProductApi";
 import { ResetProducts } from "../store/Product/product.slice";
 import { toggleDarkMode } from "../store/Auth/auth.slice";
+import Image from "next/image";
 
 export default function ProductData() {
   const [priceRange, setPriceRange] = useState([0, 250000]);
@@ -207,9 +208,7 @@ export default function ProductData() {
   };
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen smooth-transition">
-      <div className="md:block hidden">
-        <NavbarDemo />
-      </div>
+      <div className="md:block hidden">{/* <NavbarDemo /> */}</div>
       <div className="lg:w-[90%] md:w-[95%] w-full mx-auto min-h-[80vh] flex flex-col md:flex-row gap-6 mt-6">
         {/* Sidebar Toggle Button (Small Screens) */}
         <div className="flex justify-between items-center md:hidden px-4">
@@ -223,7 +222,7 @@ export default function ProductData() {
 
         {/* Sidebar */}
         <aside
-          className={`fixed md:relative bg-white dark:bg-gray-800 smooth-transition shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-[100vh] md:min-h-[100vh] md:overflow-hidden overflow-y-scroll lg:w-1/6 md:w-1/4 sm:w-[40%] w-[250px] transform ${
+          className={`fixed md:relative bg-white dark:bg-gray-800 smooth-transition shadow-sm rounded-lg p-4 z-40 top-0 left-0 h-[100vh] md:min-h-[100vh] xl:overflow-hidden overflow-y-scroll lg:w-[280px] md:[250px] sm:w-[240px] w-[250px] transform ${
             showSidebar ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0 transition-transform duration-300 ease-in-out`}
         >
@@ -517,16 +516,18 @@ export function ProductCard({ product, onRemove }) {
   return (
     <motion.div
       ref={ref}
-      className="relative bg-white dark:bg-gray-800 smooth-transition shadow-md rounded-lg mt-5  h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
+      className="relative bg-white dark:bg-gray-800 smooth-transition shadow-md rounded-lg mt-5 h-fit md:min-h-[410px] hover:shadow-lg transition-shadow duration-300 cursor-pointer"
       initial={{ opacity: 0, y: 50 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5, delay: 0.1 }}
     >
       <div className="relative">
         <div className="relative">
-          <img
+          <Image
             src={product.images[0]?.url}
             alt={product.images[0]?.alt}
+            width={500}
+            height={500}
             className="w-full h-52 object-cover"
             onClick={handleCardClick}
           />

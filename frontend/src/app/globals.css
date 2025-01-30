@@ -119,3 +119,11 @@
   height: 70vh;
   z-index: 1 !important;
 }
+.slick-initialized .slick-prev {
+  left: 0 !important;
+  z-index: 100 !important;
+}
+.slick-initialized .slick-next {
+  right: 0 !important;
+  z-index: 100 !important;
+}
