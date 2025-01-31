@@ -199,7 +199,7 @@ export const deleteOrder = createAsyncThunk(
 
 export const getLastOrderByUserId = createAsyncThunk(
   "orders/getLastOrderByUserId",
-  async (userId, { rejectWithValue }) => {
+  async (orderId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -208,6 +208,7 @@ export const getLastOrderByUserId = createAsyncThunk(
       }
 
       const response = await axios.get(`${ORDERS.GET_LAST_ORDER}`, {
+        params: orderId ? { orderId } : {}, // Pass orderId if available
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -215,7 +216,7 @@ export const getLastOrderByUserId = createAsyncThunk(
       });
 
       if (response.data) {
-        return response.data.data; // Return last order details
+        return response.data.data;
       }
 
       return rejectWithValue("Failed to fetch last order.");

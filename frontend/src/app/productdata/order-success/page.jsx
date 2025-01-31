@@ -1,6 +1,6 @@
 "use client";
 import { useSelector, useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
@@ -10,11 +10,17 @@ const SuccessPage = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const { lastOrder, loading } = useSelector((state) => state.orderData);
+  const searchParams = useSearchParams(); // Get query parameters
+  const orderId = searchParams.get("orderId"); // Extract orderId from URL
 
   // Fetch last order if missing
   useEffect(() => {
-    dispatch(getLastOrderByUserId());
-  }, [dispatch]);
+    if (orderId) {
+      dispatch(getLastOrderByUserId(orderId)); // Pass orderId to API call
+    } else {
+      dispatch(getLastOrderByUserId()); // Pass orderId to API call
+    }
+  }, [dispatch, orderId]);
 
   // Format Date
   const formatDate = (dateString) => {
@@ -51,7 +57,7 @@ const SuccessPage = () => {
   if (!lastOrder) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6">
-        <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-3xl w-full text-center">
+        <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-3xl w-full flex flex-col justify-center items-center text-center">
           <FaExclamationCircle className="text-red-500 dark:text-red-400 text-6xl mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             No Recent Orders Found
@@ -62,7 +68,7 @@ const SuccessPage = () => {
           </p>
           <div className="mt-6">
             <button
-              onClick={() => router.push("/")}
+              onClick={() => router.push("/productdata")}
               className="bg-blue-500 dark:bg-green-500 text-white px-6 py-2 rounded-lg shadow-lg hover:bg-blue-600 dark:hover:bg-green-600"
             >
               Browse Products

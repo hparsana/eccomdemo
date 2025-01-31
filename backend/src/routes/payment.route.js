@@ -2,6 +2,7 @@ import express from "express";
 import { authMiddleWare } from "../middlewares/auth.middleware.js";
 import {
   getPaymentInfo,
+  handleStripeWebhook,
   PaymentController,
 } from "../controllers/payment.controller.js";
 
@@ -25,7 +26,7 @@ router.post(
 router.post(
   "/webhook",
   express.raw({ type: "application/json" }), // Required for Stripe webhook
-  PaymentController.handleStripeWebhook
+  handleStripeWebhook
 );
 
 router.get(

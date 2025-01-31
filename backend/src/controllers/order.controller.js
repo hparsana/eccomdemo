@@ -470,15 +470,34 @@ const getProductSoldData = asyncHandler(async (req, res) => {
   }
 });
 const getLastOrderByUser = asyncHandler(async (req, res) => {
-  // Find the most recent order for the user
-  const lastOrder = await Order.findOne({ user: req?.user?._id })
-    .sort({ createdAt: -1 }) // Sort in descending order (newest first)
-    .populate("user", "fullname email") // Fetch user details
-    .populate("items.product", "name price category brand images") // Fetch product details
-    .lean();
+  const { orderId } = req.query; // Check if orderId is provided in the query parameters
 
-  if (!lastOrder) {
-    throw new ApiError(404, "No orders found for this user.");
+  let order;
+
+  if (orderId) {
+    // Fetch the specific order by orderId
+    order = await Order.findOne({ _id: orderId, user: req?.user?._id })
+      .populate("user", "fullname email") // Fetch user details
+      .populate("items.product", "name price category brand images") // Fetch product details
+      .lean();
+
+    if (!order) {
+      throw new ApiError(
+        404,
+        `Order with ID ${orderId} not found for this user.`
+      );
+    }
+  } else {
+    // Fetch the most recent order for the user
+    order = await Order.findOne({ user: req?.user?._id })
+      .sort({ createdAt: -1 }) // Sort in descending order (newest first)
+      .populate("user", "fullname email") // Fetch user details
+      .populate("items.product", "name price category brand images") // Fetch product details
+      .lean();
+
+    if (!order) {
+      throw new ApiError(404, "No orders found for this user.");
+    }
   }
 
   return res
@@ -486,8 +505,10 @@ const getLastOrderByUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        lastOrder,
-        `Last order for user ${req?.user?._id} fetched successfully.`
+        order,
+        orderId
+          ? `Order with ID ${orderId} fetched successfully.`
+          : `Last order for user ${req?.user?._id} fetched successfully.`
       )
     );
 });

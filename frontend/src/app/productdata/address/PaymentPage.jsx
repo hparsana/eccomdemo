@@ -15,8 +15,10 @@ const stripePromise = loadStripe(
 
 const PaymentPage = () => {
   const [clientSecret, setClientSecret] = useState("");
+  const [orderLoading, setOrderLoading] = useState(false);
   const { cartItems } = useSelector((state) => state.cartData);
   const { selectedAddress } = useSelector((state) => state.addressData);
+  const { authUser } = useSelector((data) => data?.userAuthData);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter(); // ✅ Use Next.js router for navigation
@@ -53,7 +55,15 @@ const PaymentPage = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${userToken}`,
       },
-      body: JSON.stringify({ amount: totalAmountInPaise, currency: "inr" }), // ✅ Fixed conversion
+      body: JSON.stringify({
+        amount: totalAmountInPaise,
+        currency: "inr",
+        metadata: {
+          userId: authUser?._id, // Store user ID
+          cartItems: JSON.stringify(cartItems), // Save cart details
+          shippingDetails: JSON.stringify(selectedAddress),
+        },
+      }), // ✅ Fixed conversion
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret))
@@ -66,6 +76,7 @@ const PaymentPage = () => {
   };
   const onPaymentSuccess = async (data) => {
     console.log("Payment succeeded:", data);
+    setOrderLoading(true);
     localStorage.setItem(
       "paymentSuccess",
       JSON.stringify({
@@ -108,22 +119,17 @@ const PaymentPage = () => {
 
     try {
       const response = await dispatch(addOrder(orderData)).unwrap();
-      console.log(
-        "Order created successfully:",
-        response,
-        response?.user &&
-          response?.totalAmount &&
-          response?.createdAt &&
-          response?.orderStatus === "Pending"
-      );
+      console.log("Order created successfully:", response);
       if (response?.user && response?.orderStatus === "Pending") {
         chnageLoadingStatus(false);
+        setOrderLoading(false);
         localStorage.removeItem("paymentSuccess"); // Clear storage on success
-        router.push("/productdata/order-success"); //
+        router.push(`/productdata/order-success?orderId=${response?._id}`); //
       }
     } catch (error) {
       console.error("Order creation failed:", error);
       chnageLoadingStatus(false);
+      setOrderLoading(false);
     }
   };
 
