@@ -80,7 +80,7 @@ const SuccessPage = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6">
+    <div className="min-h-screen flex items-center md:pb-0 pb-20 justify-center bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6">
       <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg shadow-lg max-w-3xl w-full">
         <div className="flex flex-col items-center text-center">
           <FaCheckCircle className="text-green-500 dark:text-green-400 text-6xl mb-4" />
@@ -157,13 +157,13 @@ const SuccessPage = () => {
                   </div>
                 </div>
                 <div>
-                  <p className="text-gray-700 dark:text-gray-400">
+                  <p className="text-gray-700 dark:text-gray-400 md:text-base text-[13px]">
                     <strong>Color:</strong> {item.color}
                   </p>
-                  <p className="text-gray-700 dark:text-gray-400">
+                  <p className="text-gray-700 dark:text-gray-400 md:text-base text-[13px]">
                     <strong>Qty:</strong> {item.quantity}
                   </p>
-                  <p className="text-gray-700 dark:text-gray-400">
+                  <p className="text-gray-700 dark:text-gray-400 md:text-base text-[13px]">
                     <strong>Price:</strong> ₹{item.price}
                   </p>
                 </div>

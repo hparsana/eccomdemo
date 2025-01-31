@@ -57,7 +57,7 @@ function Navbar() {
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 smooth-transition shadow-md z-50">
-      <nav className="container mx-auto flex items-center justify-around px-6 py-4">
+      <nav className="container mx-auto flex flex-wrap items-center justify-around px-6 py-4">
         {/* Show loading state */}
         {loading && (
           <p className="text-gray-700 dark:text-gray-300">
@@ -74,12 +74,12 @@ function Navbar() {
         {categories?.map((category) => (
           <div
             key={category._id}
-            className="group relative cursor-pointer"
+            className="group relative cursor-pointer "
             onMouseEnter={() => handleMouseEnter(category.name)}
             onMouseLeave={handleMouseLeave}
           >
             {/* Category Name */}
-            <span className="font-medium text-[14px] text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center">
+            <span className="font-medium  text-[14px] text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 flex items-center">
               {category.name}
               {active === category.name ? (
                 <FaChevronUp className="ml-2 text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200" />

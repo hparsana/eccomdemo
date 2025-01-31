@@ -208,10 +208,12 @@ export default function ProductData() {
   };
   return (
     <div className="bg-gray-50 dark:bg-gray-900 min-h-screen smooth-transition">
-      <div className="md:block hidden">{/* <NavbarDemo /> */}</div>
-      <div className="lg:w-[90%] md:w-[95%] w-full mx-auto min-h-[80vh] flex flex-col md:flex-row gap-6 mt-6">
+      <div className="lg:block hidden">
+        <NavbarDemo />
+      </div>
+      <div className="lg:w-[90%] md:w-[95%] w-full mx-auto min-h-[80vh] flex flex-col md:flex-row gap-6 lg:mt-6">
         {/* Sidebar Toggle Button (Small Screens) */}
-        <div className="flex justify-between items-center md:hidden px-4">
+        <div className="flex justify-between items-center md:hidden mt-5 ml-3">
           <button
             onClick={() => setShowSidebar(true)}
             className="text-blue-500 dark:text-blue-400 text-lg flex items-center"
