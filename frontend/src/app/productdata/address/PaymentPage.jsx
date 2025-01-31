@@ -134,9 +134,11 @@ const PaymentPage = () => {
   };
 
   return (
-    <div className="p-6 h-auto flex items-center justify-center bg-gray-50 dark:bg-gray-800">
-      <div className="bg-white dark:bg-gray-700 p-8 rounded-lg shadow-lg max-w-2xl w-full">
-        <h2 className="text-2xl font-bold mb-6 dark:text-white">Payment</h2>
+    <div className="md:p-6 h-auto flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+      <div className="bg-white dark:bg-gray-700 md:p-8 md:mt-0 mt-3 rounded-lg  max-w-2xl w-full">
+        <h2 className="text-2xl font-bold mb-6 dark:text-white hidden md:block">
+          Payment
+        </h2>
         {clientSecret ? (
           <Elements stripe={stripePromise} options={{ clientSecret }}>
             <StripeCheckout

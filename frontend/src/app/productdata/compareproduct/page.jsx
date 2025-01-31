@@ -29,7 +29,7 @@ const ComparePage = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen md:p-10 p-2 dark:bg-gray-900">
+    <div className="bg-gray-100 md:pb-0 pb-20 min-h-screen md:p-10 p-2 dark:bg-gray-900">
       <div className="max-w-[1200px] mx-auto bg-white md:p-6 p-3 rounded-lg shadow-lg dark:bg-gray-800">
         <div className="flex justify-between ">
           <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">

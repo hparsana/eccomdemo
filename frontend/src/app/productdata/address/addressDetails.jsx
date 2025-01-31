@@ -115,8 +115,8 @@ const AddressPage = ({ handleChnageTab, handleAddressSelection }) => {
   const visibleAddresses = showAll ? addressList : addressList.slice(0, 2);
   return (
     <div className="p-6 flex items-center justify-center md:px-4 px-2 bg-gray-50 dark:bg-gray-900">
-      <div className="bg-white md:p-8 p-2 rounded-lg shadow-md w-full max-w-2xl dark:bg-gray-800">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800 md:px-0 px-3 dark:text-gray-200">
+      <div className="bg-white md:p-8  rounded-lg shadow-md w-full max-w-2xl dark:bg-gray-800">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800 md:px-0 px-3 md:block hidden dark:text-gray-200">
           Shipping Address
         </h2>
 

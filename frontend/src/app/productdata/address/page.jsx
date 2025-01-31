@@ -80,7 +80,7 @@ const TabBarLayout = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900 min-h-[100vh] flex justify-center px-4 py-10">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-800 dark:to-gray-900 min-h-[100vh] md:pb-0 pb-20 flex justify-center px-4 py-10">
       <div className="container mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg p-2 md:p-8">
         {/* Material-UI Stepper */}
         <Stepper

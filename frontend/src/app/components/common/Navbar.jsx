@@ -211,7 +211,7 @@ const Navbar = () => {
 
       {/* Sidebar for Small Screens */}
       <div
-        className={`fixed top-0 left-0 w-64 h-full bg-[#EAE8E2] dark:bg-gray-900 shadow-lg transform ${
+        className={`fixed top-0 left-0 w-60 h-full bg-[#EAE8E2] dark:bg-gray-900 shadow-lg transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 lg:hidden z-50`}
       >
@@ -273,7 +273,7 @@ const Navbar = () => {
 
       {/* Bottom Navigation Bar for Small Screens */}
       <div className="fixed bottom-0 left-0 w-full bg-[#F7F7F7] dark:bg-gray-800 shadow-lg lg:hidden z-50 rounded-t-[40px]">
-        <ul className="flex justify-around items-center py-2">
+        <ul className="flex justify-around items-center py-3">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link href={item.path}>
