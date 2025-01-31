@@ -58,9 +58,11 @@ const UserActivityFeed = () => {
           count={userActivityTotalPages} // Total number of pages
           page={currentPage} // Current active page
           onChange={handlePageChange} // Change handler
+          className=""
           variant="outlined"
           shape="rounded"
           color="primary"
+          size="small"
           sx={{
             "& .MuiPaginationItem-root": {
               color: darkMode ? "white" : "black", // Default text color

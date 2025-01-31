@@ -114,19 +114,19 @@ const UserList = () => {
       </h1>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold dark:text-gray-300">
+          <h2 className="text-xl hidden md:block font-semibold dark:text-gray-300">
             User List
           </h2>
-          <div className="flex gap-x-5">
+          <div className="flex md:justify-end md:w-auto w-[100%] justify-between gap-x-5">
             <button
               onClick={() => {
                 fetchAllUsersForPDF();
               }}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 truncate"
             >
               Download User List
             </button>
-            <div className="relative w-80">
+            <div className="relative md:w-80 w-auto">
               <input
                 type="text"
                 placeholder="Search users..."
@@ -134,14 +134,16 @@ const UserList = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <FaSearch className="absolute left-3 md:top-1/2 top-[20px] transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
         </div>
         {loading ? (
           <p>Loading...</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-w-[100vw] -mx-6 px-5">
+            {" "}
+            {/* Horizontal Scroll Container */}
             <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
               <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
@@ -152,10 +154,12 @@ const UserList = () => {
                     Email
                   </th>
                   <th
-                    className="p-4 text-left text-gray-600 dark:text-gray-300 cursor-pointer flex items-center"
+                    className="p-4 text-left text-gray-600 dark:text-gray-300 cursor-pointer"
                     onClick={() => sortUsers("role")}
                   >
-                    Role {getSortIcon("role")}
+                    <div className="flex items-center">
+                      Role {getSortIcon("role")}
+                    </div>
                   </th>
                   <th className="p-4 text-center text-gray-600 dark:text-gray-300">
                     Actions
@@ -177,19 +181,21 @@ const UserList = () => {
                     <td className="p-4 text-gray-800 dark:text-gray-300">
                       {user.role}
                     </td>
-                    <td className="p-4 text-center flex justify-center space-x-4">
-                      <button
-                        onClick={() => handleEdit(user)}
-                        className="text-yellow-500 hover:text-yellow-600"
-                      >
-                        <FaEdit size={20} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(user._id)}
-                        className="text-red-500 hover:text-red-600"
-                      >
-                        <FaTrashAlt size={20} />
-                      </button>
+                    <td className="p-4 text-center">
+                      <div className="flex justify-center space-x-4">
+                        <button
+                          onClick={() => handleEdit(user)}
+                          className="text-yellow-500 hover:text-yellow-600"
+                        >
+                          <FaEdit size={20} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user._id)}
+                          className="text-red-500 hover:text-red-600"
+                        >
+                          <FaTrashAlt size={20} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

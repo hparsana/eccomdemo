@@ -203,13 +203,13 @@ const ProductsListPage = () => {
       </h1>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold dark:text-gray-300">
+          <h2 className="text-xl font-semibold hidden md:block dark:text-gray-300">
             Available Products
           </h2>
-          <div className="flex gap-x-2">
+          <div className="flex flex-wrap md:w-auto w-[100%] md:justify-end justify-between gap-x-2">
             <button
               onClick={() => fetchAllUsersForPDF()}
-              className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+              className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 truncate"
             >
               Download PDF
             </button>
@@ -221,26 +221,29 @@ const ProductsListPage = () => {
             </button>
           </div>
         </div>
-        <div className="flex flex-wrap justify-between space-x-4 mb-4">
-          <div className="flex space-x-4">
+        <div className="flex flex-col lg:flex-row gap-4 mb-4">
+          {/* Filters Left Section */}
+          <div className="flex flex-col sm:flex-row gap-4 flex-grow">
+            {/* Category Filter */}
             <select
               value={selectedCategory}
               onChange={handleCategoryChange}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+              className="w-full sm:w-auto border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             >
               <option value="">All Categories</option>
-
-              {categories?.map((datas, key) => (
+              {categories?.map((datas) => (
                 <option value={datas?.name} key={datas?._id}>
                   {datas?.name}
                 </option>
               ))}
             </select>
+
+            {/* Subcategory Filter */}
             <select
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
-              disabled={!selectedCategory} // Disable if no category is selected
+              className="w-full sm:w-auto border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+              disabled={!selectedCategory}
             >
               <option value="">All Subcategories</option>
               {categories
@@ -251,10 +254,12 @@ const ProductsListPage = () => {
                   </option>
                 ))}
             </select>
+
+            {/* Brand Filter */}
             <select
               value={selectedBrand}
               onChange={handleBrandChange}
-              className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+              className="w-full sm:w-auto border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             >
               <option value="">All Brands</option>
               {[...new Set(products?.map((product) => product.brand))].map(
@@ -265,20 +270,24 @@ const ProductsListPage = () => {
                 )
               )}
             </select>
+
+            {/* Reset Button */}
             <button
-              className=" text-blue-700 dark:text-green-400"
               onClick={HandleResetData}
+              className="w-full sm:w-auto px-4 py-2 text-blue-700 dark:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg transition-colors"
             >
               Reset Filters
             </button>
           </div>
-          <div className="relative w-80">
+
+          {/* Search Right Section */}
+          <div className="w-full md:w-80 relative">
             <input
               type="text"
               placeholder="Search products..."
               value={searchQuery}
               onChange={handleSearch}
-              className="border border-gray-300 px-4 py-2 pl-10 w-full rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+              className="w-full border border-gray-300 px-4 py-2 pl-10 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
             />
             <FaSearch className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500" />
           </div>
@@ -288,7 +297,7 @@ const ProductsListPage = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div className=" overflow-x-auto">
+          <div className=" overflow-x-auto max-w-[100vw] -mx-6 px-6">
             <table className="w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
               <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>

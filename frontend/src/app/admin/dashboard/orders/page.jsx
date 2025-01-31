@@ -125,7 +125,7 @@ const OrdersDashboard = () => {
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring focus:ring-blue-300 mt-4 md:mt-0 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+          className="border border-gray-300 px-4 py-2 md:w-auto w-full rounded-lg focus:outline-none focus:ring focus:ring-blue-300 mt-4 md:mt-0 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
         >
           <option value="">All Statuses</option>
           <option value="Pending">Pending</option>
@@ -142,7 +142,7 @@ const OrdersDashboard = () => {
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-w-[100vw] -mx-6 px-6">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
             <thead className="bg-gray-200 dark:bg-gray-700">
               <tr>

@@ -140,26 +140,26 @@ const CategoriesListPage = () => {
       </h1>
       <div className="p-6 h-full">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold dark:text-gray-300">
+          <h2 className="text-xl font-bold hidden md:block dark:text-gray-300">
             Available Categories
           </h2>
-          <div className="flex gap-x-5">
+          <div className="flex md:w-auto w-full md:justify-end justify-between gap-x-5">
             <button
               onClick={() => fetchAllCategoriesForPDF()}
-              className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
+              className="flex items-center bg-green-500 md:text-[16px] text-[12px] text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
             >
               Download Category PDF
             </button>
 
             <button
               onClick={() => setAddCategoryModalOpen(true)}
-              className="flex items-center bg-blue-500  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+              className="flex items-center bg-blue-500 md:text-[16px] text-[12px]  text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
             >
               Add Category
             </button>
           </div>
         </div>
-        <div className="relative w-80 mb-4">
+        <div className="relative md:w-80 w-full mb-4">
           <input
             type="text"
             placeholder="Search categories..."
@@ -174,7 +174,7 @@ const CategoriesListPage = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-w-[100vw] -mx-6 px-6">
             <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
               <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
@@ -202,7 +202,7 @@ const CategoriesListPage = () => {
                       <td className="p-4 text-gray-800 dark:text-gray-300">
                         {category.name}
                       </td>
-                      <td className="p-4 text-gray-800 dark:text-gray-300">
+                      <td className="p-4 text-gray-800 dark:text-gray-300 truncate">
                         {category.description}
                       </td>
                       <td className="p-4 text-center flex justify-center space-x-4">

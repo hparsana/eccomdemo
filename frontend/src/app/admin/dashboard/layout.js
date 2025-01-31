@@ -51,7 +51,7 @@ const DashboardLayout = ({ children }) => {
       <div
         className={`${
           isCollapsed ? "w-20" : "w-64"
-        } bg-gray-800 text-white transition-all duration-300 hidden md:flex flex-col fixed h-full dark:bg-gray-800`}
+        } bg-gray-800 text-white transition-all duration-300 hidden lg:flex flex-col fixed h-full dark:bg-gray-800`}
       >
         {/* Toggle Button */}
         <div className="flex items-center justify-between h-[54.5px]">
@@ -106,7 +106,7 @@ const DashboardLayout = ({ children }) => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg transition-transform duration-300 z-50 md:hidden ${
+        className={`fixed top-0 left-0 h-full bg-white dark:bg-gray-800 shadow-lg transition-transform duration-300 z-50 lg:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
         } w-64`}
       >
@@ -146,7 +146,7 @@ const DashboardLayout = ({ children }) => {
 
       {/* Mobile Menu Toggle */}
       <button
-        className="absolute top-[26px] left-4 text-xl md:hidden dark:text-gray-200"
+        className="absolute top-[26px] left-4 text-xl lg:hidden dark:text-gray-200"
         onClick={() => setIsMobileMenuOpen(true)}
       >
         <FaBars />
@@ -155,12 +155,12 @@ const DashboardLayout = ({ children }) => {
       {/* Main Content */}
       <div
         className={`flex-grow transition-all duration-300 ${
-          isCollapsed ? "md:ml-20" : "md:ml-64"
+          isCollapsed ? "lg:ml-20" : "lg:ml-64"
         }`}
       >
         {/* Navbar */}
         <div className="flex items-center justify-between bg-white dark:bg-gray-800 p-4 shadow-md">
-          <h2 className="text-xl font-semibold md:ml-0 ml-10 dark:text-gray-200">
+          <h2 className="text-xl font-semibold lg:ml-0  ml-10 dark:text-gray-200">
             {pathname.split("/").slice(-1)[0].charAt(0).toUpperCase() +
               pathname.split("/").slice(-1)[0].slice(1)}
           </h2>
