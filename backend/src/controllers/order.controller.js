@@ -223,7 +223,9 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   // Update order status and payment status
   if (orderStatus) order.orderStatus = orderStatus;
   if (paymentStatus) order.paymentDetails.status = paymentStatus;
-
+  if (orderStatus === "Delivered") {
+    order.isDelivered = true;
+  }
   await order.save();
 
   // Send email based on the updated order status

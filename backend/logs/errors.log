@@ -103,3 +103,14 @@ Stack Trace: MongooseServerSelectionError: Could not connect to any servers in y
     at NativeConnection.openUri (D:\eccomdemo\backend\node_modules\mongoose\lib\connection.js:860:11)
     at async connection (file:///D:/eccomdemo/backend/src/db/connection.js:23:26)
 
+{"level":"error","message":"read ECONNRESET","stack":"MongoNetworkError: read ECONNRESET\n    at connectionFailureError (D:\\eccomdemo\\backend\\node_modules\\mongodb\\lib\\cmap\\connect.js:356:20)\n    at TLSSocket.<anonymous> (D:\\eccomdemo\\backend\\node_modules\\mongodb\\lib\\cmap\\connect.js:272:44)\n    at Object.onceWrapper (node:events:635:26)\n    at TLSSocket.emit (node:events:520:28)\n    at emitErrorNT (node:internal/streams/destroy:169:8)\n    at emitErrorCloseNT (node:internal/streams/destroy:128:3)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)","timestamp":"2025-02-01T08:22:20.736Z"}
+[2025-02-01T08:22:20.741Z] MongoDB Connection Error: read ECONNRESET
+Stack Trace: MongoNetworkError: read ECONNRESET
+    at connectionFailureError (D:\eccomdemo\backend\node_modules\mongodb\lib\cmap\connect.js:356:20)
+    at TLSSocket.<anonymous> (D:\eccomdemo\backend\node_modules\mongodb\lib\cmap\connect.js:272:44)
+    at Object.onceWrapper (node:events:635:26)
+    at TLSSocket.emit (node:events:520:28)
+    at emitErrorNT (node:internal/streams/destroy:169:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:128:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
