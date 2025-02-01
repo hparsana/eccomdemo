@@ -14,6 +14,9 @@ import {
   sendForgotPasswordEmail,
 } from "../utils/mailer.js";
 import { ActivityLog } from "../models/activity.model.js";
+import NodeCache from "node-cache";
+const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 }); // Cache for 10 minutes
+
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -592,34 +595,77 @@ const addLogActivity = async (userId, action, additionalInfo = {}) => {
       action,
       additionalInfo,
     });
+    // Clear cache when a new activity log is added
+    cache.del(`logActivities_${userId}`);
+    cache.del("logActivities_all"); // Clear cache for global logs
   } catch (error) {
     console.error("Error logging activity:", error);
   }
 };
 
 const getLogActivities = asyncHandler(async (req, res) => {
-  const { userId, page = 1, limit = 5 } = req.query; // Optional userId to filter by a specific user
+  const { userId, page = 1, limit = 5 } = req.query;
 
-  const query = userId ? { user: userId } : {}; // Filter logs by userId if provided
+  const parsedPage = parseInt(page, 10);
+  const parsedLimit = parseInt(limit, 10);
 
-  // Calculate total logs
-  const totalLogs = await ActivityLog.countDocuments(query);
-  const totalPages = Math.ceil(totalLogs / limit);
+  if (isNaN(parsedPage) || isNaN(parsedLimit)) {
+    throw new ApiError(400, "Invalid pagination values.");
+  }
 
-  // Fetch logs for the current page
-  const logs = await ActivityLog.find(query)
-    .populate("user", "fullname email") // Populate user details (if needed)
-    .sort({ timestamp: -1 }) // Sort by latest first
-    .skip((page - 1) * limit) // Skip logs for previous pages
-    .limit(limit); // Limit to the logs for the current page
+  const cacheKey = userId
+    ? `logActivities_${userId}_${parsedPage}_${parsedLimit}`
+    : `logActivities_all_${parsedPage}_${parsedLimit}`;
 
-  return res.status(200).json({
-    success: true,
-    data: logs,
-    totalPages,
-    currentPage: Number(page),
-    message: "Activity logs fetched successfully.",
-  });
+  // Check if data exists in cache
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+    return res.status(200).json({
+      success: true,
+      data: cachedData.logs,
+      totalPages: cachedData.totalPages,
+      currentPage: parsedPage,
+      message: "Activity logs fetched from cache.",
+    });
+  }
+
+  try {
+    const query = userId ? { user: userId } : {}; // Filter logs by userId if provided
+
+    // Calculate total logs
+    const totalLogs = await ActivityLog.countDocuments(query);
+    const totalPages = Math.ceil(totalLogs / parsedLimit);
+
+    // Fetch logs for the current page
+    const logs = await ActivityLog.find(query)
+      .populate({
+        path: "user",
+        select: "fullname email",
+        options: { strictPopulate: false }, // Prevent issues if `user` is missing
+      })
+      .sort({ timestamp: -1 }) // Sort by latest first
+      .skip((parsedPage - 1) * parsedLimit)
+      .limit(parsedLimit)
+      .lean(); // Convert to plain objects to prevent Mongoose issues
+
+    // Store data in cache
+    cache.set(cacheKey, { logs, totalPages });
+
+    return res.status(200).json({
+      success: true,
+      data: logs,
+      totalPages,
+      currentPage: parsedPage,
+      message: "Activity logs fetched successfully.",
+    });
+  } catch (error) {
+    console.error("Error fetching activity logs:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching activity logs.",
+      error: error.message,
+    });
+  }
 });
 
 export {

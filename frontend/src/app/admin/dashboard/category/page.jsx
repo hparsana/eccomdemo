@@ -33,6 +33,10 @@ const CategoriesListPage = () => {
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [downloadGeneratePdf, setDownloadGeneratePdf] = useState({
+    state: false,
+    title: "Download Category PDF",
+  });
   const recordsPerPage = 5;
 
   const {
@@ -120,16 +124,36 @@ const CategoriesListPage = () => {
   };
   const fetchAllCategoriesForPDF = async () => {
     try {
+      setDownloadGeneratePdf({
+        state: true,
+        title: "Collecting Data...",
+      });
       const response = await axios.get(CATEGORIES.GET_ALL_CATEGORIES, {
         params: { limit: 100000 }, // Fetch all categories
       });
 
       if (response.data.success) {
+        setDownloadGeneratePdf({
+          state: true,
+          title: "generating Pdf...",
+        });
         downloadCategoryPDF(response?.data?.data);
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download Category PDF",
+        });
       } else {
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download Category PDF",
+        });
         console.error("Failed to fetch categories for PDF.");
       }
     } catch (error) {
+      setDownloadGeneratePdf({
+        state: false,
+        title: "Download Category PDF",
+      });
       console.error("Error fetching categories for PDF:", error);
     }
   };
@@ -146,9 +170,10 @@ const CategoriesListPage = () => {
           <div className="flex md:w-auto w-full md:justify-end justify-between gap-x-5">
             <button
               onClick={() => fetchAllCategoriesForPDF()}
+              disabled={downloadGeneratePdf.state}
               className="flex items-center bg-green-500 md:text-[16px] text-[12px] text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300"
             >
-              Download Category PDF
+              {downloadGeneratePdf.title}
             </button>
 
             <button

@@ -5,6 +5,8 @@ import { Product } from "../models/product.model.js";
 import { Discount } from "../models/discount.model.js";
 import mongoose from "mongoose";
 import { addLogActivity } from "../controllers/user.controller.js";
+import NodeCache from "node-cache";
+const cache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
 
 const AddProduct = asyncHandler(async (req, res) => {
   console.log("Incoming request body <<<<<<<<<", req.body);
@@ -193,7 +195,7 @@ const AddProduct = asyncHandler(async (req, res) => {
   });
 
   await product.save();
-
+  cache.flushAll();
   // If discount details are provided, create a discount entry
   if (discount.percentage || discount.amount) {
     const productDiscount = new Discount({
@@ -229,6 +231,17 @@ const getProducts = asyncHandler(async (req, res) => {
 
   const pageNumber = parseInt(page, 10);
   const limitNumber = parseInt(limit, 10);
+
+  // Generate a unique cache key based on query parameters
+  const cacheKey = `products_${page}_${limit}_${sort}_${category}_${subcategory}_${brand}_${minPrice}_${maxPrice}_${search}`;
+
+  // Check if the data exists in the cache
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, cachedData, "Products fetched from cache"));
+  }
 
   const query = {};
 
@@ -269,7 +282,7 @@ const getProducts = asyncHandler(async (req, res) => {
     // Fetch discount data for the products
     const productIds = products.map((product) => product._id);
     const startOfToday = new Date();
-    startOfToday.setHours(0, 0, 0, 0); // Start of today
+    startOfToday.setHours(0, 0, 0, 0);
 
     const discounts = await Discount.find({
       product: { $in: productIds },
@@ -295,27 +308,29 @@ const getProducts = asyncHandler(async (req, res) => {
       };
     });
 
-    return res.status(200).json(
-      new ApiResponse(200, {
-        products: productsWithDiscounts,
-        totalProducts,
-        totalPages: Math.ceil(totalProducts / limitNumber),
-        currentPage: pageNumber,
-        facets: {
-          categories,
-          brands,
-          priceRange: {
-            min: minPrice || 0,
-            max: maxPrice || 1000,
-          },
+    const responseData = {
+      products: productsWithDiscounts,
+      totalProducts,
+      totalPages: Math.ceil(totalProducts / limitNumber),
+      currentPage: pageNumber,
+      facets: {
+        categories,
+        brands,
+        priceRange: {
+          min: minPrice || 0,
+          max: maxPrice || 1000,
         },
-      })
-    );
+      },
+    };
+
+    // Store data in cache
+    cache.set(cacheKey, responseData);
+
+    return res.status(200).json(new ApiResponse(200, responseData));
   } catch (error) {
     return res.status(500).json(new ApiResponse(500, { error: error.message }));
   }
 });
-
 const getProductById = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
@@ -400,7 +415,7 @@ const deleteProductById = asyncHandler(async (req, res) => {
   if (!product) {
     throw new ApiError(404, "Product not found");
   }
-
+  cache.flushAll();
   // Optionally delete associated discounts
   await Discount.deleteMany({ product: id });
   await addLogActivity(req?.user?._id, " Product deleted", {});
@@ -580,7 +595,7 @@ const updateProductById = asyncHandler(async (req, res) => {
 
   // Save the updated product
   await product.save();
-
+  cache.flushAll();
   // Update discount details, if provided
   if (discount) {
     if (

@@ -4,7 +4,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 import { addLogActivity } from "../controllers/user.controller.js";
-
+import NodeCache from "node-cache";
+const categoryCache = new NodeCache({ stdTTL: 600, checkperiod: 120 });
 // Add a new category
 export const addCategory = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -24,6 +25,7 @@ export const addCategory = asyncHandler(async (req, res) => {
     description: description?.trim(),
   });
   await category.save();
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, " new Category Added", {});
 
   res
@@ -31,9 +33,25 @@ export const addCategory = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, category, "Category created successfully"));
 });
 
-// Get all categories
+// Get all categories (with caching)
 export const getAllCategories = asyncHandler(async (req, res) => {
+  const cacheKey = "allCategories";
+
+  // Check cache first
+  const cachedCategories = categoryCache.get(cacheKey);
+  if (cachedCategories) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(200, cachedCategories, "Categories fetched from cache")
+      );
+  }
+
+  // If not in cache, fetch from DB
   const categories = await Category.find().lean();
+
+  // Store in cache
+  categoryCache.set(cacheKey, categories);
 
   res
     .status(200)
@@ -85,6 +103,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
   if (description) category.description = description.trim();
 
   await category.save();
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, "  Category updated", {});
 
   res
@@ -104,6 +123,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   if (!category) {
     throw new ApiError(404, "Category not found");
   }
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, "  Category deleted", {});
 
   res
@@ -141,6 +161,7 @@ export const addSubcategory = asyncHandler(async (req, res) => {
     description: description?.trim(),
   });
   await category.save();
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, " new Subcategory added", {});
 
   res
@@ -182,6 +203,7 @@ export const updateSubcategory = asyncHandler(async (req, res) => {
   if (description) subcategory.description = description.trim();
 
   await category.save();
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, "  Subcategory updated", {});
 
   res
@@ -219,6 +241,7 @@ export const deleteSubcategory = asyncHandler(async (req, res) => {
 
   // Save the updated category
   await category.save();
+  categoryCache.del("allCategories");
   await addLogActivity(req?.user?._id, "  Subcategory deleted", {});
 
   res

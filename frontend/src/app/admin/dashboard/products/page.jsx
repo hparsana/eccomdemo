@@ -29,7 +29,10 @@ const ProductsListPage = () => {
   const [addProductModalOpen, setAddProductModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
-
+  const [downloadGeneratePdf, setDownloadGeneratePdf] = useState({
+    state: false,
+    title: "Download PDF",
+  });
   const {
     productList: products,
     totalProducts,
@@ -177,6 +180,10 @@ const ProductsListPage = () => {
   };
   const fetchAllUsersForPDF = async () => {
     try {
+      setDownloadGeneratePdf({
+        state: true,
+        title: "Collecting Data...",
+      });
       const response = await axios.post(
         PRODUCTS.GET_ALL_PRODUCTS,
         {},
@@ -188,11 +195,27 @@ const ProductsListPage = () => {
       );
 
       if (response.data.success) {
+        setDownloadGeneratePdf({
+          state: true,
+          title: "generating Pdf...",
+        });
         downloadProductPDF(response?.data?.data?.products); // Generate PDF with all users
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download PDF",
+        });
       } else {
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download PDF",
+        });
         console.error("Failed to fetch all users for PDF.");
       }
     } catch (error) {
+      setDownloadGeneratePdf({
+        state: false,
+        title: "Download PDF",
+      });
       console.error("Error fetching all users for PDF:", error);
     }
   };
@@ -209,9 +232,10 @@ const ProductsListPage = () => {
           <div className="flex flex-wrap md:w-auto w-[100%] md:justify-end justify-between gap-x-2">
             <button
               onClick={() => fetchAllUsersForPDF()}
+              disabled={downloadGeneratePdf.state}
               className="flex items-center bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300 truncate"
             >
-              Download PDF
+              {downloadGeneratePdf.title}
             </button>
             <button
               onClick={() => setAddProductModalOpen(true)}

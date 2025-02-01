@@ -31,7 +31,10 @@ const UserList = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
-
+  const [downloadGeneratePdf, setDownloadGeneratePdf] = useState({
+    state: false,
+    title: "Download User List",
+  });
   const recordsPerPage = 5;
 
   useEffect(() => {
@@ -83,6 +86,10 @@ const UserList = () => {
   };
   const fetchAllUsersForPDF = async () => {
     try {
+      setDownloadGeneratePdf({
+        state: true,
+        title: "Collecting Data...",
+      });
       const token = localStorage.getItem("accessToken");
 
       const response = await axios.get(USERS.GET_ALL_USERS, {
@@ -94,11 +101,27 @@ const UserList = () => {
       });
 
       if (response.data.success) {
+        setDownloadGeneratePdf({
+          state: true,
+          title: "generating Pdf...",
+        });
         downloadUserPDF(response?.data?.data?.users); // Generate PDF with all users
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download User List",
+        });
       } else {
+        setDownloadGeneratePdf({
+          state: false,
+          title: "Download User List",
+        });
         console.error("Failed to fetch all users for PDF.");
       }
     } catch (error) {
+      setDownloadGeneratePdf({
+        state: false,
+        title: "Download User List",
+      });
       console.error("Error fetching all users for PDF:", error);
     }
   };
@@ -122,9 +145,10 @@ const UserList = () => {
               onClick={() => {
                 fetchAllUsersForPDF();
               }}
+              disabled={downloadGeneratePdf.state}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 truncate"
             >
-              Download User List
+              {downloadGeneratePdf.title}
             </button>
             <div className="relative md:w-80 w-auto">
               <input

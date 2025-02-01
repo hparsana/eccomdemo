@@ -90,36 +90,6 @@ export default function ProductData() {
   ]);
 
   useEffect(() => {
-    const fetchFilteredProducts = () => {
-      const now = Date.now();
-      if (now - lastCalled.current < 600) return; // Avoid multiple calls within 500ms
-      lastCalled.current = now;
-
-      const queryParams = {
-        page: currentPage || 1,
-        limit: recordsPerPage || 10,
-      };
-
-      if (debouncedSearchTerm) queryParams.search = debouncedSearchTerm;
-      if (selectedCategory) queryParams.category = selectedCategory;
-      if (selectedBrand) queryParams.brand = selectedBrand;
-      if (debouncedPriceRange[0]) queryParams.minPrice = debouncedPriceRange[0];
-      if (debouncedPriceRange[1]) queryParams.maxPrice = debouncedPriceRange[1];
-
-      // dispatch(getAllProducts(queryParams));
-    };
-
-    fetchFilteredProducts();
-  }, [
-    selectedCategory,
-    selectedBrand,
-    currentPage,
-    debouncedSearchTerm,
-    // debouncedPriceRange,
-    dispatch,
-  ]);
-
-  useEffect(() => {
     dispatch(fetchSavedProducts());
   }, [dispatch, userLoggedIn]);
 
