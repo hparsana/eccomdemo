@@ -10,6 +10,8 @@ import {
   FaSortUp,
   FaSortDown,
   FaSearch,
+  FaThLarge,
+  FaTable,
 } from "react-icons/fa";
 import withAuth from "@/app/components/Auth/withAuth";
 import EditUserModal from "@/app/components/dialoge/EditUserModal";
@@ -28,6 +30,7 @@ const UserList = () => {
   const [sortColumn, setSortColumn] = useState(null);
   const [sortOrder, setSortOrder] = useState("asc");
   const [open, setOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("table"); // "table" or "card"
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -135,39 +138,53 @@ const UserList = () => {
       <h1 className="text-2xl font-bold p-6 bg-slate-400 dark:bg-gray-900 text-white">
         User List
       </h1>
+
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl hidden md:block font-semibold dark:text-gray-300">
             User List
           </h2>
-          <div className="flex md:justify-end md:w-auto w-[100%] justify-between gap-x-5">
+
+          <div className="flex md:justify-end md:w-auto  justify-between  gap-x-5">
             <button
-              onClick={() => {
-                fetchAllUsersForPDF();
-              }}
+              onClick={fetchAllUsersForPDF}
               disabled={downloadGeneratePdf.state}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 truncate"
             >
               {downloadGeneratePdf.title}
             </button>
+
             <div className="relative md:w-80 w-auto">
               <input
                 type="text"
                 placeholder="Search users..."
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
+                className="w-full px-4 py-2 border rounded-lg  focus:outline-none focus:ring-2 focus:ring-blue-300 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <FaSearch className="absolute left-3 md:top-1/2 top-[20px] transform -translate-y-1/2 text-gray-400" />
             </div>
+
+            {/* View Toggle Icon */}
+            <button
+              onClick={() =>
+                setViewMode(viewMode === "table" ? "card" : "table")
+              }
+              className="bg-gray-500 text-white px-4 py-2 w-auto rounded-lg hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
+            >
+              {viewMode === "table" ? (
+                <FaThLarge size={20} />
+              ) : (
+                <FaTable size={20} />
+              )}
+            </button>
           </div>
         </div>
+
         {loading ? (
           <p>Loading...</p>
-        ) : (
+        ) : viewMode === "table" ? (
+          // **TABLE VIEW**
           <div className="overflow-x-auto max-w-[100vw] -mx-6 px-5">
-            {" "}
-            {/* Horizontal Scroll Container */}
             <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg dark:bg-gray-800 dark:border-gray-700">
               <thead className="bg-gray-200 dark:bg-gray-700">
                 <tr>
@@ -226,6 +243,57 @@ const UserList = () => {
               </tbody>
             </table>
           </div>
+        ) : (
+          // **CARD VIEW**
+          <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-6 ">
+            {filteredUsers.map((user) => (
+              <div
+                key={user._id}
+                className="bg-white dark:bg-gray-800 shadow-lg rounded-xl md:p-6 p-3 flex flex-col space-y-4 transition-transform transform hover:scale-105 hover:shadow-xl duration-300 ease-in-out"
+              >
+                {/* Action Buttons - Positioned at the Top Right */}
+
+                {/* User Details - Avatar & Info Section */}
+                <div className="flex items-start flex-wrap gap-4 w-full">
+                  {/* User Avatar with Initials */}
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white text-2xl font-bold uppercase shadow-md">
+                    {user.fullname.charAt(0)}
+                  </div>
+
+                  {/* User Information */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold dark:text-white truncate w-full">
+                      {user.fullname}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-300 text-sm truncate w-full">
+                      {user.email}
+                    </p>
+                    <div className="flex justify-start mt-2 w-full">
+                      <span className="px-4 py-1 text-sm font-semibold rounded-full bg-gray-100 dark:bg-gray-700 dark:text-gray-300 text-gray-800 uppercase tracking-wide truncate">
+                        {user.role}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex justify-end  space-x-4">
+                    <button
+                      onClick={() => handleEdit(user)}
+                      className="text-yellow-500 hover:text-yellow-600 transition-colors duration-200"
+                    >
+                      <FaEdit size={22} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(user._id)}
+                      className="text-red-500 hover:text-red-600 transition-colors duration-200"
+                    >
+                      <FaTrashAlt size={22} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Role Badge - Positioned Responsively */}
+              </div>
+            ))}
+          </div>
         )}
 
         <div className="flex justify-end items-center mt-4">
@@ -238,32 +306,28 @@ const UserList = () => {
             color="primary"
             sx={{
               "& .MuiPaginationItem-root": {
-                color: darkMode ? "white" : "black", // Default text color
-                borderColor: darkMode ? "#6b7280" : "#d1d5db", // Default border color
-                backgroundColor: darkMode ? "#1f2937" : "#ffffff", // Default background color
+                color: darkMode ? "white" : "black",
+                borderColor: darkMode ? "#6b7280" : "#d1d5db",
+                backgroundColor: darkMode ? "#1f2937" : "#ffffff",
                 "&:hover": {
-                  backgroundColor: darkMode ? "#374151" : "#f3f4f6", // Hover background color
+                  backgroundColor: darkMode ? "#374151" : "#f3f4f6",
                 },
               },
               "& .Mui-selected": {
-                color: darkMode ? "#ffffff" : "#ffffff", // Active text color
-                borderColor: darkMode ? "#10b981" : "#2563eb", // Active border color
-                backgroundColor: darkMode ? "#10b981" : "#2563eb", // Active background color
-                fontWeight: "bold", // Active font weight
+                color: "#ffffff",
+                borderColor: darkMode ? "#10b981" : "#2563eb",
+                backgroundColor: darkMode ? "#10b981" : "#2563eb",
+                fontWeight: "bold",
                 "&:hover": {
-                  backgroundColor: darkMode ? "#059669" : "#1d4ed8", // Hover effect on active item
+                  backgroundColor: darkMode ? "#059669" : "#1d4ed8",
                 },
               },
             }}
           />
         </div>
       </div>
-      <EditUserModal
-        open={open}
-        user={selectedUser}
-        onClose={handleClose}
-        onSubmit={() => {}}
-      />
+
+      <EditUserModal open={open} user={selectedUser} onClose={handleClose} />
     </div>
   );
 };

@@ -762,7 +762,7 @@ const ProductDetail = () => {
           {/* Left - Branding */}
           <div className="text-center md:text-left mb-6 md:mb-0">
             <h2 className="text-2xl font-bold text-white dark:text-gray-100">
-              Your Brand
+              Tuftzy
             </h2>
             <p className="text-gray-400 dark:text-gray-400 text-sm">
               Innovating the Future

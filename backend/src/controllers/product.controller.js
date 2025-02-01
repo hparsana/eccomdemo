@@ -342,6 +342,17 @@ const getProductById = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "Invalid Product ID format");
   }
 
+  // Generate cache key
+  const cacheKey = `product_${id}`;
+
+  // Check if data exists in cache
+  const cachedData = cache.get(cacheKey);
+  if (cachedData) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, cachedData, "Product fetched from cache"));
+  }
+
   // Fetch product details
   const product = await Product.findById(id).lean();
   if (!product) {
@@ -389,6 +400,9 @@ const getProductById = asyncHandler(async (req, res, next) => {
     similarProducts,
     youMightBeInterestedIn,
   };
+
+  // Store in cache
+  cache.set(cacheKey, productWithAdditionalData);
 
   // Return the product with additional details
   return res
