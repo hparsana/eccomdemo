@@ -56,7 +56,7 @@ const Navbar = () => {
           { path: "/productdata", name: "Products" },
           { path: "/orders", name: "Orders" },
 
-          // { path: "/logout", name: "Logout" },
+          { path: "/logout", name: "Logout" },
         ]
     : [
         { path: "/", name: "Home" },
@@ -106,7 +106,10 @@ const Navbar = () => {
         {/* Centered Routes */}
         <ul className="hidden lg:flex gap-8 smooth-transition">
           {navLinks.map((item) => (
-            <li key={item.path}>
+            <li
+              key={item.path}
+              className={`${item.path === "/logout" ? "md:hidden block" : ""}`}
+            >
               <Link
                 href={item.path}
                 onClick={item.path === "/logout" ? handleLogout : null}

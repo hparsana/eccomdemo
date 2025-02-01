@@ -72,7 +72,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
+    <div className="min-h-screen md:pb- 0 pb-20 flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-200 to-blue-300 p-4 dark:from-gray-900 dark:via-gray-900 dark:to-gray-900">
       <div className="w-full max-w-5xl bg-white shadow-lg rounded-lg overflow-hidden dark:bg-gray-800">
         <div className="flex flex-col md:flex-row">
           {/* Left Image Section */}
