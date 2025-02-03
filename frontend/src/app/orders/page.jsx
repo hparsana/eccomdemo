@@ -25,6 +25,7 @@ import { downloadInvoicePDF } from "./downloadInvoice";
 import { addDays, format } from "date-fns";
 import ReviewModal from "../components/dialoge/ReviewModal";
 import { redirect } from "next/navigation";
+import { motion } from "framer-motion";
 
 // Order Status Steps
 const OrderStatusSteps = [
@@ -233,135 +234,147 @@ const OrdersPage = () => {
 
                 {/* Accordion - Order Details */}
                 {openOrderId === order._id && (
-                  <div className="mt-4 border-t pt-4">
-                    {/* Order Progress Bar */}
-                    <div className="w-full flex flex-col items-center p-4">
-                      <Stepper
-                        orientation={isSmallScreen ? "vertical" : "horizontal"}
-                        activeStep={currentStepIndex}
-                        connector={
-                          <CustomStepConnector
-                            orientation={
-                              isSmallScreen ? "vertical" : "horizontal"
-                            }
-                          />
-                        }
-                        className="w-full"
-                      >
-                        {OrderStatusSteps.map((step, index) => (
-                          <Step
-                            key={index}
-                            completed={currentStepIndex > index}
-                            disabled={isDelivered}
-                          >
-                            <StepLabel StepIconComponent={CustomStepIcon}>
-                              <Typography
-                                sx={{
-                                  color:
-                                    currentStepIndex >= index
-                                      ? "green"
-                                      : "gray",
-                                  fontWeight: "bold",
-                                  fontSize: "14px",
-                                }}
-                              >
-                                {step}
-                              </Typography>
-                              <Typography
-                                sx={{ fontSize: "12px", color: "gray" }}
-                              >
-                                {getStepDates(
-                                  order.createdAt,
-                                  order?.isProcessingAt,
-                                  order?.isShippedAt,
-                                  order?.deliveredAt,
-
-                                  order.orderStatus
-                                )[step] || ""}
-                              </Typography>
-                            </StepLabel>
-                          </Step>
-                        ))}
-                      </Stepper>
-                    </div>
-                    {isDelivered && (
-                      <div className="flex justify-center items-center md:my-4 my-3">
-                        <FaCheckCircle size={40} className="text-green-500" />{" "}
-                        <h2 className="px-2">
-                          Your order has been successfully Delivered
-                        </h2>
-                      </div>
-                    )}
-                    {/* Order Items */}
-                    <h3 className="text-lg font-semibold mt-4">Items</h3>
-                    <div className="mt-2 p-1 border-[1px] space-y-2">
-                      {order.items.map((item) => (
-                        <div
-                          key={item._id}
-                          className="flex items-center flex-wrap justify-between border-b pb-2"
-                        >
-                          <div className="flex items-center">
-                            <Image
-                              src={
-                                item?.product?.images?.[0]?.url ||
-                                "/placeholder.png"
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="mt-4 border-t pt-4 overflow-hidden"
+                  >
+                    <div className=" ">
+                      {/* Order Progress Bar */}
+                      <div className="w-full flex flex-col items-center p-4">
+                        <Stepper
+                          orientation={
+                            isSmallScreen ? "vertical" : "horizontal"
+                          }
+                          activeStep={currentStepIndex}
+                          connector={
+                            <CustomStepConnector
+                              orientation={
+                                isSmallScreen ? "vertical" : "horizontal"
                               }
-                              alt={item?.product?.name || "Product Image"}
-                              width={106}
-                              height={106}
-                              className="rounded-lg object-cover cursor-pointer"
-                              priority
-                              onClick={() => handleCardClick(item.product?._id)}
                             />
-                            <div className="ml-5">
-                              <p className="text-gray-900 dark:text-gray-200 font-semibold">
-                                {item.product.name}
+                          }
+                          className="w-full"
+                        >
+                          {OrderStatusSteps.map((step, index) => (
+                            <Step
+                              key={index}
+                              completed={currentStepIndex > index}
+                              disabled={isDelivered}
+                            >
+                              <StepLabel StepIconComponent={CustomStepIcon}>
+                                <Typography
+                                  sx={{
+                                    color:
+                                      currentStepIndex >= index
+                                        ? "green"
+                                        : "gray",
+                                    fontWeight: "bold",
+                                    fontSize: "14px",
+                                  }}
+                                >
+                                  {step}
+                                </Typography>
+                                <Typography
+                                  sx={{ fontSize: "12px", color: "gray" }}
+                                >
+                                  {getStepDates(
+                                    order.createdAt,
+                                    order?.isProcessingAt,
+                                    order?.isShippedAt,
+                                    order?.deliveredAt,
+
+                                    order.orderStatus
+                                  )[step] || ""}
+                                </Typography>
+                              </StepLabel>
+                            </Step>
+                          ))}
+                        </Stepper>
+                      </div>
+                      {isDelivered && (
+                        <div className="flex justify-center items-center md:my-4 my-3">
+                          <FaCheckCircle size={40} className="text-green-500" />{" "}
+                          <h2 className="px-2">
+                            Your order has been successfully Delivered
+                          </h2>
+                        </div>
+                      )}
+                      {/* Order Items */}
+                      <h3 className="text-lg font-semibold mt-4">Items</h3>
+                      <div className="mt-2 p-1 border-[1px] space-y-2">
+                        {order.items.map((item) => (
+                          <div
+                            key={item._id}
+                            className="flex items-center flex-wrap justify-between border-b pb-2"
+                          >
+                            <div className="flex items-center">
+                              <Image
+                                src={
+                                  item?.product?.images?.[0]?.url ||
+                                  "/placeholder.png"
+                                }
+                                alt={item?.product?.name || "Product Image"}
+                                width={106}
+                                height={106}
+                                className="rounded-lg object-cover cursor-pointer"
+                                priority
+                                onClick={() =>
+                                  handleCardClick(item.product?._id)
+                                }
+                              />
+                              <div className="ml-5">
+                                <p className="text-gray-900 dark:text-gray-200 font-semibold">
+                                  {item.product.name}
+                                </p>
+                                <p className="text-gray-700 dark:text-gray-400 text-sm">
+                                  {item.product.brand} - {item.product.category}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="mt-5 mr-5 md:text-end">
+                              <p className="text-gray-700 dark:text-gray-400">
+                                <strong>Color:</strong> {item.color}
                               </p>
-                              <p className="text-gray-700 dark:text-gray-400 text-sm">
-                                {item.product.brand} - {item.product.category}
+                              <p className="text-gray-700 dark:text-gray-400">
+                                <strong>Qty:</strong> {item.quantity}
                               </p>
+                              <p className="text-gray-700 dark:text-gray-400">
+                                <strong>Price:</strong> ₹{item.price}
+                              </p>
+                              {isDelivered && (
+                                <button
+                                  className="px-2 py-2 mt-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 text-[13px] transition duration-300 ease-in-out transform hover:scale-105"
+                                  onClick={() =>
+                                    handleAddReview(item.product?._id)
+                                  }
+                                >
+                                  Give Review
+                                </button>
+                              )}
                             </div>
                           </div>
-                          <div className="mt-5 mr-5 md:text-end">
-                            <p className="text-gray-700 dark:text-gray-400">
-                              <strong>Color:</strong> {item.color}
-                            </p>
-                            <p className="text-gray-700 dark:text-gray-400">
-                              <strong>Qty:</strong> {item.quantity}
-                            </p>
-                            <p className="text-gray-700 dark:text-gray-400">
-                              <strong>Price:</strong> ₹{item.price}
-                            </p>
-                            {isDelivered && (
-                              <button
-                                className="px-2 py-2 mt-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 text-[13px] transition duration-300 ease-in-out transform hover:scale-105"
-                                onClick={() =>
-                                  handleAddReview(item.product?._id)
-                                }
-                              >
-                                Give Review
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
 
-                    {/* Extra Content for Delivered Orders */}
-                    {isDelivered && (
-                      <div className="mt-6 flex flex-col sm:flex-row gap-4">
-                        {/* <button className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                      {/* Extra Content for Delivered Orders */}
+                      {isDelivered && (
+                        <div className="mt-6 flex flex-col sm:flex-row gap-4">
+                          {/* <button className="flex items-center justify-center gap-2 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
                           <FaStar /> Rate Product
                         </button> */}
-                        <button
-                          className="flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                          onClick={() => downloadInvoicePDF(order)}
-                        >
-                          <FaDownload /> Download Invoice
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                          <button
+                            className="flex items-center justify-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                            onClick={() => downloadInvoicePDF(order)}
+                          >
+                            <FaDownload /> Download Invoice
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
               </div>
             );

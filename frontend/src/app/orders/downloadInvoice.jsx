@@ -33,13 +33,13 @@ export const downloadInvoicePDF = async (order) => {
   });
 
   // Set header
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(24);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
   doc.text("INVOICE", 14, 20);
   doc.setFontSize(12);
   doc.text(`#${order._id}`, 140, 20);
 
-  doc.setFontSize(12);
+  doc.setFontSize(10);
   doc.text("BILLED TO:", 14, 30);
   doc.text(order.user.fullname || "Really Great Company", 14, 36);
 
@@ -49,6 +49,8 @@ export const downloadInvoicePDF = async (order) => {
     14,
     52
   );
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
   doc.text(
     "City:-" +
       order.shippingDetails.city +
@@ -68,11 +70,11 @@ export const downloadInvoicePDF = async (order) => {
     78
   );
 
-  doc.text("PAYMENT DETAILS", 14, 83);
-  doc.text(`Method: ${order.paymentDetails.method}`, 14, 89);
-  doc.text(`Status: ${order.paymentDetails.status}`, 14, 93);
-  doc.text(`Transaction ID: ${order.paymentDetails.transactionId}`, 14, 98);
-  doc.text(`Total Amount: ${order.totalAmount}`, 14, 105);
+  doc.text("PAYMENT DETAILS", 14, 85);
+  doc.text(`Method: ${order.paymentDetails.method}`, 14, 93);
+  doc.text(`Status: ${order.paymentDetails.status}`, 14, 98);
+  doc.text(`Transaction ID: ${order.paymentDetails.transactionId}`, 14, 103);
+  doc.text(`Total Amount: ${order.totalAmount}`, 14, 109);
 
   // Order status table
   const orderDate = new Date(order.createdAt);
@@ -81,7 +83,7 @@ export const downloadInvoicePDF = async (order) => {
   const deliveredDate = new Date(order.deliveredAt);
 
   doc.autoTable({
-    startY: 110,
+    startY: 115,
     head: [["Status", "Date"]],
     body: [
       ["Proccessing", pendingDate],
@@ -145,7 +147,7 @@ export const downloadInvoicePDF = async (order) => {
     },
   });
 
-  doc.setFontSize(12);
+  doc.setFontSize(10);
   doc.text(
     "Payment is required within 14 business days of invoice date.",
     14,
