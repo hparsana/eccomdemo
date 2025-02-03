@@ -93,6 +93,7 @@ const addReview = asyncHandler(async (req, res) => {
     (review) => review.user.toString() === userId.toString()
   );
   if (existingReview) {
+    console.log("come in this part<<<<<<<<<<<<<");
     throw new ApiError(400, "You have already reviewed this product.");
   }
 

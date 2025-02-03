@@ -1,62 +1,54 @@
 import mongoose from "mongoose";
 
+const ORDER_STATUSES = [
+  "Pending",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+];
+
 const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to the User model
+      ref: "User",
       required: true,
     },
     items: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product", // Reference to the Product model
+          ref: "Product",
           required: true,
         },
         quantity: {
           type: Number,
-          required: [true, "Quantity is required"],
-          min: [1, "Quantity must be at least 1"],
+          required: true,
+          min: 1,
         },
         price: {
           type: Number,
-          required: [true, "Price is required"],
-          min: [0, "Price must be a positive value"],
+          required: true,
+          min: 0,
         },
         color: {
           type: String,
-          // required: [true, "color is required"],
         },
       },
     ],
     shippingDetails: {
-      address: {
-        type: String,
-        required: [true, "Shipping address is required"],
-      },
-      city: {
-        type: String,
-        required: [true, "City is required"],
-      },
-      state: {
-        type: String,
-        required: [true, "State is required"],
-      },
-      postalCode: {
-        type: String,
-        required: [true, "Postal code is required"],
-      },
-      country: {
-        type: String,
-        required: [true, "Country is required"],
-      },
+      address: { type: String, required: true },
+      city: { type: String, required: true },
+      state: { type: String, required: true },
+      postalCode: { type: String, required: true },
+      country: { type: String, required: true },
     },
     paymentDetails: {
       method: {
         type: String,
-        enum: ["Credit Card", "PayPal", "Cash on Delivery", "card"], // Add other payment methods as needed
-        required: [true, "Payment method is required"],
+        enum: ["Credit Card", "PayPal", "Cash on Delivery", "card"],
+        required: true,
       },
       status: {
         type: String,
@@ -65,30 +57,26 @@ const orderSchema = new mongoose.Schema(
       },
       transactionId: {
         type: String,
-        required: function () {
-          return this.paymentDetails?.status === "Paid";
+        validate: {
+          validator: function (v) {
+            return this.paymentDetails.status !== "Paid" || v;
+          },
+          message: "Transaction ID is required for paid orders.",
         },
       },
     },
     totalAmount: {
       type: Number,
-      required: [true, "Total amount is required"],
-      min: [0, "Total amount must be a positive value"],
+      required: true,
+      min: 0,
     },
     discount: {
-      percentage: {
-        type: Number,
-        min: [0, "Discount cannot be less than 0"],
-        max: [100, "Discount cannot exceed 100"],
-      },
-      amount: {
-        type: Number,
-        min: [0, "Discount amount cannot be less than 0"],
-      },
+      percentage: { type: Number, min: 0, max: 100 },
+      amount: { type: Number, min: 0 },
     },
     orderStatus: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      enum: ORDER_STATUSES,
       default: "Pending",
     },
     trackingDetails: {
@@ -96,27 +84,56 @@ const orderSchema = new mongoose.Schema(
       trackingNumber: { type: String },
       estimatedDelivery: { type: Date },
     },
-    isDelivered: {
-      type: Boolean,
-      default: false,
-    },
-    deliveredAt: {
-      type: Date,
-    },
-    isCancelled: {
-      type: Boolean,
-      default: false,
-    },
-    cancelledAt: {
-      type: Date,
-    },
+    isDelivered: { type: Boolean, default: false },
+    isProcessingAt: { type: Date },
+    isShippedAt: { type: Date },
+    deliveredAt: { type: Date },
+
+    isCancelled: { type: Boolean, default: false },
+    cancelledAt: { type: Date },
+    isDeleted: { type: Boolean, default: false },
   },
-  {
-    timestamps: true, // Automatically adds createdAt and updatedAt fields
-  }
+  { timestamps: true }
 );
 
-// Index for faster queries based on user and order status
+// Virtual Field for Total Items
+orderSchema.virtual("totalItems").get(function () {
+  return this.items.reduce((total, item) => total + item.quantity, 0);
+});
+
+// Auto-set Processing Date
+orderSchema.pre("save", function (next) {
+  if (this.orderStatus === "Processing" && !this.isProcessingAt) {
+    this.isProcessingAt = new Date();
+  }
+  next();
+});
+// Auto-set Shipped Date
+orderSchema.pre("save", function (next) {
+  if (this.orderStatus === "Shipped" && !this.isShippedAt) {
+    this.isShippedAt = new Date();
+  }
+  next();
+});
+// Auto-set Delivered Date
+orderSchema.pre("save", function (next) {
+  if (this.orderStatus === "Delivered" && !this.deliveredAt) {
+    this.deliveredAt = new Date();
+  }
+  next();
+});
+// Auto-set Cancelled Date
+orderSchema.pre("save", function (next) {
+  if (this.orderStatus === "Cancelled" && !this.cancelledAt) {
+    this.cancelledAt = new Date();
+  }
+  next();
+});
+
+// Indexes for Optimization
 orderSchema.index({ user: 1, orderStatus: 1, createdAt: -1 });
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ "paymentDetails.status": 1 });
+orderSchema.index({ isDelivered: 1 });
 
 export const Order = mongoose.model("Order", orderSchema);

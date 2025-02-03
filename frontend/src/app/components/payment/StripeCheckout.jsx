@@ -58,8 +58,12 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
       });
 
       if (error) {
-        console.error("Payment failed:", error);
-        setError("Payment could not be processed. Please try again.");
+        // console.error("Payment failed:", error.message);
+        setError(
+          error.message || "Payment could not be processed. Please try again."
+        );
+        handleCloseModal();
+
         chnageLoadingStatus(false);
         setActiveStep(0);
       } else {
@@ -67,9 +71,10 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
         setActiveStep(2); // ✅ Show "Creating Order..."
       }
     } catch (err) {
-      console.error("Unexpected error:", err);
+      // console.error("Unexpected error:", err);
       setError("An unexpected error occurred. Please try again.");
       chnageLoadingStatus(false);
+      handleCloseModal();
       setActiveStep(0);
     }
   };
