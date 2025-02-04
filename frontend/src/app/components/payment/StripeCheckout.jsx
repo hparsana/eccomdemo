@@ -22,14 +22,16 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false); // ✅ Modal state
   const [activeStep, setActiveStep] = useState(0); // ✅ Stepper state
+  const [isFormValid, setIsFormValid] = useState(false);
 
   // Check form validity
   useEffect(() => {
     if (!elements) return;
     const paymentElement = elements.getElement(PaymentElement);
+
     if (paymentElement) {
       paymentElement.on("change", (event) => {
-        setActiveStep(0);
+        setIsFormValid(event.complete); // Update validity based on event
       });
     }
   }, [elements]);
@@ -45,6 +47,7 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
 
   const handleConfirmPayment = async () => {
     if (!stripe || !elements) return;
+    setError(null);
     setActiveStep(1); // ✅ Show "Processing Payment..."
     chnageLoadingStatus(true);
 
@@ -88,10 +91,12 @@ const StripeCheckout = ({ onPaymentSuccess, chnageLoadingStatus, loading }) => {
       {/* Pay Now Button - Opens Modal */}
       <button
         type="button"
-        disabled={!stripe || loading}
+        disabled={!stripe || loading || !isFormValid} // Disable button if form is not valid
         onClick={handleOpenModal}
         className={`mt-4 w-full py-2 rounded-lg ${
-          loading ? "bg-gray-400" : "bg-blue-500 text-white"
+          loading || !isFormValid
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 text-white"
         }`}
       >
         {loading ? "Processing Payment..." : "Pay Now"}

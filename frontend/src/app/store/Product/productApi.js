@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { PRODUCTS } from "@/app/utils/constant";
+import cache from "@/app/utils/cache";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
@@ -18,7 +19,18 @@ export const getAllProducts = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
+    // ✅ Construct a unique cache key
+    const cacheKey = `products-page-${page}-search-${search || "all"}-category-${category || "all"}`;
+
+    // ✅ Check if data exists in cache
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached data for ${cacheKey}`);
+      return cachedData; // Return cached data
+    }
+
     try {
+      // ✅ If not in cache, fetch data from API
       const response = await axios.post(
         PRODUCTS.GET_ALL_PRODUCTS,
         {},
@@ -38,7 +50,8 @@ export const getAllProducts = createAsyncThunk(
       );
 
       if (response.data.success) {
-        return response.data.data; // Ensure your API returns the expected response structure
+        cache.set(cacheKey, response.data.data); // ✅ Store API response in cache
+        return response.data.data; // Return fetched data
       }
 
       return rejectWithValue("Failed to fetch products.");
@@ -47,7 +60,6 @@ export const getAllProducts = createAsyncThunk(
     }
   }
 );
-
 export const addProduct = createAsyncThunk(
   "products/addProduct",
   async (productData, { rejectWithValue }) => {
@@ -66,6 +78,7 @@ export const addProduct = createAsyncThunk(
       });
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear all product-related cache
         return response.data.data; // Ensure API returns the newly created product
       }
 
@@ -99,6 +112,7 @@ export const updateProduct = createAsyncThunk(
       console.log(response);
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear all product-related cache
         return response.data.data; // Ensure API returns the updated product
       }
 
@@ -130,6 +144,7 @@ export const deleteProduct = createAsyncThunk(
       );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear all product-related cache
         return id; // Return the ID of the deleted product
       }
 
@@ -143,14 +158,22 @@ export const deleteProduct = createAsyncThunk(
 export const getProductById = createAsyncThunk(
   "products/getProductById",
   async (id, { rejectWithValue }) => {
+    const cacheKey = `product-${id}`;
+
+    // ✅ Check if product is in cache
+    const cachedProduct = cache.get(cacheKey);
+    if (cachedProduct) {
+      console.log(`Using cached data for ${cacheKey}`);
+      return cachedProduct;
+    }
+
     try {
-      const response = await axios.get(
-        `${PRODUCTS.GET_ONE_PRODUCTS}/${id}`,
-        {}
-      );
+      // ✅ Fetch from API if not cached
+      const response = await axios.get(`${PRODUCTS.GET_ONE_PRODUCTS}/${id}`);
 
       if (response.data.success) {
-        return response.data.data; // Return the product data
+        cache.set(cacheKey, response.data.data); // ✅ Store in cache
+        return response.data.data;
       }
 
       return rejectWithValue("Failed to fetch product details.");
@@ -181,6 +204,7 @@ export const addReview = createAsyncThunk(
       );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear all product-related cache
         return response.data.data; // Return the updated product with reviews
       }
 
@@ -212,6 +236,7 @@ export const updateReview = createAsyncThunk(
       );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear all product-related cache
         return response.data.data; // Return updated product data
       }
 
