@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { SAVEDPRODUCT } from "@/app/utils/constant";
+import cache from "@/app/utils/cache";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 
 // Fetch Saved Products
 export const fetchSavedProducts = createAsyncThunk(
@@ -8,24 +10,28 @@ export const fetchSavedProducts = createAsyncThunk(
   async (_, { rejectWithValue, getState }) => {
     const { userLoggedIn } = getState().userAuthData;
 
+    // ✅ Use cache if available
+    const cacheKey = "saved-products";
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached saved products`);
+      return cachedData;
+    }
+
     if (!userLoggedIn) {
-      // Return local storage data for unauthenticated users
+      // ✅ Return local storage data for unauthenticated users
       const localSavedProducts =
         JSON.parse(localStorage.getItem("likedProducts")) || [];
       return localSavedProducts;
     }
 
     try {
-      const response = await axios.get(
-        `${SAVEDPRODUCT.GET_ALL_SAVEDPRODUCTS}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `${SAVEDPRODUCT.GET_ALL_SAVEDPRODUCTS}`
       );
 
       if (response.data.success) {
+        cache.set(cacheKey, response.data.data); // ✅ Store API response in cache
         return response.data.data;
       }
 
@@ -60,17 +66,13 @@ export const saveProduct = createAsyncThunk(
     }
 
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${SAVEDPRODUCT.ADD_SAVEDPRODUCTS}`,
-        { productId: product._id },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
+        { productId: product._id }
       );
 
       if (response.data.success) {
+        cache.del("saved-products"); // ✅ Remove cached saved products
         return product;
       }
 
@@ -99,17 +101,15 @@ export const unsaveProduct = createAsyncThunk(
     }
 
     try {
-      const response = await axios.delete(
+      const response = await axiosInstance.delete(
         `${SAVEDPRODUCT.DELETE_SAVEDPRODUCTS}`,
         {
           data: { productId },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
         }
       );
 
       if (response.data.success) {
+        cache.del("saved-products"); // ✅ Remove cached saved products
         return productId;
       }
 

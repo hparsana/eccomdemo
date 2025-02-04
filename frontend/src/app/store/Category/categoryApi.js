@@ -1,16 +1,28 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { CATEGORIES } from "@/app/utils/constant";
+import cache from "@/app/utils/cache";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 
 // Fetch all categories
 export const getAllCategories = createAsyncThunk(
   "categories/getAllCategories",
   async (_, { rejectWithValue }) => {
+    const cacheKey = "categories";
+
+    // ✅ Check if cached data exists
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached categories`);
+      return cachedData;
+    }
+
     try {
-      const response = await axios.get(CATEGORIES.GET_ALL_CATEGORIES);
+      const response = await axiosInstance.get(CATEGORIES.GET_ALL_CATEGORIES);
 
       if (response.data.success) {
-        return response.data.data; // Ensure your API returns the expected structure
+        cache.set(cacheKey, response.data.data); // ✅ Store API response in cache
+        return response.data.data;
       }
 
       return rejectWithValue("Failed to fetch categories.");
@@ -31,14 +43,13 @@ export const addCategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.post(CATEGORIES.ADD_CATEGORY, categoryData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(
+        CATEGORIES.ADD_CATEGORY,
+        categoryData
+      );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear cache to refresh category list
         return response.data.data; // Return the newly created category
       }
 
@@ -60,18 +71,13 @@ export const updateCategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${CATEGORIES.UPDATE_CATEGORY}/${id}`,
-        categoryData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        categoryData
       );
 
       if (response.data.success) {
+        cache.del("categories"); // ✅ Remove cached categories to fetch updated list
         return response.data.data; // Return the updated category
       }
 
@@ -93,17 +99,12 @@ export const deleteCategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.delete(
-        `${CATEGORIES.DELETE_CATEGORY}/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      const response = await axiosInstance.delete(
+        `${CATEGORIES.DELETE_CATEGORY}/${id}`
       );
 
       if (response.data.success) {
+        cache.del("categories"); // ✅ Remove cached categories
         return id; // Return the ID of the deleted category
       }
 
@@ -125,18 +126,13 @@ export const addSubcategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${CATEGORIES.ADD_SUBCATEGORY}/${categoryId}`,
-        subcategoryData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        subcategoryData
       );
 
       if (response.data.success) {
+        cache.del("categories"); // ✅ Remove cached categories to update list
         return response.data.data; // Return the updated category with the new subcategory
       }
 
@@ -163,18 +159,13 @@ export const updateSubcategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${CATEGORIES.UPDATE_SUBCATEGORY}/${categoryId}/subcategories/${subcategoryId}`,
-        subcategoryData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        subcategoryData
       );
 
       if (response.data.success) {
+        cache.del("categories"); // ✅ Remove cached categories to refresh
         return response.data.data; // Return the updated category with the updated subcategory
       }
 
@@ -196,17 +187,12 @@ export const deleteSubcategory = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.delete(
-        `${CATEGORIES.DELETE_SUBCATEGORY}/${categoryId}/subcategories/${subcategoryId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      const response = await axiosInstance.delete(
+        `${CATEGORIES.DELETE_SUBCATEGORY}/${categoryId}/subcategories/${subcategoryId}`
       );
 
       if (response.data.success) {
+        cache.del("categories"); // ✅ Remove cached categories
         return { categoryId, subcategoryId }; // Return IDs for further handling
       }
 

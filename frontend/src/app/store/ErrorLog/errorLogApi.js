@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ERROR_LOGS } from "@/app/utils/constant";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 
 export const getErrorLogs = createAsyncThunk(
   "errorLogs/getErrorLogs",
@@ -12,11 +13,7 @@ export const getErrorLogs = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.get(ERROR_LOGS.GET_ERROR_LOGS, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get(ERROR_LOGS.GET_ERROR_LOGS);
 
       if (response.data.success) {
         return response.data.data;

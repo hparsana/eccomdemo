@@ -2,6 +2,7 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { PRODUCTS } from "@/app/utils/constant";
 import cache from "@/app/utils/cache";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 
 export const getAllProducts = createAsyncThunk(
   "products/getAllProducts",
@@ -20,7 +21,7 @@ export const getAllProducts = createAsyncThunk(
     { rejectWithValue }
   ) => {
     // ✅ Construct a unique cache key
-    const cacheKey = `products-page-${page}-search-${search || "all"}-category-${category || "all"}`;
+    const cacheKey = `products-page-${page}-limit-${limit}-search-${search || "all"}-sort-${sort || "default"}-category-${category || "all"}-subcategory-${subcategory || "all"}-brand-${brand || "all"}-minPrice-${minPrice || "none"}-maxPrice-${maxPrice || "none"}`;
 
     // ✅ Check if data exists in cache
     const cachedData = cache.get(cacheKey);
@@ -31,7 +32,7 @@ export const getAllProducts = createAsyncThunk(
 
     try {
       // ✅ If not in cache, fetch data from API
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         PRODUCTS.GET_ALL_PRODUCTS,
         {},
         {
@@ -70,12 +71,10 @@ export const addProduct = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.post(PRODUCTS.ADD_PRODUCT, productData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(
+        PRODUCTS.ADD_PRODUCT,
+        productData
+      );
 
       if (response.data.success) {
         cache.clear(); // ✅ Clear all product-related cache
@@ -99,15 +98,9 @@ export const updateProduct = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${PRODUCTS.UPDATE_PRODUCT}/${id}`, // API endpoint for updating a product
-        productData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        productData
       );
       console.log(response);
 
@@ -133,14 +126,8 @@ export const deleteProduct = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.delete(
-        `${PRODUCTS.DELETE_PRODUCT}/${id}`, // API endpoint for deleting a product
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      const response = await axiosInstance.delete(
+        `${PRODUCTS.DELETE_PRODUCT}/${id}` // API endpoint for deleting a product
       );
 
       if (response.data.success) {
@@ -169,7 +156,9 @@ export const getProductById = createAsyncThunk(
 
     try {
       // ✅ Fetch from API if not cached
-      const response = await axios.get(`${PRODUCTS.GET_ONE_PRODUCTS}/${id}`);
+      const response = await axiosInstance.get(
+        `${PRODUCTS.GET_ONE_PRODUCTS}/${id}`
+      );
 
       if (response.data.success) {
         cache.set(cacheKey, response.data.data); // ✅ Store in cache
@@ -193,14 +182,9 @@ export const addReview = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         `${PRODUCTS.ADD_REVIEW}/${productId}`, // Replace with your API endpoint
-        reviewData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        reviewData
       );
 
       if (response.data.success) {
@@ -225,14 +209,9 @@ export const updateReview = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${PRODUCTS.UPDATE_REVIEW}/${productId}/reviews/${reviewId}`,
-        reviewData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        reviewData
       );
 
       if (response.data.success) {

@@ -1,25 +1,27 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ADDRESSES } from "@/app/utils/constant";
+import { axiosInstance } from "@/app/utils/axiosInstance";
+import cache from "@/app/utils/cache";
 
 // Fetch all addresses
 export const getAllAddresses = createAsyncThunk(
   "addresses/getAllAddresses",
   async (_, { rejectWithValue }) => {
+    const cacheKey = "addresses";
+
+    // ✅ Check if cached data exists
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached addresses`);
+      return cachedData;
+    }
+
     try {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axios.get(ADDRESSES.GET_ALL, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.get(ADDRESSES.GET_ALL);
 
       if (response.data.success) {
+        cache.set(cacheKey, response.data.data); // ✅ Store API response in cache
         return response.data.data;
       }
 
@@ -35,19 +37,10 @@ export const addAddress = createAsyncThunk(
   "addresses/addAddress",
   async (addressData, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axios.post(ADDRESSES.ADD, addressData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axiosInstance.post(ADDRESSES.ADD, addressData);
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear cache to refresh address list
         return response.data.data;
       }
 
@@ -63,23 +56,13 @@ export const updateAddress = createAsyncThunk(
   "addresses/updateAddress",
   async ({ addressId, updatedData }, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         ADDRESSES.UPDATE.replace(":addressId", addressId),
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        updatedData
       );
 
       if (response.data.success) {
+        cache.del("addresses"); // ✅ Remove cached addresses to fetch updated list
         return response.data.data;
       }
 
@@ -95,22 +78,12 @@ export const deleteAddress = createAsyncThunk(
   "addresses/deleteAddress",
   async (addressId, { rejectWithValue }) => {
     try {
-      const token = localStorage.getItem("accessToken");
-
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axios.delete(
-        ADDRESSES.DELETE.replace(":addressId", addressId),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      const response = await axiosInstance.delete(
+        ADDRESSES.DELETE.replace(":addressId", addressId)
       );
 
       if (response.data.success) {
+        cache.del("addresses"); // ✅ Remove cached addresses
         return response.data.data;
       }
 

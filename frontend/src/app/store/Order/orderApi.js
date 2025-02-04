@@ -1,6 +1,8 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ORDERS } from "@/app/utils/constant";
+import cache from "@/app/utils/cache";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 
 // Fetch All Orders
 export const getAllOrders = createAsyncThunk(
@@ -9,33 +11,31 @@ export const getAllOrders = createAsyncThunk(
     { page = 1, limit = 10, sort = "-createdAt", status, userId },
     { rejectWithValue }
   ) => {
+    // ✅ Create a unique cache key based on filters
+    const cacheKey = `orders-page-${page}-status-${status || "all"}-user-${userId || "all"}`;
+
+    // ✅ Check if cached data exists
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached orders for ${cacheKey}`);
+      return cachedData;
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
+      if (!token) throw new Error("No token found");
 
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         ORDERS.GET_ALL_ORDERS,
         {},
         {
-          params: {
-            page,
-            limit,
-            sort,
-            status,
-            userId,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
+          params: { page, limit, sort, status, userId },
         }
       );
 
       if (response.data.success) {
-        return response.data.data; // Ensure your API returns the expected response structure
+        cache.set(cacheKey, response.data.data); // ✅ Store response in cache
+        return response.data.data;
       }
 
       return rejectWithValue("Failed to fetch orders.");
@@ -54,12 +54,7 @@ export const getOrdersStatitics = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.get(ORDERS.GET_DASHBOARD_STATITICS, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(ORDERS.GET_DASHBOARD_STATITICS);
       console.log("sdata is<<<<", response);
 
       if (response.data.success) {
@@ -82,12 +77,9 @@ export const getProductSold = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.get(ORDERS.GET_DASHBOARD_PRODUCTSOLD, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.get(
+        ORDERS.GET_DASHBOARD_PRODUCTSOLD
+      );
 
       if (response.data.success) {
         return response.data.data; // Ensure your API returns the expected response structure
@@ -110,14 +102,10 @@ export const addOrder = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.post(ORDERS.ADD_ORDER, orderData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
+      const response = await axiosInstance.post(ORDERS.ADD_ORDER, orderData);
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear cache when a new order is added
         return response.data.data; // Ensure API returns the newly created order
       }
 
@@ -141,18 +129,13 @@ export const UpdateOrder = createAsyncThunk(
 
       console.log("came here for update status");
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         `${ORDERS.UPDATE_ORDER_STATUS}/${id}`, // API endpoint for updating an order
-        { orderStatus }, // Pass orderStatus in the request body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+        { orderStatus } // Pass orderStatus in the request body
       );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear cache when a new order is added
         return response.data.data; // Return updated order data
       }
 
@@ -176,17 +159,12 @@ export const deleteOrder = createAsyncThunk(
         throw new Error("No token found");
       }
 
-      const response = await axios.delete(
-        `${ORDERS.DELETE_ORDER}/${id}`, // API endpoint for deleting an order
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      const response = await axiosInstance.delete(
+        `${ORDERS.DELETE_ORDER}/${id}` // API endpoint for deleting an order
       );
 
       if (response.data.success) {
+        cache.clear(); // ✅ Clear cache when a new order is added
         return id; // Return the ID of the deleted order
       }
 
@@ -207,12 +185,8 @@ export const getLastOrderByUserId = createAsyncThunk(
         throw new Error("No token found. Please log in.");
       }
 
-      const response = await axios.get(`${ORDERS.GET_LAST_ORDER}`, {
+      const response = await axiosInstance.get(`${ORDERS.GET_LAST_ORDER}`, {
         params: orderId ? { orderId } : {}, // Pass orderId if available
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
       });
 
       if (response.data) {
@@ -229,25 +203,26 @@ export const getLastOrderByUserId = createAsyncThunk(
 export const getLastOrdersByUserId = createAsyncThunk(
   "orders/getLastOrdersByUserId",
   async ({ userId, page = 1, limit = 10 }, { rejectWithValue }) => {
+    const cacheKey = `last-orders-user-${userId}-page-${page}`;
+
+    // ✅ Check cache before fetching
+    const cachedData = cache.get(cacheKey);
+    if (cachedData) {
+      console.log(`Using cached last orders for ${cacheKey}`);
+      return cachedData;
+    }
+
     try {
       const token = localStorage.getItem("accessToken");
+      if (!token) throw new Error("No token found. Please log in.");
 
-      if (!token) {
-        throw new Error("No token found. Please log in.");
-      }
-
-      const response = await axios.get(
-        `${ORDERS.GET_LAST_ORDERS}?page=${page}&limit=${limit}`, // API URL
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          withCredentials: true,
-        }
+      const response = await axiosInstance.get(
+        `${ORDERS.GET_LAST_ORDERS}?page=${page}&limit=${limit}`
       );
 
       if (response.data) {
-        return response.data.data; // Return order details with pagination
+        cache.set(cacheKey, response.data.data); // ✅ Store in cache
+        return response.data.data;
       }
 
       return rejectWithValue("Failed to fetch last orders.");

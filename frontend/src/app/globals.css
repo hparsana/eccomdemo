@@ -95,9 +95,8 @@
 }
 
 .smooth-transition {
-  transition:
-    background-color 0.5s ease-in-out,
-    color 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out;
+  /* color 0.5s ease-in-out; */
 }
 .css-j5q8rb-MuiStepConnector-root .MuiStepConnector-line {
   width: 2px !important;

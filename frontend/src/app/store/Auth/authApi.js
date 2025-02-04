@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { USERS } from "@/app/utils/constant";
+import { axiosInstance } from "@/app/utils/axiosInstance";
 // import { useRouter } from "next/navigation";
 
 export const getUserData = createAsyncThunk("auth/setDatas", async () => {
@@ -12,12 +13,7 @@ export const getUserData = createAsyncThunk("auth/setDatas", async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(USERS.GET_USER_INFO, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true, // Add this line
-    });
+    const response = await axiosInstance.get(USERS.GET_USER_INFO);
     if (response?.data?.success) {
       return response?.data;
     }
@@ -36,12 +32,7 @@ export const LogoutUserFun = createAsyncThunk("auth/deleteData", async () => {
       throw new Error("No token found");
     }
 
-    const response = await axios.get(USERS.LOGOUT_USER_API, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      withCredentials: true, // Add this line
-    });
+    const response = await axiosInstance.get(USERS.LOGOUT_USER_API);
 
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
